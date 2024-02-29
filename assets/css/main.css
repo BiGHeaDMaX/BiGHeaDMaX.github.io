@@ -2602,6 +2602,8 @@ input, select, textarea {
 				.tiles article > .image img {
 					display: block;
 					width: 100%;
+					border-radius: 4px; /* Arrondir les coins du surlignage */
+					border: 1px solid #585858; /* Ajouter une bordure de 1 pixel */
 				}
 
 				.tiles article > .image:before {
@@ -2672,7 +2674,7 @@ input, select, textarea {
 				padding: 1em;
 				border-radius: 4px;
 				border-bottom: 0;
-				color: #585858;
+				color: #585858; /*old : #585858 */
 				text-align: center;
 				text-decoration: none;
 				z-index: 3;
@@ -2682,12 +2684,24 @@ input, select, textarea {
 					margin: 0;
 				}
 
-				.tiles article > a:hover {
-					color: #ffffff !important;
+				.tiles article > a span {
+					background-color: rgba(255, 255, 255, 0.5)!important; /* Surlignage */
+					border-radius: 4px; /* Arrondir les coins du surlignage */
+					border: 1px solid #585858; /* Ajouter une bordure de 1 pixel */
+				}				
+
+				.tiles article > a:hover span {
+					background-color: rgba(88, 88, 88, 0.9)!important; /* Surlignage */
+					color: #ffffff !important; /* Couleur du texte en blanc */
+					border-radius: 4px; /* Arrondir les coins du surlignage */
+					border: 1px solid #585858; /* Ajouter une bordure de 1 pixel */
 				}
+				
+
 
 				.tiles article > a h2 {
 					margin: 0;
+
 				}
 
 				.tiles article > a .content {
@@ -2706,6 +2720,17 @@ input, select, textarea {
 						margin-bottom: 0;
 					}
 
+
+
+					.mark-keyword {
+						background-color: rgba(123, 208, 193, 0.9)!important;
+						color: #585858!important;
+						font-weight: bold;
+						border-radius: 4px; /* Arrondir les coins du surlignage */
+						border: 1px solid #585858; /* Ajouter une bordure de 1 pixel */
+					}
+
+
 			.tiles article.style1 > .image:before {
 				background-color: #7bd0c1;
 			}
@@ -2715,7 +2740,7 @@ input, select, textarea {
 			}
 
 			.tiles article.style3 > .image:before {
-				background-color: #7bd0c1;
+				background-color: rgba(123, 208, 193, 0.3); /* en rgba pour ajouter de la transparence : #7bd0c1 */
 			}
 
 			.tiles article.style4 > .image:before {
@@ -2738,8 +2763,8 @@ input, select, textarea {
 			}
 
 				body:not(.is-touch) .tiles article:hover > .image:before {
-					background-color: #333333;
-					opacity: 0.35;
+					background-color: #ffffff;
+					opacity: 0.15;
 				}
 
 				body:not(.is-touch) .tiles article:hover > .image:after {
@@ -2830,7 +2855,7 @@ input, select, textarea {
 /* Header */
 
 	#header {
-		padding: 8em 0 0.1em 0 ;
+		padding: 1em 0 0.1em 0 ;
 	}
 
 		#header .logo {
