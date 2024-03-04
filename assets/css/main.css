@@ -3051,7 +3051,7 @@ input, select, textarea {
 
 				#menu > .inner > ul > li {
 					padding: 0;
-					border-top: solid 1px rgba(255, 255, 255, 0.15);
+					border-top: solid 1px rgba(255, 255, 255, 0.15); /* 0px pour ne pas afficher les barres horizontales dans le menu */
 				}
 
 					#menu > .inner > ul > li a {
