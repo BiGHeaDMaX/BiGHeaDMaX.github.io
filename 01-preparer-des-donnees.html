@@ -23,7 +23,7 @@
 
 							<!-- Logo -->
 							<a href="index.html" class="logo">
-								<span class="symbol"><img src="images/home.png" alt="" /></span><span class="title">Accueil</span>
+								<span class="symbol"><img src="images/home.png" alt=""/></span><span class="title">Accueil</span>
 							</a>
 
 							<!-- Nav -->
@@ -48,7 +48,7 @@
 						<li><a href="03-segmenter-des-clients.html">Segmenter des clients d'un site e-commerce</a></li>
 						<li><a href="04-suggestion-mots-cles.html">Suggestion automatique de mots-cl&eacute;s</a></li>
 						<li><a href="05-classer-des-images.html">Classer des images &agrave; l'aide d'algorithmes de Deep Learning</a></li>
-						<li><a href="06-extraction-mots-cles.html">Nouvelles méthodes d'extraction de mots-cl&eacute;s</a></li>
+						<li><a href="06-extraction-mots-cles.html">Nouvelles m&eacute;thodes d'extraction de mots-cl&eacute;s</a></li>
 						<li><a href="07-traitement-aws-spark.html">R&eacute;aliser un traitement Big Data avec Spark</a></li>
 						<li><a href="08-cadrage-ia.html">R&eacute;aliser le cadrage d'un projet IA</a></li>
 					</ul>
@@ -57,11 +57,267 @@
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
-							<!-- <h1>Pr&eacute;parer des donn&eacute;es pour un organisme de sant&eacute;</h1> -->
 							<span class="image main"><img src="images/01-preparer-des-donnees/01-preparer-des-donnees-titre.png" alt="Pr&eacute;parer des donn&eacute;es pour un organisme de sant&eacute;" /></span>
-							<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-							<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
+
+							<h1>Introduction</h1>
+							<p>
+								Ce projet vise &agrave; pr&eacute;parer la base de donn&eacute;es libre et ouverte d'<a href="https://world.openfoodfacts.org" target="_blank">Open Food Facts</a>.
+								Open Food Facts est un projet collaboratif dont le but est de constituer une base de donn&eacute;es libre et ouverte sur les produits alimentaires commercialis&eacute;s dans le monde entier.
+							</p>
+							<p>
+								L'objectif est ici de nettoyer et explorer les donn&eacute;es, afin de pouvoir d&eacute;terminer par la suite s'il serait envisageable de cr&eacute;er une application d'auto-compl&eacute;tion pour aider les usagers
+								&agrave; remplir plus efficacement la base de donn&eacute;es.
+							</p>
+							<p>
+								<b>Les &eacute;tapes suivantes seront r&eacute;alis&eacute;es : </b>
+								<ul>
+									<li>Rep&eacute;rer les variables int&eacute;ressantes.</li>
+									<li>Nettoyer le jeu de donn&eacute;es en traitant les valeurs aberrantes et les valeurs manquantes.</li>
+									<li>R&eacute;aliser une analyse exploratoire des donn&eacute;es.</li>
+									<li>D&eacute;terminer la faisabilit&eacute; d'une application permettant de sugg&eacute;rer les valeurs manquantes pour une variable dont plus de 50% des valeurs sont manquantes.</li>
+								</ul>
+							</p>
+
+							<p>
+								<blockquote>
+									<img src="images/info.png" width="35" height="35"/>
+									<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+								</blockquote>
+							</p>
+
+							
+							<h1>Premier aper&ccedil;u du dataset</h1>
+
+							<p>
+							Ce dataset comporte <b>320 772 lignes</b> et <b>162 colonnes</b>. 16 colonnes du dataset sont <b>enti&egrave;rement vides</b>.
+							</p>
+							<img src="images/01-preparer-des-donnees/02-apercu.jpg" alt="" style="max-width: 100%; height: auto;" />
+
+							<p>
+								De nombreuses donn&eacute;es sont <b>manquantes :</b>.
+							</p>
+							<img src="images/01-preparer-des-donnees/03-manquantes.jpg" alt="" style="max-width: 100%; height: auto;" />
+							
+							<br><br>
+
+							<h1>Premiers traitements</h1>
+							
+								<li>Suppression des colonnes avec plus de 90% de valeurs manquantes :</li>
+								&mdash;&nbsp;&nbsp;Sauf les colonnes : <i>nutrition_grade_uk</i>, <i>allergens</i> et <i>traces</i>.<br>
+								<br>
+								<li>S&eacute;lection des colonnes int&eacute;ressantes :</li>
+								&mdash;&nbsp;&nbsp;Colonnes d'int&eacute;r&ecirc;t pour l'id&eacute;e d'application (macronutriments, nutriscores…).<br>
+								&mdash;&nbsp;&nbsp;Colonnes utilis&eacute;es pour v&eacute;rifications au cours du nettoyage (nom des produits, groupes d'aliment…).
+								<br><br>
+							<li>Cr&eacute;ation d'une nouvelle colonne pays uniformis&eacute;e.</li><br>
+							<li>V&eacute;rification des types des colonnes.</li>
+
+							<br><br>
+
+							<h1>Valeurs aberrantes</h1>
+
+							<li>Passage en revue des variables, en prenant en priorit&eacute; le contexte m&eacute;tier :</li>
+							&mdash;&nbsp;&nbsp;<i>Sel</i> et <i>Sodium</i> quasiment identiques : je ne conserve que Sel.<br>
+							&mdash;&nbsp;&nbsp;Cas o&ugrave; <i>Glucides</i> est vide alors que <i>Sucre</i> ne l'est pas.<br>
+							&mdash;&nbsp;&nbsp;Macronutriments pour 100g sup&eacute;rieurs &agrave; 100 : suppression.<br>
+							&mdash;&nbsp;&nbsp;Micronutriments sup&eacute;rieurs &agrave; 100 000 : suppression.<br>
+							&mdash;&nbsp;&nbsp;Des valeurs &eacute;lev&eacute;es dans <i>additives_n</i> : atypiques, pas aberrantes.<br>
+							&mdash;&nbsp;&nbsp;<i>energy_100g</i> : suppression des valeurs sup&eacute;rieures &agrave; 3700, qui est la valeur maximale en kJ pour 100g qu'un aliment peut avoir (lipide pur).<br>
+							<br>
+							<li>L&eacute;g&egrave;res diff&eacute;rences entre <i>nutriscores Fr</i> et <i>UK</i>.</li>
+							<br>
+							<li>Traitement des valeurs n&eacute;gatives.</li>
+
+							<br><br>
+
+							<h1>Imputation des valeurs manquantes</h1>
+
+							<p>Nous allons identifier les corr&eacute;lations lin&eacute;aires entre certaines variables. Cela nous aidera &agrave; choisir une m&eacute;thode d'imputation adapt&eacute;e.</p>
+							<img src="images/01-preparer-des-donnees/04-mat-corr.png" alt="" style="max-width: 100%; height: auto;" />
+							<br><br>
+							<b>Imputation des macronutriments</b>
+							<br><br>
+							<li>Cas o&ugrave; toutes les variables sont manquantes :</li>
+							<img src="images/01-preparer-des-donnees/05-non-sym.jpg" alt="" style="max-width: 100%; height: auto;" />
+							<br>
+							Distribution <b>non sym&eacute;triques</b> : imputation par la <b>m&eacute;diane</b>.
+							<br><br>
+							<li>Macronutriments : cas o&ugrave; seulement certaines variables sont manquantes :</li>
+							Je consid&egrave;re que les aliments concern&eacute;s <b>n'en contiennent pas</b> : imputation <b>par 0</b>.
+							<br><br>
+
+							<b>Colonnes nutriscore et nutrigrade</b>
+							<br><br>
+							<li>Pas assez d'&eacute;l&eacute;ments pour pouvoir calculer le nutriscore avec la formule : il nous manque la variable <i>fruits-vegetables-nuts_100g</i> et souvent le groupe alimentaire.</li>
+						    <li>Forte corr&eacute;lation lin&eacute;aire du nutriscore avec <i>energy_100g</i>, <i>fat_100g</i>, <i>saturated-fat_100g</i> et <i>sugars_100g</i> : utilisation de <a href="https://scikit-learn.org/stable/modules/generated/sklearn.impute.IterativeImputer.html" target="_blank"><i>IterativeImputer</i></a>.</li>
+					    	<li>Maintenant que le nutriscore est imput&eacute;, nous pouvons imputer nutrigrade en suivant la r&egrave;gle suivante :</li><br>
+							<p align="center"><img src="images/01-preparer-des-donnees/06-nutriscore-rules.jpg" alt="" style="max-width: 100%; height: auto;"/></p>
+
+							<br><br>
+							<b>Autres colonnes</b>
+							<br><br>
+							<li><i>energy_100g</i> : imputation par la <b>m&eacute;diane</b> quand aucun macronutriments, sinon imputation <b>par 0</b>.</li>
+							<li>Imputation <b>par 0</b> pour allerg&egrave;nes, traces, additifs et huile de palme.</li>
+							<li><i>trans-fat_100g</i> et <i>cholesterol_100g</i> : utilisation de l'<b>algorithme <a href="https://scikit-learn.org/stable/modules/generated/sklearn.impute.KNNImputer.html" target="_blank">KNN Imputer</a></b>.</li>
+							<li><i>vitamin-c_100g</i>, <i>vitamin-a_100g</i>, <i>calcium_100g</i> et <i>iron_100g</i> : <b>pas possible d'imputer correctement</b>, suppression de ces variables.</li>
+							<li>Suppression des variables de v&eacute;rification.</li>
+
+							<br><br>
+
+						<h1>Exploration des donn&eacute;es</h1>
+
+						<p>Le nombre d'entr&eacute;es augmentait progressivement, avant une cassure en 2017 :</p>
+						<img src="images/01-preparer-des-donnees/07-cassure-2017.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<br><br>
+						<p>Cette cassure provient de l'arriv&eacute;e massive des produits Am&eacute;ricains dans la base de donn&eacute;e cette m&ecirc;me ann&eacute;e :</p>
+						<img src="images/01-preparer-des-donnees/08-arrivee-usa.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<br><br>
+						<p><b>R&eacute;partition des produits dans le monde :</b></p>
+						<img src="images/01-preparer-des-donnees/09-repartition.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<br><br>
+
+						<p><b>Nutrigrade :</b></p>
+						<img src="images/01-preparer-des-donnees/10-nutrigrades.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<p>Les macronutriments influent sur le nutrigrade. Exemples : </p>
+						<img src="images/01-preparer-des-donnees/11-nutrigrades-2.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<br><br>
+
+						<p><b>Nutriscore :</b></p>
+						<img src="images/01-preparer-des-donnees/12-nutriscoremonde.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<br><br>
+
+						<p><b>&Eacute;nergie :</b></p>
+						<img src="images/01-preparer-des-donnees/13-energie1.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<br>
+						<img src="images/01-preparer-des-donnees/14-energie2.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<br><br>
+
+						<p><b>Macronutriments :</b></p>
+						<img src="images/01-preparer-des-donnees/15-macro1.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<br>
+						<img src="images/01-preparer-des-donnees/16-macro2.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<br>
+						<img src="images/01-preparer-des-donnees/17-macro3.jpg" alt="" style="max-width: 100%; height: auto;"/>
+						<br><br>
+
+						<p><b>Additifs :</b></p>
+						<img src="images/01-preparer-des-donnees/18-additifs.jpg" alt="" style="max-width: 100%; height: auto;"/>
+
+						<br><br>
+
+						<h1>Analyse en composantes principales</h1>
+
+						<p>Nous allons r&eacute;aliser une ACP sur les macronutriments et voir les liens entre ces variables et les composantes de l'ACP</p>
+
+						<div class="table-wrapper">
+							<table>
+								<thead>
+									<tr>
+										<th>Composantes</th>
+										<th>Variances capt&eacute;es</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>n°1</td>
+										<td>31.01 %</td>
+
+									</tr>
+									<tr>
+										<td>n°2</td>
+										<td>21.24 %</td>
+
+									</tr>
+									<tr>
+										<td>n°3</td>
+										<td>16.64 %</td>
+
+									</tr>
+									<tr>
+										<td>n°4</td>
+										<td>15.39 %</td>
+
+									</tr>
+									<tr>
+										<td>n°5</td>
+										<td> 9.94 %</td>
+
+									</tr>
+									<tr>
+										<td>n°6</td>
+										<td>5.77 %</td>
+
+									</tr>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="1"></td>
+										<td>100 %</td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+
+
+				<p align="center">
+					<img src="images/01-preparer-des-donnees/19-eboulis.jpg" alt="" style="max-width: 100%; height: auto;"/>
+				</p>
+				<p align="center">
+					<img src="images/01-preparer-des-donnees/20-composantes.jpg" alt="" style="max-width: 100%; height: auto;"/>
+				</p>
+				<img src="images/01-preparer-des-donnees/21-cercles.jpg" alt="" style="max-width: 100%; height: auto;"/>
+
+				<br><br>
+
+				<h1>Analyse de la variance (ANOVA)</h1>
+
+				<p>Cette analyse nous permet d'identifier des corr&eacute;lations entre des variables quantitatives et qualitatives.</p>
+				<p><b>Entre nutriscore et nutrigrade :</b><br>
+				F = 99439<br>
+				p-value < 0,01<br>
+				Eta² = 0,554<br>
+				</p>
+				<p align="center">
+					<img src="images/01-preparer-des-donnees/22-score-grade.jpg" alt="" style="max-width: 100%; height: auto;"/><br>
+					Il y a une corr&eacute;lation entre nutriscore et nutrigrade, c'&eacute;tait attendu.
+				</p>
+				<b>ANOVA avec d'autres variables :</b>
+				<li>ANOVA entre nutriscore et de multiples variables.</li>
+				<li>&Agrave; titre indicatif, car les distributions ne sont pas normales.</li>
+				<p align="center">
+					<img src="images/01-preparer-des-donnees/23-anovas.jpg" alt="" style="max-width: 100%; height: auto;"/><br>
+				</p>
+				<br><br>
+
+				<h1>Faisabilit&eacute; de l'application</h1>
+
+					<li>Au cours du nettoyage, il a &eacute;t&eacute; possible d'imputer certaines variables qui contenaient beaucoup de valeurs manquantes : additifs, huile de palme, allerg&egrave;nes, traces, acides gras trans, cholest&eacute;rol.</li>
+					<li>Il a &eacute;t&eacute; possible d'imputer une colonne enti&egrave;rement vide : le nutrigrade UK.</li>
+					<li>D'autres colonnes un peu plus compl&egrave;tes ont pu &ecirc;tre imput&eacute;es : les macronutriments, les nutriscores et le nutrigrade Fr.</li>
+					<li>De nombreuses colonnes ne peuvent pas &ecirc;tre imput&eacute;es, &agrave; moins de proc&eacute;der &agrave; des estimations hasardeuses.</li>
+					<br>
+					<b>EN CONCLUSION : </b>ce type d'application est r&eacute;alisable, mais pour un nombre limit&eacute; de variables. La question &agrave; se poser est : pour quelle variable est-on pr&ecirc;t &agrave; perdre en qualit&eacute; des donn&eacute;es au profit d'un syst&egrave;me de suggestion ?
+					<br><br>
+
+
+				<h1>Perspectives</h1>
+
+				<li>En amont, am&eacute;liorer la qualit&eacute; des donn&eacute;es d&egrave;s leur saisie : </li>
+				&mdash;&nbsp;&nbsp;Pour les pays, les groupes alimentaires : choix restreint par une liste d&eacute;roulante.<br>
+				&mdash;&nbsp;&nbsp;Forcer le remplissage des variables importantes comme les macronutriments.
+				<br><br>
+				<li>Tester d'autres m&eacute;thodes d'imputation : </li>
+				&mdash;&nbsp;&nbsp;Algorithmes de machine learning : par exemple utiliser un random forest pour imputer les variables de groupes alimentaires.
+				<br><br>
+				<li>Faire des tests approfondis quand &agrave; la qualit&eacute; des donn&eacute;es imput&eacute;es.</li>
+				
+				<p>
+					<blockquote>
+						<img src="images/info.png" width="35" height="35"/>
+						<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+					</blockquote>
+				</p>
+
 						</div>
 					</div>
 

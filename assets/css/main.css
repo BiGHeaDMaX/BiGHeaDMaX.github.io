@@ -265,7 +265,13 @@ input, select, textarea {
 		font-style: italic;
 		margin: 0 0 2em 0;
 		padding: 0.5em 0 0.5em 2em;
+		display: flex; /* Pour centrer verticalement le texte par rapport à l'image si on en ajoute une */
+    	align-items: center; /* Pour centrer verticalement le texte par rapport à l'image si on en ajoute une */
 	}
+
+	blockquote img {
+		margin-right: 10px; /* Pour que le texte ne soit pas collé à l'image si on en ajoute une */
+	  }
 
 	code {
 		background: rgba(144, 144, 144, 0.075);
