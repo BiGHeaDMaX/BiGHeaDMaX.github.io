@@ -48,7 +48,7 @@
 						<li><a href="03-segmenter-des-clients.html">Segmenter des clients d'un site e-commerce</a></li>
 						<li><a href="04-suggestion-mots-cles.html">Suggestion automatique de mots-cl&eacute;s</a></li>
 						<li><a href="05-classer-des-images.html">Classer des images &agrave; l'aide d'algorithmes de Deep Learning</a></li>
-						<li><a href="06-extraction-mots-cles.html">Nouvelles méthodes d'extraction de mots-cl&eacute;s</a></li>
+						<li><a href="06-extraction-mots-cles.html">Nouvelles m&eacute;thodes d'extraction de mots-cl&eacute;s</a></li>
 						<li><a href="07-traitement-aws-spark.html">R&eacute;aliser un traitement Big Data avec Spark</a></li>
 						<li><a href="08-cadrage-ia.html">R&eacute;aliser le cadrage d'un projet IA</a></li>
 					</ul>
@@ -57,12 +57,278 @@
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
-							<!-- <h1>Anticiper les besoins en consommation de b&acirc;timents</h1> -->
 							<span class="image main"><img src="images/02-anticiper-la-consommation/02-anticiper-la-consommation-titre.png" alt="Anticiper les besoins en consommation de b&acirc;timents" /></span>
-							<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-							<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
-						</div>
+
+							<h1>Introduction</h1>
+
+							<p>Ce projet est bas&eacute; sur le dataset <a href="https://data.seattle.gov/Permitting/2016-Building-Energy-Benchmarking/2bpz-gwpy/about_data" target="_blank">2016 Building Energy Benchmarking</a>.
+								Il s'agit de relev&eacute;s minutieux d'&eacute;missions de CO2 et de consommation d'&eacute;nergie effectu&eacute;s par les agents de la ville de Seattle sur des b&acirc;timents en 2016.<br>
+							Ce relev&eacute;s sont coûteux &agrave; r&eacute;aliser, nous allons donc voir s'il est possible de faire des pr&eacute;dictions de ces variables en fonction des donn&eacute;es structurelles des b&acirc;timents.
+							Nous baserons ici nos exp&eacute;riences sur les b&acirc;timents non destin&eacute;s &agrave; l'habitation.<br>
+							Il sera &eacute;galement &eacute;valu&eacute; la pertinence de la variable <a href="https://www.energystar.gov/" target="_blank">ENERGY STAR Score</a> pour nos pr&eacute;dictions.
+											
+						</p>
+
+						<p>
+							<b>Les &eacute;tapes suivantes seront r&eacute;alis&eacute;es : </b>
+							<ul>
+								<li>Pr&eacute;paration des donn&eacute;es.</li>
+								<li>Analyse exploratoire.</li>
+								<li>Tests de diff&eacute;rents mod&egrave;les pour nos pr&eacute;dictions.</li>
+								<li>D&eacute;terminer les importances globales et locales des features.</li>
+							</ul>
+						</p>
+
+
+						<p>
+							<blockquote>
+								<img src="images/info.png" width="35" height="35"/>
+								<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+							</blockquote>
+						</p>
+
+
+						<h1>Pr&eacute;paration des donn&eacute;es</h1>
+
+						<p>
+						<li><b>Dataset de base : </b></li>
+						&mdash;&nbsp;&nbsp;3376 instances et 46 variables.<br>
+						&mdash;&nbsp;&nbsp;13% de donn&eacute;es manquantes.<br>
+						&mdash;&nbsp;&nbsp;65% de variables num&eacute;riques.<br>
+						&mdash;&nbsp;&nbsp;35% de variables cat&eacute;gorielles.
+						</p>
+
+						<p>
+
+						<li><b>Premier nettoyage : </b></li>
+						&mdash;&nbsp;&nbsp;OSEBuildingID (identifiant unique) : pas de valeur manquante ni de doublon.<br>
+						&mdash;&nbsp;&nbsp;S&eacute;lection des b&acirc;timents non r&eacute;sidentiels uniquement.<br>
+						&mdash;&nbsp;&nbsp;Suppression des b&acirc;timents qui n'ont pas satisfait les exigences de mesure.<br>
+						</p>
+
+						<p>
+							<li><b>S&eacute;lection des variables structurelles et g&eacute;ographiques : </b></li>
+							&mdash;&nbsp;&nbsp;BuildingType<br>
+							&mdash;&nbsp;&nbsp;PrimaryPropertyType<br>
+							&mdash;&nbsp;&nbsp;NumberofBuildings<br>
+							&mdash;&nbsp;&nbsp;NumberofFloors<br>
+							&mdash;&nbsp;&nbsp;PropertyGFAParking<br>
+							&mdash;&nbsp;&nbsp;PropertyGFABuilding(s)<br>
+							&mdash;&nbsp;&nbsp;Neighborhood<br>
+							&mdash;&nbsp;&nbsp;Latitude<br>
+							&mdash;&nbsp;&nbsp;Longitude<br>
+							&mdash;&nbsp;&nbsp;ZipCode<br>
+							&mdash;&nbsp;&nbsp;YearBuilt<br>
+
+						</p>
+
+						<p>
+							<li><b>S&eacute;lection des variables cibles : </b></li>
+							&mdash;&nbsp;&nbsp;SiteEnergyUseWN(kBtu)<br>
+							&mdash;&nbsp;&nbsp;TotalGHGEmissions<br>
+
+						</p>
+
+						<p>
+							<li><b>S&eacute;lection d'autres variables : </b></li>
+							&mdash;&nbsp;&nbsp;NaturalGas(kBtu)<br>
+							&mdash;&nbsp;&nbsp;Electricity(kBtu)<br>
+							&mdash;&nbsp;&nbsp;SteamUse(kBtu)<br>
+							&mdash;&nbsp;&nbsp;ENERGYSTARScore<br>
+						
+						</p>
+
+						<p>
+
+							<li><b>Traitement des valeurs aberrantes et nulles, uniformisations des noms.</b></li>
+						</p>
+
+						<p>
+
+							<li><b>Cr&eacute;ation d'une variable &acirc;ge des b&acirc;timents &agrave; partir de YearBuilt.</b></li>
+
+						</p>
+
+						<p>
+
+						<b><li>Cr&eacute;ation de 3 variables de proportion du type d'&eacute;nergie utilis&eacute; &agrave; partir de NaturalGas(kBtu), Electricity(kBtu) et SteamUse(kBtu) (supprim&eacute;es ensuite).</b></li>
+
+						</p>
+
+						<p>
+
+						<b><li>Variable ENERGYSTARScore : beaucoup de donn&eacute;es manquantes pour cette variable.</b></li>
+						&mdash;&nbsp;&nbsp;Cr&eacute;ation d'un dataset sans ENERGYSTARScore avec 1515 instances.<br>
+						&mdash;&nbsp;&nbsp;Cr&eacute;ation d'un dataset avec ENERGYSTARScore avec 981 instances.<br>
+
+						</p>
+
+						<h1>Exploration des donn&eacute;es</h1>
+
+						<p align="center">
+						<b>Matrice de corr&eacute;lation</b><br>
+							<img src="images/02-anticiper-la-consommation/02-mat-corr.jpg" alt="" style="max-width: 100%; height: auto;" />	
+						</p>
+
+						<p align="center">
+						<b>Distribution des variables num&eacute;riques</b><br>
+						<img src="images/02-anticiper-la-consommation/03-var-num.jpg" alt="" style="max-width: 100%; height: auto;" />	
+						</p>
+						
+						<p align="center">
+							<b>Influence du type d'utilisation sur la consommation d'&eacute;nergie et les &eacute;missions : </b><br><br>
+							<b>Consommation d'&eacute;nergie</b><br>
+							<img src="images/02-anticiper-la-consommation/04-conso.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							<b>&Eacute;missions de CO2</b><br>
+							<img src="images/02-anticiper-la-consommation/05-emissions.jpg" alt="" style="max-width: 100%; height: auto;" />
+							</p>
+
+						<p align="center">
+							<b>Influence du quartier sur la consommation d'&eacute;nergie et les &eacute;missions : </b><br><br>
+							<b>Consommation d'&eacute;nergie</b><br>
+							<img src="images/02-anticiper-la-consommation/06-quartier-conso.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							<b>&Eacute;missions de CO2</b><br>
+							<img src="images/02-anticiper-la-consommation/07-quartier-emissions.jpg" alt="" style="max-width: 100%; height: auto;" />
+							</p>
+
+							<p align="center">
+								<b>Relations entre les variables cat&eacute;gorielles et les variables cibles (ANOVA avec variables cibles pass&eacute;es au log) : </b><br><br>
+								<b>Consommation d'&eacute;nergie</b><br>
+								<img src="images/02-anticiper-la-consommation/08-anova-conso.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+								<b>&Eacute;missions de CO2</b><br>
+								<img src="images/02-anticiper-la-consommation/09-anova-emissions.jpg" alt="" style="max-width: 100%; height: auto;" />
+								</p>
+
+
+								<h1>Choix du mod&egrave;le</h1>
+								<p>
+								<b>Processus de test des mod&egrave;les : </b><br>
+								&mdash;&nbsp;&nbsp;Nous testerons nos mod&egrave;les avec et sans la variable <i>ENERGY STAR Score</i>.<br>
+								&mdash;&nbsp;&nbsp;S&eacute;lection des autres features structurelles en fonction des mod&egrave;les test&eacute;s.<br>
+								&mdash;&nbsp;&nbsp;S&eacute;paration des features et des variables cilbes.<br>
+								&mdash;&nbsp;&nbsp;Scaling des valeurs num&eacute;riques et encodage des valeurs cat&eacute;gorielles.<br>
+								&mdash;&nbsp;&nbsp;S&eacute;paration des donn&eacute;es en train/test.<br>
+								&mdash;&nbsp;&nbsp;Premier test des mod&egrave;les avec les hyperparam&egrave;tres par d&eacute;faut.<br>
+								&mdash;&nbsp;&nbsp;Tuning des hyperparam&egrave;tres &agrave; l'aide d'un <a href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html">GridSearchCV</a> avec 5 folds. Ceci nous donnera un score moyen sur grid.<br>
+								&mdash;&nbsp;&nbsp;Pr&eacute;dictions des mod&egrave;les avec les meilleurs hyperparam&egrave;tres. Ceci nous donnera le score optimis&eacute;.<br>
+								<br>
+								<b>Sch&eacute;ma du Processus : </b><br>
+
+								<img src="images/02-anticiper-la-consommation/10-processus.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+
+								</p>
+
+								<p>
+									<b>S&eacute;lection des meilleurs mod&egrave;les : </b>
+								</p>
+
+								<p align="center">
+									<b>Scores R² moyens (GridSearchCV) <u>sans <i>ENERGY STAR Score</i></u></b><br>
+									<img src="images/02-anticiper-la-consommation/11-score-no-nrj.jpg" alt="" style="max-width: 100%; height: auto;" />
+								</p>
+								<p>
+									Les meilleurs r&eacute;sultats sont obtenus avec les mod&egrave;les suivants : <br>
+									&mdash;&nbsp;&nbsp;Random Forest Regressor<br>
+									&mdash;&nbsp;&nbsp;Gradien Boosting Regressor<br>
+									&mdash;&nbsp;&nbsp;XGB Regressor<br>
+									&mdash;&nbsp;&nbsp;Keras (TensorFlow)<br>
+
+								</p>
+
+								<p align="center">
+									<b>Scores R² moyens (GridSearchCV) <u>avec <i>ENERGY STAR Score</i></u></b><br>
+									<img src="images/02-anticiper-la-consommation/12-score-nrj.jpg" alt="" style="max-width: 100%; height: auto;" />
+								</p>
+								<p>
+									Les meilleurs r&eacute;sultats sont &eacute;galement obtenus avec les mod&egrave;les suivants : <br>
+									&mdash;&nbsp;&nbsp;Random Forest Regressor<br>
+									&mdash;&nbsp;&nbsp;Gradien Boosting Regressor<br>
+									&mdash;&nbsp;&nbsp;XGB Regressor<br>
+									&mdash;&nbsp;&nbsp;Keras (TensorFlow)<br>
+
+								</p>
+
+								<p align="center">
+									<b>R&eacute;capitulatifs des meilleurs mod&egrave;les</b><br><br>
+									<img src="images/02-anticiper-la-consommation/13-recap-best.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+								<i>Les scores R² indiqu&eacute;s sont les scores moyens lors de la recherche sur grille, pour les deux variables cibles.</i>
+								</p>
+
+								<p>
+									Malgr&eacute; des temps de calculs plus longs (qui pourraient &ecirc;tre acc&eacute;l&eacute;r&eacute;s avec une carte graphique),
+									le mod&egrave;le TensorFlow fournit les meilleurs r&eacute;sultats en terme de scores R² et de polyvalence.
+									C'est donc ce mod&egrave;le que nous retiendrons pour nos pr&eacute;dictions finales.
+
+								</p>
+
+								<p align="center">
+									<b>Scores R² pour les pr&eacute;diction sur test avec Keras</b><br><br>
+									<img src="images/02-anticiper-la-consommation/14-r2-tensorflow.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Utiliser la variable ENERGYSTARScore r&eacute;duit le score pour la consommation et augmenter celui pour les &eacute;missions.</i>
+								</p>
+
+								<p align="center">
+									<b>RMSE/MAE pour les pr&eacute;diction sur test avec Keras</b><br><br>
+									<img src="images/02-anticiper-la-consommation/15-rmse-mae-tensorflow.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Utiliser la variable ENERGYSTARScore augmente la RMSE pour la consommation, r&eacute;duit la RMSE et la MAE pour les &eacute;missions.</i>
+								</p>
+
+
+
+								<h1>Importances des features</h1>
+
+								<p align="center">
+									<b>Importances globales des features repr&eacute;sent&eacute;es avec <i>KernelExplainer()</i> de la bilioth&egrave;qe <a href="https://github.com/shap/shap" target="_blank"><i>SHAP</i></a></b><br><br>
+									<img src="images/02-anticiper-la-consommation/16-shap.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>On retrouve souvent certaines variables dans les plus importantes : PropertyGFABuilding(s), gas_prop, elec_prop et ENERGYSTARScore (si utilis&eacute;e).</i>
+
+								</p>
+
+								<p align="center">
+									<b>Importances locales des features repr&eacute;sent&eacute;es avec la bilioth&egrave;qe <a href="https://github.com/marcotcr/lime" target="_blank">LIME</a></b><br><br>
+									<img src="images/02-anticiper-la-consommation/17-lime.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Exemple avec deux instances pour les &eacute;missions de CO2 avec ENERGYSTARScore</i>
+								</p>
+								<p>
+									&mdash;&nbsp;&nbsp;Les importances locales varient en fonction des instances.<br>
+									&mdash;&nbsp;&nbsp;Les importances locales varient par rapport aux importances globales.<br>
+								</p>
+
+								<h1>Conclusion</h1>
+
+								<p>
+									<li>Nous avons pu pr&eacute;dire les &eacute;missions de CO2 et la consommation d'&eacute;nergie des b&acirc;timents non destin&eacute;s &agrave; l'habitation, &agrave; l'aide de TensorFlow.</li>
+									<li>Nous nous sommes bas&eacute;s sur des donn&eacute;es structurelles et g&eacute;ographiques.</li>
+									<li>La variable ENERGY STAR Score n'a pas un impact tr&egrave;s important sur les pr&eacute;dictions, qui restent satisfaisantes sans utiliser cette derni&egrave;re.</li>
+									<li>Bien que fournissant de bonnes pr&eacute;dictions, TensorFlow pr&eacute;sente des d&eacute;fauts :</li>
+										&mdash;&nbsp;&nbsp;Il est coûteux en ressources, ce qui peut rendre les GridSearchCV tr&egrave;s longs et ainsi compliquer les tests de nombreux hyperparam&egrave;tres. Les calculs peuvent cependant &ecirc;tre acc&eacute;l&eacute;r&eacute;s avec un/des GPU.<br>
+										&mdash;&nbsp;&nbsp;L'explication globale pour ce mod&egrave;le avec SHAP est coûteuse en ressources.<br>
+								</p>
+
+
+								<h1>Perspectives</h1>
+								<p>
+									<li>Tester d'autres mod&egrave;les de machine learning.</li>
+									<li>Les mod&eacute;lisations portaient sur les donn&eacute;es de 2016, il pourrait &ecirc;tre int&eacute;ressant de faire des mod&eacute;lisations sur plusieurs ou d'autres ann&eacute;es.</li>
+									<li>Aller plus loin dans le param&eacute;trage de TensorFlow : </li>
+										&mdash;&nbsp;&nbsp;Tester diff&eacute;rents nombres de couches.<br>
+										&mdash;&nbsp;&nbsp;Tester diff&eacute;rentes combinaisons de fonctions d'activation.<br>
+										&mdash;&nbsp;&nbsp;Tester plus de combinaisons d'hyperparam&egrave;tres.<br>
+									<li>Tester d'autres biblioth&egrave;ques pour les explications globales et locales.</li>
+								</p>
+
+							<p>
+								<blockquote>
+									<img src="images/info.png" width="35" height="35"/>
+									<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+								</blockquote>
+							</p>
+
+							<p align="center">
+								<img src="images/02-anticiper-la-consommation/18-picotfin.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+
+							</div>
 					</div>
 
 				<!-- Footer -->
