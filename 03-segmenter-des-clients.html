@@ -48,7 +48,7 @@
 						<li><a href="03-segmenter-des-clients.html">Segmenter des clients d'un site e-commerce</a></li>
 						<li><a href="04-suggestion-mots-cles.html">Suggestion automatique de mots-cl&eacute;s</a></li>
 						<li><a href="05-classer-des-images.html">Classer des images &agrave; l'aide d'algorithmes de Deep Learning</a></li>
-						<li><a href="06-extraction-mots-cles.html">Nouvelles méthodes d'extraction de mots-cl&eacute;s</a></li>
+						<li><a href="06-extraction-mots-cles.html">Nouvelles m&eacute;thodes d'extraction de mots-cl&eacute;s</a></li>
 						<li><a href="07-traitement-aws-spark.html">R&eacute;aliser un traitement Big Data avec Spark</a></li>
 						<li><a href="08-cadrage-ia.html">R&eacute;aliser le cadrage d'un projet IA</a></li>
 					</ul>
@@ -57,11 +57,417 @@
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
-							<!-- <h1>Segmenter les clients d'un site e-commerce</h1> -->
 							<span class="image main"><img src="images/03-segmenter-des-clients/03-segmenter-des-clients-titre.png" alt="Segmenter les clients d'un site e-commerce" /></span>
-							<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-							<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
+							
+							<h1>Introduction</h1>
+
+							<p>
+								Ce projet est bas&eacute; sur le dataset <a href="https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce" target="_blank"><i>Brazilian E-Commerce Public Dataset by Olist</i></a>.
+								Il s'agit en r&eacute;alit&eacute; d'un ensemble de datasets contenant les donn&eacute;es sur les commandes pass&eacute;es aupr&egrave;s de la boutique en ligne Br&eacute;silienne Olist.
+								Les datasets contiennent des informations sur environ 100 000 commandes effectu&eacute;es de 2016 &agrave; 2018 sur plusieurs places de march&eacute; au Br&eacute;sil.
+								Plusieurs dimensions sont repr&eacute;sent&eacute;es : &eacute;tat de la commande, prix, paiement, performances de livraison &agrave; l'emplacement du client, attributs du produit et avis r&eacute;dig&eacute;s par les clients.
+								Il y a aussi un dataset g&eacute;olocalisation qui relie les codes postaux Br&eacute;siliens aux coordonn&eacute;es GPS.
+								<br><br>
+								<b>Les objectifs du projet sont les suivants : </b>
+								<ul>
+									<li>Proc&eacute;der &agrave; une segmentation des clients.</li>
+									<li>Comprendre les types d'utilisateurs des diff&eacute;rents groupes.</li>
+									<li>Fournir une description actionnable pour ces groupes.</li>
+									<li>&Eacute;valuer la stabilit&eacute; dans le temps pour d&eacute;terminer les d&eacute;lais de maintenance.</li>
+								</ul>
+							
+
+
+							</p>
+
+							<p>
+								<b>Les &eacute;tapes suivantes seront r&eacute;alis&eacute;es : </b>
+								<ul>
+									<li>Pr&eacute;paration des donn&eacute;es.</li>
+									<li>Analyse exploratoire.</li>
+									<li>Tests de diff&eacute;rents mod&egrave;les de clustering.</li>
+									<li>Mesure de la stabilit&eacute; dans le temps.</li>
+								</ul>
+							</p>
+
+
+							<p>
+								<blockquote>
+									<img src="images/info.png" width="35" height="35"/>
+									<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+								</blockquote>
+							</p>
+
+							<h1>Pr&eacute;paration des donn&eacute;es.</h1>
+
+							<p>
+								Comme &eacute;voqu&eacute; en introduction, nous avons &agrave; notre disposition un ensemble de dataset sous forme de fichiers CSV.
+								Il va falloir assembler tous ces &eacute;l&eacute;ments avec les jointures appropri&eacute;es afin de pouvoir r&eacute;aliser la suite de notre travail.
+							</p>
+
+							<p align="center">
+								<b>Relations entre les diff&eacute;rents datasets</b><br><br>
+									<img src="images/03-segmenter-des-clients/04-structure.jpg" alt="" style="max-width: 100%; height: auto;" />	
+							</p>
+
+							<p>
+								Maintenant que nos donn&eacute;es sont assembl&eacute;es dans un unique dataset, nous allons proc&eacute;der &agrave; une &eacute;tape de feature engineering.
+								
+								<li><b>Cr&eacute;ation de variables : </b></li>
+								&mdash;&nbsp;&nbsp;customer_seller_distance<br>
+								&mdash;&nbsp;&nbsp;shipping_fees_proportion<br>
+								&mdash;&nbsp;&nbsp;avg_spent<br>
+								&mdash;&nbsp;&nbsp;recency<br>
+								&mdash;&nbsp;&nbsp;frequency<br>
+								<br>
+								<li><b>Simplification de variables : </b></li>
+								&mdash;&nbsp;&nbsp;preferred_payment_type : 4 modalit&eacute;s &rarr; 2 modalit&eacute;s<br>
+								&mdash;&nbsp;&nbsp;preferred_category : 72 modalit&eacute;s &rarr; 10 modalit&eacute;<br>
+
+
+							</p>
+
+							<h1>Exploration des donn&eacute;es</h1>
+
+							<p align="center">
+							<b>Matrice de corr&eacute;lation</b><br>
+								<img src="images/03-segmenter-des-clients/05-mat-corr.jpg" alt="" style="max-width: 100%; height: auto;" />
+								<br><i>Nous constatons des corr&eacute;lations et anti-corr&eacute;lations entre certaines variables num&eacute;riques.</i>
+							</p>
+
+							<p align="center">
+								<b>Distributions des variables num&eacute;riques</b><br>
+									<img src="images/03-segmenter-des-clients/06-distributions.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Nous constatons en bas &agrave; droite que les notes donn&eacute;es par les clients sont globalement tr&egrave;s bonnes.</i>
+							</p>
+
+							<p align="center">
+								<b>R&eacute;partition des modes de paiement</b><br>
+									<img src="images/03-segmenter-des-clients/07-modes-paiement.jpg" alt="" style="max-width: 100%; height: auto;" />
+							</p>
+
+							<p align="center">
+								<b>R&eacute;partition des commandes en fonction des cat&eacute;gories</b><br>
+									<img src="images/03-segmenter-des-clients/08-categories.jpg" alt="" style="max-width: 100%; height: auto;" />
+							</p>
+
+							<p align="center">
+								<b>Nombre de commandes</b><br><br>
+									<img src="images/03-segmenter-des-clients/09-nb-commandes.jpg" alt="" style="max-width: 100%; height: auto;" />
+							</p>
+
+							<p>
+								Cette derni&egrave;re observation doit nous interpeller. Seulement 3 % des clients auraient pass&eacute; plusieurs commandes ?
+								<br><br>
+								<b>Plusieurs hypoth&egrave;ses pourraient l'expliquer : </b>
+								<ul>
+									<li>Les donn&eacute;es fournies sont incompl&egrave;tes.</li>
+									<li>Le taux de r&eacute;tention des clients est catastrophique. Mais ceci serait &eacute;tonnant puisque nous avons vu dans la distribution des variables num&eacute;riques que les notes &eacute;taient bonnes, si elles sont r&eacute;elles.</li>
+									<li>Il est possible pour les clients de commander sans cr&eacute;er de compte, un ID unique est cr&eacute;&eacute; lors de la commande et c'est ce mode qui est privil&eacute;gi&eacute;.</li>
+								</ul>
+							</p>
+
+							<p align="center">
+								<b>R&eacute;partition g&eacute;ographique des clients</b><br>
+									<img src="images/03-segmenter-des-clients/10-repartition.jpg" alt="" style="max-width: 100%; height: auto;" />
+							</p>
+
+							<p>
+								Les clients se concentrent majoritairement sur la c&ocirc;te est du Br&eacute;sil.
+								Ceci est facilement explicable par la <a href="https://fr.wikipedia.org/wiki/D%C3%A9mographie_du_Br%C3%A9sil#/media/Fichier:ARCHELLA_E_THERY_Img_05.png" target="_blank">r&eacute;partition de la population dans ce pays</a>.<br>
+								Le site ne semble pas exp&eacute;dier &agrave; l'&eacute;tranger, ou alors les donn&eacute;es fournies sont incompl&egrave;tes.
+							</p>
+
+							<p align="center">
+								<b>Notes des clients en fonction du d&eacute;lai de livraison</b><br>
+									<img src="images/03-segmenter-des-clients/11-avis-delais.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Sans grande surprise, les clients ont tendance &agrave; moins bien noter la prestation quand les d&eacute;lais de livraisons sont &eacute;lev&eacute;s.</i>
+							</p>
+
+							<h1>Tests des mod&egrave;les de clustering</h1>
+
+							<p>
+								Avant de d&eacute;buter cette partie, il est important de bien d&eacute;terminer ce que l'on souhaite faire et de quelle mani&egrave;re.
+								<br><br>
+								<b>Les diff&eacute;rents mod&egrave;les que nous allons tester : </b>
+								<ol>
+									<li><i>KMeans</i></li>
+									<li><i>DBSCAN</i></li>
+									<li><i>Birch</i></li>
+									<li><i>Bisecting KMeans</i></li>
+								</ol>
+
+							 Les mod&egrave;les <i>Spectral Clustering</i> et <i>Agglomerative Clustering</i> avaient &eacute;galement &eacute;t&eacute; envisag&eacute;s, mais se sont av&eacute;r&eacute;s inadapt&eacute;s pour un tel volume de donn&eacute;es.
+							 <br>
+							 <br>
+							 <b>Crit&egrave;res de comparaison des mod&egrave;les : </b>
+							 <ol>
+								 <li>Score de silhouette.</li>
+								 <li>Score de Davies Bouldin.</li>
+								 <li>Score de Calinski Harabasz.</li>
+								 <li>Distances interclusters.</li>
+								 <li>R&eacute;partition des clients dans les clusters.</li>
+								 <li>Nombre de clusters.</li>
+							 </ol>
+
+							 La r&eacute;partition des clients dans les clusters, crit&egrave;re orient&eacute; m&eacute;tier, est important. Le but de cette segmentation est de fournir des groupes actionnables, notamment par un service marketing.
+							 Le nombre de clients dans chaque groupe doit donc &ecirc;tre suffisant pour justifier les ressources n&eacute;cessaires &agrave; la cr&eacute;ation d'un support de communication d&eacute;di&eacute;.
+							 Pour les m&ecirc;mes raisons, le nombre de clusters doit &ecirc;tre raisonnable.
+							 <br>
+							 <br>
+							 <b>Repr&eacute;sentation des clusters : </b>
+							 <ol>
+								 <li>Projection sur t-SNE.</li>
+								 <li>Graphiques en barres.</li>
+								 <li>Diagrammes.</li>
+							 </ol>
+
+							 Il y a forc&eacute;ment de la perte d'information lorsque nous r&eacute;alisons une projection sur t-SNE, puisqu'il y a une r&eacute;duction de dimension.
+							 N&eacute;anmoins, cette visualisation peut nous donner une impression g&eacute;n&eacute;rale quant &agrave; la qualit&eacute; de la segmentation.
+							 <br>
+							 <br>
+							 <b>Features retenues pour nos segmentations : </b><br>
+							 Pour que nos clusters soient plus facilement interpr&eacute;tables et la segmentation de bonne qualit&eacute;, nous allons pour l'instant limiter le nombre de features utilis&eacute;es.
+							 <ol>
+								<li><i>orders_number</i></li>
+								<li><i>recency</i></li>
+								<li><i>frequency</i></li>
+								<li><i>total_spent</i></li>
+								<li><i>avg_delivery_time</i></li>
+								<li><i>avg_review_score</i></li>
+							 </ol>
+
+							</p>
+
+							<h1>1. KMeans</h1>
+
+							<p>
+							Pour ce mod&egrave;le, il est n&eacute;cessaire de d&eacute;finir un nombre de clusters, il va donc falloir d&eacute;terminer le nombre apportant les meilleurs r&eacute;sultats.
+							<br><br>
+							Pour ce mod&egrave;le et les suivants, les r&eacute;sultats pr&eacute;sent&eacute;s sont les meilleurs obtenus apr&egrave;s tuning des hyperparam&egrave;tres.
+							</p>
+
+							<p align="center">
+								<b>Choix du nombre de clusters</b><br>
+									<img src="images/03-segmenter-des-clients/12-kmeans-nb-clusters.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>7 semble &ecirc;tre un bon choix pour le nombre de clusters.</i>
+							</p>
+							<p align="center">
+								<b>Projection sur t-SNE</b><br>
+									<img src="images/03-segmenter-des-clients/13-kmeans-tsne.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Nous voyons appara&icirc;tre des groupes assez distincts.</i>
+							</p>
+							<p align="center">
+								<b>R&eacute;partition des clients dans les diff&eacute;rents groupes</b><br>
+									<img src="images/03-segmenter-des-clients/14-kmeans-repartition.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>La r&eacute;partition est int&eacute;ressante.</i>
+							</p>
+							<p align="center">
+								<b>Silhouettes des diff&eacute;rents groupes</b><br>
+									<img src="images/03-segmenter-des-clients/15-kmeans-silhoutette.jpg" alt="" style="max-width: 100%; height: auto;" />
+							</p>
+							<p align="center">
+								<b>Distances interclusters</b><br>
+									<img src="images/03-segmenter-des-clients/16-kmeans-distance.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Attention : il s'agit ici d'une projection, des clusters apparaissant superpos&eacute;s pourraient ne pas l'&ecirc;tre dans la r&eacute;alit&eacute;.
+										<br>En revanche, nous pouvons affirmer que ceux qui n'apparaissent pas superpos&eacute;s ne le sont effectivement pas.</i>
+							</p>
+
+							<h1>2. DBSCAN</h1>
+
+							<p>
+								Pour ce mod&egrave;le, il n'est pas possible de d&eacute;finir un nombre de clusters &agrave; l'avance.
+							</p>
+							<p align="center">
+								<b>Projection sur t-SNE</b><br>
+									<img src="images/03-segmenter-des-clients/17-dbscan-tsne.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Nous voyons clairement que le clustering n'est pas satisfaisant.</i>
+							</p>
+							<p align="center">
+								<b>R&eacute;partition des clients dans les diff&eacute;rents groupes</b><br>
+									<img src="images/03-segmenter-des-clients/18-dbscan-repartition.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>La r&eacute;partition n'est pas exploitable en l'&eacute;tat.</i>
+							</p>
+							<p>
+								Ce mod&egrave;le n'apporte clairement pas les r&eacute;sultats attendus pour notre probl&eacute;matique, pas la peine d'aller plus loin dans les mesures.
+							</p>
+
+							<h1>3. Birch</h1>
+
+							<p>
+							Pour ce mod&egrave;le non plus, il n'est pas possible de d&eacute;finir un nombre de clusters &agrave; l'avance.
+							<br>
+							<br>
+							Par ailleurs, un plus grand nombre de features a &eacute;t&eacute; utilis&eacute; avec Birch :
+							<ol>
+								<li><i>orders_number</i></li>
+								<li><i>first_purchase_date</i></li>
+								<li><i>last_purchase_date</i></li>
+								<li><i>recency</i></li>
+								<li><i>frequency</i></li>
+								<li><i>avg_spent</i></li>
+								<li><i>total_spent</i></li>
+								<li><i>preferred_payment_type</i></li>
+								<li><i>avg_payment_installments</i></li>
+								<li><i>avg_customer_seller_distance_km</i></li>
+								<li><i>avg_delivery_time</i></li>
+								<li><i>avg_review_score</i></li>
+							 </ol>
+
+							 Une ACP a ensuite &eacute;t&eacute; r&eacute;alis&eacute;e, pour ne garder que 8 composantes.
+							</p>
+							<p align="center">
+								<b>Projection sur t-SNE</b><br>
+									<img src="images/03-segmenter-des-clients/19-birch-tsne.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>La segmentation appara&icirc;t moins nette qu'avec KMEANS.</i>
+							</p>
+							<p align="center">
+								<b>R&eacute;partition des clients dans les diff&eacute;rents groupes</b><br>
+									<img src="images/03-segmenter-des-clients/20-birch-repartition.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>La r&eacute;partition est moins int&eacute;ressante qu'avec KMEANS.</i>
+							</p>
+
+							<h1>4. Bisecting KMeans</h1>
+							<p>
+								Pour ce mod&egrave;le, une variante de KMEANS, il est aussi n&eacute;cessaire de d&eacute;finir un nombre de clusters, il va donc falloir d&eacute;terminer le nombre apportant les meilleurs r&eacute;sultats.
+							</p>
+							<p align="center">
+								<b>Choix du nombre de clusters</b><br>
+									<img src="images/03-segmenter-des-clients/21-bkmeans-nb-clusters.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>5 semble &ecirc;tre un bon choix pour le nombre de clusters.</i>
+							</p>
+							<p align="center">
+								<b>Projection sur t-SNE</b><br>
+									<img src="images/03-segmenter-des-clients/22-bkmeans-tsne.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Nous voyons appara&icirc;tre des groupes bien distincts.</i>
+							</p>
+							<p align="center">
+								<b>R&eacute;partition des clients dans les diff&eacute;rents groupes</b><br>
+									<img src="images/03-segmenter-des-clients/23-bkmeans-repartition.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>La r&eacute;partition est int&eacute;ressante.</i>
+							</p>
+							<p align="center">
+								<b>Silhouettes des diff&eacute;rents groupes</b><br>
+									<img src="images/03-segmenter-des-clients/24-bkmeans-silhouette.jpg" alt="" style="max-width: 100%; height: auto;" />
+							</p>
+							<p align="center">
+								<b>Distances interclusters</b><br>
+									<img src="images/03-segmenter-des-clients/25-bkmeans-distance.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Il semble y avoir moins de superpositions qu'avec KMEANS.<br>
+										Pour rappel, il s'agit d'une projection sur deux composantes.
+									</i>
+							</p>
+
+							<h1>Choix du mod&egrave;le</h1>
+
+							<p align="center">
+								<b>Bilan des m&eacute;triques classiques</b><br>
+									<img src="images/03-segmenter-des-clients/26-bilan-metriques.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Bisecting KMeans a les meilleurs r&eacute;sultats sur les scores de silhouette et de Davies Bouldin, le deuxi&egrave;me meilleur pour celui de Calinski Harabasz.</i>
+							</p>
+							<p>
+								Compte tenu des r&eacute;sultats r&eacute;capitul&eacute;s dans ce tableau, ainsi que nos autres crit&egrave;res que sont les <i>distances interclusters</i>
+								et les crit&egrave;res m&eacute;tier <i>r&eacute;partition des clients</i> et <i>nombre de clusters</i>, le mod&egrave;le que je retiens est <b><i>Bisecting KMeans</i></b>.
+
+							</p>
+
+							<h1>Stabilit&eacute; &agrave; l'initialisation</h1>
+
+							<p>
+								Les r&eacute;sultats obtenus avec <i>Bisecting KMeans</i> sont-ils stables lors de diff&eacute;rentes ex&eacute;cutions du mod&egrave;le ?
+								Pour l'&eacute;valuer, un premier run sera r&eacute;alis&eacute; en fixant le <i>Random State</i>, puis de multiples run seront lanc&eacute;s sans fixer ce param&egrave;tre.
+								Ensuite, la similarit&eacute; entre les clusters obtenus lors du run initial et les run suivants sera d&eacute;termin&eacute;e avec le score ARI (Adjusted Rand Index).
+							</p>
+							<p align="center">
+								<b>Proc&eacute;dure d'&eacute;valuation de la stabilit&eacute;</b><br>
+									<img src="images/03-segmenter-des-clients/27-bkmeans-stabilite.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Seuls les r&eacute;sultats des 10 premi&egrave;res it&eacute;rations sont pr&eacute;sent&eacute;es ici.</i>
+							</p>
+							<p>
+								Nous constation que <b>la stabilit&eacute; &agrave; l'initialisation est bonne</b>, puisque le score ARI ne descend pas en dessous de 0,8.
+							</p>
+
+							<h1>Interpr&eacute;tations et recommandations</h1>
+
+							<p>
+								Observons les valeurs de nos variables en fonction des groupes de client obtenus.
+							</p>
+							<p align="center">
+									<img src="images/03-segmenter-des-clients/28-bkmeans-var-1.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<img src="images/03-segmenter-des-clients/29-bkmeans-var-2.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Seuls les r&eacute;sultats des 10 premi&egrave;res it&eacute;rations sont pr&eacute;sent&eacute;s ici.</i>
+							</p>
+							<p>
+								Ces r&eacute;sultats nous permettent de comprendre les types d'utilisateurs des diff&eacute;rents groupes et de proposer des recommandations d'actions appropri&eacute;es.
+							</p>
+							<p align="center">
+								<b>Type de clients et recommandations</b><br>
+									<img src="images/03-segmenter-des-clients/30-bkmeans-reco.jpg" alt="" style="max-width: 100%; height: auto;" />
+							</p>
+
+							<h1>Fr&eacute;quence de mise &agrave; jour</h1>
+
+							<p>
+								Pour &eacute;valuer &agrave; quelle fr&eacute;quence il faut mettre &agrave; jour le mod&egrave;le, un premier clustering va &ecirc;tre r&eacute;alis&eacute; sur une portion de notre dataset qui correspondra &agrave; une p&eacute;riode initiale.
+								Nous pouvons faire ceci, puisque nous disposons des dates des commandes.
+								<br><br>
+								Puis, nous r&eacute;aliserons ensuite des clustering successifs en ajoutant &agrave; chaque fois une tranche de temps suppl&eacute;mentaire &agrave; la p&eacute;riode initiale.
+								Il ne nous restera alors qu'&agrave; comparer les clusters de la p&eacute;riode initiale avec ceux obtenus lors des diff&eacute;rentes it&eacute;rations &agrave; l'aide du score ARI.
+							</p>
+							<p align="center">
+								<b>Stabilit&eacute; du clustering dans le temps</b><br>
+									<img src="images/03-segmenter-des-clients/31-bkmeans-stabilite.jpg" alt="" style="max-width: 100%; height: auto;" />
+									<br><i>Le score ARI diminue assez rapidement dans le temps.</i>
+							</p>
+							<p>
+								On constate qu'il sera n&eacute;cessaire de mettre &agrave; jour r&eacute;guli&egrave;rement le mod&egrave;le (r&eacute;entra&icirc;nement) pour qu'il conserve un maximum de pertinence.
+								<br><br>
+								Ceci ne posera pas de probl&egrave;me car la dur&eacute;e d'entra&icirc;nement pour <i>Bisecting KMeans</i> dure moins d'une seconde.
+								Et il serait de toute fa&ccedil;on assez dommage de ne pas int&eacute;grer les potentiels nouveaux clients dans nos clusters avant le lancement des campagnes marketing.
+							</p>
+
+							<h1>Conclusion</h1>
+
+							<p>
+								<b>Nous avons atteint les objectifs que nous nous &eacute;tions fix&eacute;s, &agrave; savoir : </b>
+								<ul>
+									<li>Proc&eacute;der &agrave; une segmentation des clients.</li>
+									<li>Comprendre les types d'utilisateurs des diff&eacute;rents groupes.</li>
+									<li>Fournir une description actionnable pour ces groupes.</li>
+									<li>&Eacute;valuer la stabilit&eacute; dans le temps pour d&eacute;terminer les d&eacute;lais de maintenance.</li>
+								</ul>
+							</p>
+
+							<h1>Perspectives</h1>
+
+							<p>
+								<b>&Agrave; l'issue de ce premier travail, nous pouvons envisager les perspectives suivantes : </b>
+								<ul>
+									<li>Tester d'autres algorithmes de clustering.</li>
+									<li>Faire des clusterings sur la base d'autres features.</li>
+									<li>Obtenir plus de donn&eacute;es sur les clients.</li>
+									<li>Consid&eacute;rer d'autres m&eacute;thodes pour partitionner les clients.</li>
+								</ul>
+
+							Ce dernier point est tr&egrave;s important. Le but de ce projet &eacute;tait de me familiariser avec diff&eacute;rentes m&eacute;thodes de clustering bas&eacute;es sur le machine learning.
+							Mais dans un contexte m&eacute;tier, il est indispensable, avant de mettre en place un tel syst&egrave;me qui peut s'av&eacute;rer complexe, d'&eacute;valuer si d'autres m&eacute;thodes de clustering plus simples peuvent &ecirc;tre utilis&eacute;es.
+							<br><br>
+							Ici, les features choisies nous rappellent la segmentation classique <a href="https://octolis.com/fr/blog/segmentation-rfm" target="_blank">RFM</a>.
+							Obtenir une telle segmentation ne n&eacute;cessite pas d'algorithmes de machine learning. Gardons en t&ecirc;te que plus le nombre de features utilis&eacute;es pour la segmentation sera important,
+							plus il sera complexe d'interpr&eacute;ter les groupes obtenus.
+							<br><br>
+							Si le manque d'interpr&eacute;tabilit&eacute; ne pose pas forc&eacute;ment de probl&egrave;me lors de la cr&eacute;ation d'un moteur de recommandations par exemple,
+							cela sera plus probl&eacute;matique si un service marketing est cens&eacute; mettre en place des supports de communication sp&eacute;cifiques aux groupes obtenus.
+							</p>
+
+							
+							<p>
+								<blockquote>
+									<img src="images/info.png" width="35" height="35"/>
+									<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+								</blockquote>
+							</p>
+
 						</div>
 					</div>
 
