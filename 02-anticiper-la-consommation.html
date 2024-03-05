@@ -205,7 +205,7 @@
 								<b>Processus de test des mod&egrave;les : </b><br>
 								&mdash;&nbsp;&nbsp;Nous testerons nos mod&egrave;les avec et sans la variable <i>ENERGY STAR Score</i>.<br>
 								&mdash;&nbsp;&nbsp;S&eacute;lection des autres features structurelles en fonction des mod&egrave;les test&eacute;s.<br>
-								&mdash;&nbsp;&nbsp;S&eacute;paration des features et des variables cilbes.<br>
+								&mdash;&nbsp;&nbsp;S&eacute;paration des features et des variables cibles.<br>
 								&mdash;&nbsp;&nbsp;Scaling des valeurs num&eacute;riques et encodage des valeurs cat&eacute;gorielles.<br>
 								&mdash;&nbsp;&nbsp;S&eacute;paration des donn&eacute;es en train/test.<br>
 								&mdash;&nbsp;&nbsp;Premier test des mod&egrave;les avec les hyperparam&egrave;tres par d&eacute;faut.<br>
@@ -256,19 +256,19 @@
 
 								<p>
 									Malgr&eacute; des temps de calculs plus longs (qui pourraient &ecirc;tre acc&eacute;l&eacute;r&eacute;s avec une carte graphique),
-									le mod&egrave;le TensorFlow fournit les meilleurs r&eacute;sultats en terme de scores R² et de polyvalence.
+									le mod&egrave;le TensorFlow fournit les meilleurs r&eacute;sultats en termes de scores R² et de polyvalence.
 									C'est donc ce mod&egrave;le que nous retiendrons pour nos pr&eacute;dictions finales.
 
 								</p>
 
 								<p align="center">
-									<b>Scores R² pour les pr&eacute;diction sur test avec Keras</b><br><br>
+									<b>Scores R² pour les pr&eacute;dictions sur test avec Keras</b><br><br>
 									<img src="images/02-anticiper-la-consommation/14-r2-tensorflow.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
 									<i>Utiliser la variable ENERGYSTARScore r&eacute;duit le score pour la consommation et augmenter celui pour les &eacute;missions.</i>
 								</p>
 
 								<p align="center">
-									<b>RMSE/MAE pour les pr&eacute;diction sur test avec Keras</b><br><br>
+									<b>RMSE/MAE pour les pr&eacute;dictions sur test avec Keras</b><br><br>
 									<img src="images/02-anticiper-la-consommation/15-rmse-mae-tensorflow.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
 									<i>Utiliser la variable ENERGYSTARScore augmente la RMSE pour la consommation, r&eacute;duit la RMSE et la MAE pour les &eacute;missions.</i>
 								</p>
@@ -278,14 +278,14 @@
 								<h1>Importances des features</h1>
 
 								<p align="center">
-									<b>Importances globales des features repr&eacute;sent&eacute;es avec <i>KernelExplainer()</i> de la bilioth&egrave;qe <a href="https://github.com/shap/shap" target="_blank"><i>SHAP</i></a></b><br><br>
+									<b>Importances globales des features repr&eacute;sent&eacute;es avec <i>KernelExplainer()</i> de la bilioth&egrave;que <a href="https://github.com/shap/shap" target="_blank"><i>SHAP</i></a></b><br><br>
 									<img src="images/02-anticiper-la-consommation/16-shap.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
 									<i>On retrouve souvent certaines variables dans les plus importantes : PropertyGFABuilding(s), gas_prop, elec_prop et ENERGYSTARScore (si utilis&eacute;e).</i>
 
 								</p>
 
 								<p align="center">
-									<b>Importances locales des features repr&eacute;sent&eacute;es avec la bilioth&egrave;qe <a href="https://github.com/marcotcr/lime" target="_blank">LIME</a></b><br><br>
+									<b>Importances locales des features repr&eacute;sent&eacute;es avec la bilioth&egrave;que <a href="https://github.com/marcotcr/lime" target="_blank">LIME</a></b><br><br>
 									<img src="images/02-anticiper-la-consommation/17-lime.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
 									<i>Exemple avec deux instances pour les &eacute;missions de CO2 avec ENERGYSTARScore</i>
 								</p>
