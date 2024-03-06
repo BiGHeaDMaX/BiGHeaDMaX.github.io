@@ -48,7 +48,7 @@
 						<li><a href="03-segmenter-des-clients.html">Segmenter des clients d'un site e-commerce</a></li>
 						<li><a href="04-suggestion-mots-cles.html">Suggestion automatique de mots-cl&eacute;s</a></li>
 						<li><a href="05-classer-des-images.html">Classer des images &agrave; l'aide d'algorithmes de Deep Learning</a></li>
-						<li><a href="06-extraction-mots-cles.html">Nouvelles méthodes d'extraction de mots-cl&eacute;s</a></li>
+						<li><a href="06-extraction-mots-cles.html">Nouvelles m&eacute;thodes d'extraction de mots-cl&eacute;s</a></li>
 						<li><a href="07-traitement-aws-spark.html">R&eacute;aliser un traitement Big Data avec Spark</a></li>
 						<li><a href="08-cadrage-ia.html">R&eacute;aliser le cadrage d'un projet IA</a></li>
 					</ul>
@@ -57,11 +57,445 @@
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
-							<!-- <h1>Suggestion automatique de mots-cl&eacute;s</h1> -->
 							<span class="image main"><img src="images/04-suggestion-mots-cles/04-suggestion-mots-cles-titre.png" alt="Suggestion automatique de mots-cl&eacute;s" /></span>
-							<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-							<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
+							
+							<h1>Introduction</h1>
+
+							<p>
+								Le but de ce projet est de concevoir un outil permettant de <b>sugg&eacute;rer des mots-cl&eacute;s</b> lors de la r&eacute;daction d'un message sur un forum.
+								Le travail sera bas&eacute; sur un dataset constitu&eacute; de 50 000 messages provenant du forum <b><a href="https://stackoverflow.com/" target="_blank">Stack Overflow</a></b>.
+								<br><br>
+								<b>Deux approches seront test&eacute;es :</b>
+								<ul>
+									<li>Approche <b>non supervis&eacute;e</b> avec <b>LDA</b> et <b>NMF</b>.</li>
+									<li>Approche <b>supervis&eacute;e</b> avec <b>embeddings</b> pr&eacute;alables.</li>
+
+								</ul>
+								Une fois le mod&egrave;le &eacute;labor&eacute;, une <b>API</b> sera cr&eacute;&eacute;e et mise en production sous forme de conteneur <b>Docker</b> sur <b>Azure</b>. Le d&eacute;ploiement sera continu via <b><a href="https://github.com/features/actions" target="_blank">GitHub Actions</a></b>.
+								<br><br>
+								Le projet a &eacute;t&eacute; r&eacute;alis&eacute; dans un cadre <b>MLOps</b> et la plateforme <b><a href="https://mlflow.org/" target="_blank">MLflow</a></b> a &eacute;t&eacute; utilis&eacute;e.
+								<br><br>
+								<b>Remarque : </b> j'ai &eacute;galement r&eacute;alis&eacute; un autre projet sur cette m&ecirc;me th&eacute;matique (suggestion de mots-cl&eacute;s) en testant deux nouvelles approches (<b><i><a href="https://maartengr.github.io/KeyBERT/api/keybert.html" target="_blank">KeyBERT</a></i></b> et le LLM <b><i><a href="https://mistral.ai/fr/" target="_blank">Mistral</a></i></b>),
+								plus de d&eacute;tails sur <b><a href="06-extraction-mots-cles.html">cette page</a></b>.
+								<br><br>
+								<b>Les objectifs du projet sont les suivants : </b>
+								<ul>
+									<li>&Eacute;laborer un mod&egrave;le pour pr&eacute;dire des tags.</li>
+									<li>Avoir une approche MLOps.</li>
+									<li>Cr&eacute;er une API.</li>
+									<li>D&eacute;ployer cette API de mani&egrave;re continue.</li>
+								</ul>
+								<b>Les &eacute;tapes suivantes seront r&eacute;alis&eacute;es : </b>
+								<ul>
+									<li>Obtention et pr&eacute;paration des donn&eacute;es.</li>
+									<li>Tests de diff&eacute;rentes approches pour notre probl&eacute;matique.</li>
+									<li>Cr&eacute;ation de l'API avec FastAPI.</li>
+									<li>D&eacute;ploiement continu de l'API sur Azure avec GitHub Actions.</li>
+								</ul>
+								
+							</p>
+
+
+
+
+							<p>
+								<blockquote>
+									<img src="images/info.png" width="35" height="35"/>
+									<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+								</blockquote>
+							</p>
+
+
+							<h1>Obtention et pr&eacute;paration des donn&eacute;es.</h1>
+
+							<p>
+								Il est possible de r&eacute;cup&eacute;rer des messages et les tags qui y sont associ&eacute;s sur Stack Overflow de deux mani&egrave;res. Regardons les avantages et les inconv&eacute;nients de ces deux m&eacute;thodes :
+							</p>
+
+							<p align="center">
+								<b>Utilisation de la biblioth&egrave;que StackAPI : </b><br><br>
+									<img src="images/04-suggestion-mots-cles/05-stack-api.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<b>Utilisation de la biblioth&egrave;que StackAPI : </b><br><br>
+									<img src="images/04-suggestion-mots-cles/06-stack-exchange.jpg" alt="" style="max-width: 100%; height: auto;" />	
+							</p>
+							<p>
+								Puisque nous n'avons pas besoin de r&eacute;cup&eacute;rer r&eacute;guli&egrave;rement des messages, la deuxi&egrave;me approche est la plus appropri&eacute;e.
+								Nous allons donc constituer notre dataset avec des messages pr&eacute;sentant les caract&eacute;ristiques suivantes : 
+							</p>
+							<p align="center">
+								<b>Messages r&eacute;cup&eacute;r&eacute;s</b><br><br>
+									<img src="images/04-suggestion-mots-cles/07-caract-messages.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								Le choix de ces caract&eacute;ristiques est important pour nous assurer de la bonne qualit&eacute; des messages qui seront utilis&eacute;s pour &eacute;laborer notre mod&egrave;le.
+								Aucune donn&eacute;e personnelle concernant les auteurs des messages n'est r&eacute;cup&eacute;r&eacute;e, afin d'&eacute;viter toute probl&eacute;matique li&eacute;e au RGPD.
+							<br><br>
+							La requ&ecirc;te SQL suivante a &eacute;t&eacute; utilis&eacute;e afin de r&eacute;cup&eacute;rer les 50 000 messages (et leur tags associ&eacute;s) de notre dataset : <br>
+							<pre><code>
+SELECT TOP(50000) posts.id,
+posts.creationdate,
+title,
+body,
+tags,
+users.reputation,
+-- R&eacute;putation moyenne des users avec les crit&egrave;res actuels
+				(SELECT Avg(reputation)
+					FROM   users) AS moyenne_reputation
+FROM   posts
+-- Jointure pour r&eacute;cup&eacute;rer la r&eacute;putation des users
+		JOIN users
+		ON posts.owneruserid = users.id
+WHERE  posts.creationdate BETWEEN CONVERT(DATETIME, '2022-01-01') AND
+										CONVERT(DATETIME, '2023-12-31')
+		AND posts.score > 0 -- Questions avec un score positif
+		AND posts.answercount > 0 -- Au moins une r&eacute;ponse
+		AND posts.commentcount > 0 -- Au moins un commentaire
+		AND users.reputation >= 91 -- Soit la r&eacute;putation moyenne sur cette p&eacute;riode avec ces crit&egrave;res
+							</code></pre>
+
+							Une fois les donn&eacute;es brutes r&eacute;cup&eacute;r&eacute;es, nous allons les pr&eacute;parer.
+
+							</p>
+
+							<p align="center">
+								<b>Premier traitement</b><br><br>
+									<img src="images/04-suggestion-mots-cles/08-premier-traitement.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Combiner les titres avec les corps des messages, puis suppression des balises HTML et des portions de code.</i>
+									<br><br>
+									<b>Tailles des documents (caract&egrave;res)</b><br><br>
+									<img src="images/04-suggestion-mots-cles/09-tailles-documents.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<br><br>
+									<b>Nombre de tags associ&eacute;s aux documents</b><br><br>
+									<img src="images/04-suggestion-mots-cles/10-nb-tags.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+
+
+							<p>
+
+								<b>Ce premier traitement r&eacute;alis&eacute;, nous allons effectuer deux autres traitements : </b>
+								<ul>
+									<li>Un traitement minimal : tokenisation, passage en minuscule et suppression de la ponctuation.</li>
+									<li>Un traitement complet visant &agrave; simplifier au maximum les messages et r&eacute;duire la taille du vocabulaire.</li>
+								</ul>
+
+								Concernant les tags associ&eacute;s aux messages, ils ont &eacute;t&eacute; uniformis&eacute;s et seuls les 200 plus fr&eacute;quents ont &eacute;t&eacute; conserv&eacute;s.<br>
+								Nous conservons &eacute;galement les dates des messages, elles nous seront utiles plus tard pour &eacute;valuer le model drift.
+
+							</p>
+
+							<p align="center">
+								<b>R&eacute;capitulatif des traitements r&eacute;alis&eacute;s</b><br><br>
+									<img src="images/04-suggestion-mots-cles/11-recap-traitements.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<br><br>
+								<b>Word cloud des documents avant les traitements</b><br><br>
+								<img src="images/04-suggestion-mots-cles/13-word-cloud-avant.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+								<br><br>
+								<b>Word cloud des documents apr&egrave;s traitements complets</b><br><br>
+								<img src="images/04-suggestion-mots-cles/14-word-cloud-apres.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+								<br><br>		
+							</p>
+
+							<p>
+								Nos donn&eacute;es sont d&eacute;sormais pr&ecirc;tes, nous allons pouvoir passer &agrave; notre premi&egrave;re approche.
+							</p>
+
+							<h1>Approche non supervis&eacute;e</h1>
+
+							<p>
+								Pour cette premi&egrave;re approche non supervis&eacute;e, nous allons tester deux mod&egrave;les :
+								<ul>
+									<li><b>LDA</b> : <i>Latent Dirichlet Allocation</i>.</li>
+									<li><b>NMF</b> : <i>Non-negative matrix factorization</i>.</li>
+								</ul>
+
+								Bien entendu, il nous faut au pr&eacute;alable encoder notre texte avant de les passer dans nos mod&egrave;les.
+								Pour cette approche non supervis&eacute;e, nous nous baserons sur les documents avec traitements complets.
+
+							</p>
+
+							<p align="center">
+								<b>Deux types de repr&eacute;sentations des mots seront test&eacute;s</b><br><br>
+									<img src="images/04-suggestion-mots-cles/12-encodage-non-sup.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>TF-IDF prend en consid&eacute;ration la fr&eacute;quence des mots.</i>
+							</p>
+
+							<p>
+							Les mod&egrave;les <b>LDA</b> et <b>NMF</b> commencent par parcourir le corpus (l'ensemble des documents) et g&eacute;n&egrave;rent des sujets. Chaque sujet peut ensuite &ecirc;tre associ&eacute; &agrave; chacun des documents.
+							Ces sujets sont une suite de mots class&eacute;s par ordre d'importance par rapport au sujet donn&eacute;. <b>Notons que les mots constituant les sujets proviennent tous du corpus de documents</b>. &Agrave; partir de l&agrave;, pour g&eacute;n&eacute;rer des mots-cl&eacute;s pour chaque documents, deux approches sont possibles :
+							<ul>
+								<li><b>Approche 1</b> : conserver les premiers mots du sujet, par exemple les 5 premiers.</li>
+								<li><b>Approche 2</b> : prendre une plage de mot plus &eacute;tendue du sujet, par exemple 50, et ne conserver que ceux qui apparaissent aussi dans le document.</li>
+							</ul>
+
+							Nous pourrons alors &eacute;valuer la qualit&eacute; des tags pr&eacute;dits en les comparant avec les tags r&eacute;els associ&eacute;s aux documents (ceux qui ont &eacute;t&eacute; indiqu&eacute;s par les auteurs des messages).							
+							Pour cela, il nous faut mettre en place des m&eacute;triques pour pouvoir comparer nos diff&eacute;rentes approches. Nous avons la possibilit&eacute; d'utiliser des m&eacute;triques classsiques et/ou des m&eacute;triques orient&eacute;es m&eacute;tier.
+							</p>
+
+							<p align="center">
+								<b>Ensemble des m&eacute;triques que nous pouvons utiliser</b><br><br>
+									<img src="images/04-suggestion-mots-cles/15-metriques.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Le score de coh&eacute;rence est utilis&eacute; en amont, pour nous aider &agrave; d&eacute;finir un nombre optimal de sujets &agrave; g&eacute;n&eacute;rer avec LDA et NMF.</i>
+							</p>
+
+							<p>
+								Pour ce projet, le but n'est pas de trouver exactement tous les mots-cl&eacute;s et aucun autre, mais simplement d'en proposer qui seraient pertinents pour le message.
+								<b>Nous allons nous concentrer ici sur les m&eacute;triques m&eacute;tier.</b>
+							</p>
+
+							<h1>R&eacute;sultats de l'approche non supervis&eacute;e</h1>
+
+							<p>
+								Rappelons qu'avec notre approche non supervis&eacute;e, tous les mots-cl&eacute;s propos&eacute;s proviennent des sujets g&eacute;n&eacute;r&eacute;s par LDA ou NMF,
+								autrement dit qu'il s'agit de <b>mots pr&eacute;sents dans le corpus de documents</b>. Les tags r&eacute;els, apr&egrave;s traitements (uniformisation et conservation des 200 les plus fr&eacute;quents uniquement),
+								nous permettent d'&eacute;valuer les r&eacute;sultats. Or, la <b>proportion de documents o&ugrave; au moins un tag r&eacute;el associ&eacute; est pr&eacute;sent dans son texte est de 35 %</b>. Cette valeur constitue donc la <b>limite th&eacute;orique
+								atteignable</b> par la m&eacute;trique <i>&laquo; Au moins un tag r&eacute;el trouv&eacute; &raquo;</i> dans le cadre de notre approche non supervis&eacute;e. Cette nuance nous permettra de mieux &eacute;valuer la synth&egrave;se des r&eacute;sultats.
+							</p>
+							<p align="center">
+								<b>Synth&egrave;se des r&eacute;sultats avec l'approche non supervis&eacute;e</b><br><br>
+									<img src="images/04-suggestion-mots-cles/16-synthese-non-supervise.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Les meilleurs r&eacute;sultats sont obtenus avec le mod&egrave;le NMF et l'approche n°2 (mots communs entre le sujet et le texte du document).</i>
+							</p>
+							<p>
+								<b>Conclusion de l'approche non supervis&eacute;e : </b><br>
+								Certes les r&eacute;sultats sont meilleurs que si des mots avaient &eacute;t&eacute; al&eacute;atoirement attribu&eacute;s aux documents,
+								mais ces r&eacute;sultats sont tout &agrave; fait insuffisants pour notre id&eacute;e d'application de suggestion de mots-cl&eacute;s.
+							</p>
+
+							<h1>Approche supervis&eacute;e</h1>
+
+							<p>
+								Pour l'approche supervis&eacute;e, nous allons introduire des m&eacute;thodes de vectorisation suppl&eacute;mentaires : des embeddings.
+								<ul>
+									<li>Word2Vec, impl&eacute;ment&eacute; dans la biblioth&egrave;que <a href="https://radimrehurek.com/gensim/auto_examples/tutorials/run_word2vec.html#sphx-glr-auto-examples-tutorials-run-word2vec-py" target="_blank">Gensim</a>.</li>
+									<li>BERT (Bidirectional Encoder Representations from Transformers), dans sa version en provenance de <a href="https://huggingface.co/docs/transformers/model_doc/bert" target="_blank">HuggingFace</a>.</li>
+									<li>USE, en provenance du hub de <a href="https://tfhub.dev/google/universal-sentence-encoder/4" target="_blank">TensorFlow</a> (d&eacute;sormais sur kaggle).</li>
+								</ul>
+
+								Que cela soit avec les vectorisations en <i>Bag Of Words</i> et <i>TF-IDF</i>, d&eacute;j&agrave; utilis&eacute;es pour l'approche non supervis&eacute;e, ou ces m&eacute;thodes d'embedding, la dimensionalit&eacute; des vecteurs retourn&eacute;s
+								est tr&egrave;s &eacute;lev&eacute;e, ce qui pourrait nuire aux performances de nos mod&egrave;les supervis&eacute;s. Pour pallier ceci, une version &agrave; dimension r&eacute;duite par ACP de ces vectorisations sera cr&eacute;&eacute;e
+								(sauf pour les vecteurs issus de <i>Word2Vec</i> qui ne sont que de dimension 100).
+								<br><br>
+								Les embeddings produits par <i>BERT</i> et <i>USE</i> le seront &agrave; partir des documents avec traitement minimal.
+							</p>
+							<p align="center">
+								<b>R&eacute;capitulatif des vectorisations cr&eacute;&eacute;es pour l'approche supervis&eacute;e</b><br><br>
+									<img src="images/04-suggestion-mots-cles/17-recap-vectorisations-sup.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Soit au total 9 vectorisations diff&eacute;rentes qui seront test&eacute;es.</i>
+							</p>
+							<p>
+								<b>Mod&egrave;les test&eacute;s :</b>
+								<ul>
+									<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html" target="_blank">KNeighborsClassifier</a></li>
+									<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html" target="_blank">LinearSVC</a>, combin&eacute; &agrave; <a href="https://scikit-learn.org/stable/modules/generated/sklearn.multiclass.OneVsRestClassifier.html" target="_blank">OneVsRestClassifier</a></li>
+									<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html" target="_blank">RandomForestClassifier</a></li>
+									<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html" target="_blank">LogisticRegression</a>, combin&eacute; &agrave; <a href="https://scikit-learn.org/stable/modules/generated/sklearn.multiclass.OneVsRestClassifier.html" target="_blank">OneVsRestClassifier</a></li>
+									<li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html" target="_blank">MLPClassifier</a></li>
+								</ul>
+								Comme pr&eacute;c&eacute;demment, la priorit&eacute; sera donn&eacute;e aux m&eacute;triques m&eacute;tier, que nous pouvons rappeler ici :
+							</p>
+							<p align="center">
+									<img src="images/04-suggestion-mots-cles/18-metriques-metier.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								Une importance particuli&egrave;re sera donn&eacute;e &agrave; la derni&egrave;re m&eacute;trique, &agrave; savoir la capacit&eacute; &agrave; fournir ou non une pr&eacute;diction de mani&egrave;re syst&eacute;matique : nous voulons une application qui propose toujours des mots-cl&eacute;s.
+								<br><br>
+								Contrairement &agrave; la pr&eacute;c&eacute;dente approche non supervis&eacute;e, les <b>mots-cl&eacute;s g&eacute;n&eacute;r&eacute;s</b> ici le seront <b>parmi les tags r&eacute;els</b>, apr&egrave;s traitements (uniformisation et conservation des 200 les plus fr&eacute;quents).
+								Donc la pr&eacute;c&eacute;dente <b>limite de 35% pourra th&eacute;oriquement &ecirc;tre d&eacute;pass&eacute;e</b>.
+
+							</p>
+							<p>
+								<b>Quantit&eacute; de r&eacute;sultats : </b> <br>
+								Nous avons donc 9 types de vectorisations, 5 mod&egrave;les &agrave; tester et 11 m&eacute;triques au total (incluant aussi la dur&eacute;e d'entra&icirc;nement et de pr&eacute;diction), soit 495 valeurs &agrave; comparer, avant m&ecirc;me de proc&eacute;der au tuning des hyperparam&egrave;tres !
+								Pour nous y retrouver dans l'historique de nos exp&eacute;rimentations, l'utilisation d'une plateforme comme <a href="https://mlflow.org/" target="_blank">MLflow</a> sera indispensable.
+							</p>
+							<p align="center">
+								<b>Capture d'&eacute;cran de la plateforme MLflow</b><br><br>
+									<img src="images/04-suggestion-mots-cles/19-screen-mlflow.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Cette plateforme nous permet de facilement comparer les r&eacute;sultats d'un grand nombre d'exp&eacute;riences.</i>
+							</p>
+							<p>
+								Il serait fastidieux de pr&eacute;senter ici l'ensemble des r&eacute;sultats obtenus. Pour r&eacute;sumer, le choix du meilleur mod&egrave;le a &eacute;t&eacute; fait en <b>consid&eacute;rant toutes les m&eacute;triques</b>,
+								mais avec une plus grande <b>priorit&eacute; accord&eacute;e aux m&eacute;triques m&eacute;tier</b> et avec une <b>attention particuli&egrave;re port&eacute;e sur les m&eacute;triques <i>&laquo; Au moins un tag r&eacute;el trouv&eacute; &raquo;</i> et <i>&laquo; Absence de pr&eacute;diction &raquo;</i></b>.
+								<br><br>
+								Le mod&egrave;le retenu est <i>KNeighborsClassifier</i> associ&eacute; &agrave; une vectorisation produite par <i>USE</i> (Universal Sentence Encoder).
+							</p>
+							<p align="center">
+								<b>M&eacute;triques m&eacute;tier pour l'approche avec <i>KNeighborsClassifier</i> associ&eacute; &agrave; <i>USE</i></b><br><br>
+									<img src="images/04-suggestion-mots-cles/20-results-knnc-use.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>La limite des 35 % de l'approche non supervis&eacute;e est largement d&eacute;pass&eacute;e pour la m&eacute;trique &laquo; Au moins un tag r&eacute;el trouv&eacute; &raquo;.</i>
+							</p>
+							<p>
+								Ce mod&egrave;le a &eacute;galement l'avantage d'avoir des dur&eacute;es d'ex&eacute;cution tr&egrave;s courtes, tant pour l'entra&icirc;nement que les pr&eacute;dictions, qui se comptent en secondes sur l'ensemble du dataset.
+								Ceci est un avantage de taille dans le cas o&ugrave; le mod&egrave;le devrait &ecirc;tre r&eacute;entra&icirc;n&eacute; r&eacute;guli&egrave;rement.
+							</p>
+
+							<h1>Stabilit&eacute; dans le temps (Model Drift)</h1>
+							<p>
+								Nous allons mettre de c&ocirc;t&eacute; une p&eacute;riode initiale allant jusqu'au 2022-09-23 et nous entra&icirc;nerons notre mod&egrave;le dessus.
+								Pour les donn&eacute;es restantes, nous allons les diviser en 12 tranches temporelles. Puis nous ajouterons successivement ces tranches &agrave; la p&eacute;riode initiale en r&eacute;entra&icirc;nant le mod&egrave;le.
+								Puisque les quantit&eacute;s de donn&eacute;es sont tr&egrave;s in&eacute;gales en fonction des mois (certains mois n'ont aucune donn&eacute;e),
+								nous allons classer les donn&eacute;es restantes en fonction de la date et prendre un nombre de ligne &eacute;gal pour chaque tranche.
+							</p>
+
+							<p align="center">
+								<b>Stabilit&eacute; dans le temps du mod&egrave;le <i>KNeighborsClassifier</i> associ&eacute; &agrave; <i>USE</i></b><br><br>
+									<img src="images/04-suggestion-mots-cles/21-model-drift.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Les m&eacute;triques sont stables sur la p&eacute;riode test&eacute;e.</i>
+							</p>
+
+							<p>
+								Les m&eacute;triques pr&eacute;sentent peu de variations sur une p&eacute;riode de 1 an. Il serait int&eacute;ressant de tester sur une plus grosse p&eacute;riode de temps.
+								Dans tous les cas, le r&eacute;entra&icirc;nement du mod&egrave;le est rapide, une mise &agrave; jour annuelle serait peu contraignante.	
+							</p>
+
+							<h1>Le cadre MLOps</h1>
+							<p>
+								Comme &eacute;voqu&eacute; en introduction, je me suis contraint &agrave; suivre le cadre MLOps pour ce projet. MLOps est fortement inspir&eacute; du DevOps, largement utilis&eacute; dans le domaine du d&eacute;veloppement logiciel,
+								mais adapt&eacute; au machine learning.
+							</p>
+							<p align="center">
+								<b>Les grandes &eacute;tapes du MLOps</b><br><br>
+									<img src="images/04-suggestion-mots-cles/22-mlops.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Seule la partie entour&eacute;e de pointill&eacute;s a &eacute;t&eacute; couverte dans le cadre de ce projet.<br>
+									Sur la droite, les outils utilis&eacute;s pour r&eacute;pondre aux probl&eacute;matiques.</i>
+							</p>
+
+							<h1>D&eacute;ploiement continu</h1>
+
+							<p>
+							Une fois notre mod&egrave;le cr&eacute;&eacute;, il a &eacute;t&eacute; encapsul&eacute; dans une API r&eacute;alis&eacute;e avec <a href="https://fastapi.tiangolo.com/" target="_blank">FastAPI</a>.
+							Le code de l'API a &eacute;t&eacute; pouss&eacute; sur un d&eacute;p&ocirc;t distant GitHub. &Agrave; chaque <i>push</i> sur la branche <i>master</i>, un workflow GitHub Action est d&eacute;clench&eacute;.
+							<br><br>
+							Ce workflow d&eacute;bute par l'ex&eacute;cution de tests unitaires r&eacute;alis&eacute;s avec <a href="https://www.pytest.org/" target="_blank">Pytest</a>. Si ces derniers sont concluants, le workflow se poursuit
+							par la cr&eacute;ation d'une image Docker, le <i>push</i> de cette image vers un registre de conteneur Azure, puis le red&eacute;marrage de l'instance de conteneur qui ex&eacute;cute notre application.
+							<br><br>
+							Voici le code du workflow utilis&eacute; sur GitHub Actions :
+							</p>
+							<pre><code>
+# Workflow pour dockeriser l'application
+# et l'envoyer dans un registre de conteneur Azure
+# puis red&eacute;marrer l'instance de conteneur
+
+name: Tests, dockerisation et mise en production
+
+# Ce workflow se d&eacute;clanchera en cas de push
+# sur la branche master
+on:
+	push:
+	branches: [ "master" ]
+	# Fichiers dont le push ne d&eacute;clenchera pas le workflow
+	paths-ignore:
+		- 'readme.md'
+
+jobs:
+
+	tests_unitaires:
+	runs-on: ubuntu-latest
+	steps:
+		- name: Checkout repository
+		uses: actions/checkout@v4
+
+		- name: Set up de Python
+		uses: actions/setup-python@v4
+		with:
+			python-version: 3.11
+
+		- name: Installation des d&eacute;pendances
+		run: |
+			python -m pip install --upgrade pip
+			pip install -r ./app/requirements_test.txt
+
+		- name: Lancement des tests avec pytest
+		# Lancement de pytest et message d'erreur si un des tests n'est pas concluant
+		# Si un des tests n'est pas concluant, arr&ecirc;ter le workflow avec exit 1
+		run: |
+			pytest ./app/test_main.py || (echo "Le test n'est pas concluant, arr&ecirc;t du workflow." && exit 1)
+				
+	build_push_and_restart:
+	# Needs : ce job ne doit &ecirc;tre lanc&eacute; qu'&agrave; l'issue des tests unitaires
+	needs: tests_unitaires
+	runs-on: ubuntu-latest
+	steps:
+		- name: Checkout repository
+		uses: actions/checkout@v4
+		# Bien mettre lfs: true si on utilise Git large file storage
+		# sinon &ccedil;a va copier le pointeur au lieu du fichier
+		with:
+			lfs: true
+		# Toujours dans le cas o&ugrave; on utilise git lfs
+		- name: R&eacute;cup&eacute;ration du fichier sur Git LFS
+		run: git lfs pull
+		# Connexion au registre de conteneur
+		- name: Connexion au registre de conteneur
+		uses: azure/docker-login@v1
+		with:
+			login-server: applastregist.azurecr.io
+			username: ${{ secrets.REGISTRY_USERNAME }}
+			password: ${{ secrets.REGISTRY_PASSWORD }}
+		# Cr&eacute;ation du conteneur et push dans le registre
+		- name: Dock&eacute;risation et push dans le registre
+		run: |
+			docker build . -t applastregist.azurecr.io/myapp:monimage
+			docker push applastregist.azurecr.io/myapp:monimage
+		# Connexion &agrave; Azure pour pouvoir lancer la commande de red&eacute;marrage
+		- name: Connexion &agrave; Azure
+		uses: azure/login@v1
+		with:
+			creds: ${{ secrets.AZURE_CREDENTIALS }}
+		# Red&eacute;marrage de l'instance de conteneur
+		# pour prendre en compte la version nouvellement cr&eacute;e
+		- name: Red&eacute;marrage de l'instance de conteneur Azure
+		run: |
+			az container restart --resource-group stack-tags-predictor_group --name instance-auto-maj
+							</pre></code>
+
+							<p>
+								<b>Remarque : </b><br>
+								Bien penser &agrave; utiliser les <i>GitHub secrets</i> pour masquer les informations sensibles (comme les identifiants) contenues dans le workflow,
+								car le fichier YAML contenant ce code sera visible de tous si le d&eacute;p&ocirc;t GitHub est public !
+							</p>
+
+							<p align="center">
+								<b>R&eacute;capitulatif des actions r&eacute;alis&eacute;es au cours du workflow de d&eacute;ploiement continu</b><br><br>
+									<img src="images/04-suggestion-mots-cles/23-recap-cd.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>L'image Docker ex&eacute;cutant notre application constituera le point d'entr&eacute;e de l'API.</i>
+							</p>
+
+
+							<h1>Conclusion</h1>
+
+							<p>
+								<b>Nous avons atteint les objectifs que nous nous &eacute;tions fix&eacute;s, &agrave; savoir : </b>
+								<ul>
+									<li>&Eacute;laborer un mod&egrave;le pour pr&eacute;dire des tags.</li>
+									<li>Avoir une approche MLOps.</li>
+									<li>Cr&eacute;er une API.</li>
+									<li>D&eacute;ployer cette API de mani&egrave;re continue.</li>
+								</ul>
+							</p>
+
+							<h1>Perspectives</h1>
+
+							<p>
+								<b>&Agrave; l'issue de ce premier travail, nous pouvons envisager les perspectives suivantes : </b>
+								<ul>
+									<li>Tester d'autres mod&egrave;les.</li>
+									<li>S'entra&icirc;ner sur plus de donn&eacute;es.</li>
+									<li>Mettre en place les derni&egrave;res &eacute;tapes du MLOps, &agrave; savoir le monitoring et le r&eacute;entra&icirc;nement automatique.</li>
+								</ul>
+
+								<b>Remarque : </b> j'ai &eacute;galement r&eacute;alis&eacute; un autre projet sur cette m&ecirc;me th&eacute;matique (suggestion de mots-cl&eacute;s) en testant deux nouvelles approches (<b><i><a href="https://maartengr.github.io/KeyBERT/api/keybert.html" target="_blank">KeyBERT</a></i></b> et le LLM <b><i><a href="https://mistral.ai/fr/" target="_blank">Mistral</a></i></b>),
+								plus de d&eacute;tails sur <b><a href="06-extraction-mots-cles.html">cette page</a></b>.
+
+
+							<p>
+								<blockquote>
+									<img src="images/info.png" width="35" height="35"/>
+									<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+								</blockquote>
+							</p>
+
+
 						</div>
 					</div>
 
