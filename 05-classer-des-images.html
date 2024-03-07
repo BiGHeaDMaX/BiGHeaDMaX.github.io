@@ -48,7 +48,7 @@
 						<li><a href="03-segmenter-des-clients.html">Segmenter des clients d'un site e-commerce</a></li>
 						<li><a href="04-suggestion-mots-cles.html">Suggestion automatique de mots-cl&eacute;s</a></li>
 						<li><a href="05-classer-des-images.html">Classer des images &agrave; l'aide d'algorithmes de Deep Learning</a></li>
-						<li><a href="06-extraction-mots-cles.html">Nouvelles méthodes d'extraction de mots-cl&eacute;s</a></li>
+						<li><a href="06-extraction-mots-cles.html">Nouvelles m&eacute;thodes d'extraction de mots-cl&eacute;s</a></li>
 						<li><a href="07-traitement-aws-spark.html">R&eacute;aliser un traitement Big Data avec Spark</a></li>
 						<li><a href="08-cadrage-ia.html">R&eacute;aliser le cadrage d'un projet IA</a></li>
 					</ul>
@@ -57,11 +57,609 @@
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
-							<!-- <h1>Classer des images &agrave; gr&acirc;ce au Deep Learning</h1> -->
 							<span class="image main"><img src="images/05-classer-des-images/05-classer-des-images-titre.png" alt="Classer des images &agrave; gr&acirc;ce au Deep Learning" /></span>
-							<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-							<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
+
+							<h1>Introduction</h1>
+
+							<p>
+								Ce projet a pour but de cr&eacute;er une application qui permet de d&eacute;tecter la race d'un chien sur une photo.
+								Pour y parvenir, nous allons utiliser des algorithmes de deep learning.
+								<br><br>
+								Nous allons baser notre travail sur le <a href="http://vision.stanford.edu/aditya86/ImageNetDogs/" target="_blank">Stanford Dogs Dataset</a> qui contient plus de 20 000 photos de chiens
+								r&eacute;parties en 120 classes (races de chien). Ce dataset a &eacute;t&eacute; &eacute;labor&eacute; &agrave; partir de photos et leur annotation provenant d'<a href="https://www.image-net.org/" target="_blank">ImageNet</a>,
+								dont le contenu est utilisable gratuitement dans le cadre d'une utilisation non commerciale, ce qui est le cas ici.
+								<br><br>
+								Dans le cadre de ce projet, pour des raisons mat&eacute;rielles, nous n'utiliserons pas l'ensemble des classes du dataset. L'objectif est pour le moment de tester la faisabilit&eacute; de l'application.
+								<br><br>
+								<b>Les objectifs du projet sont les suivants : </b>
+								<ul>
+									<li>Rapidement explorer les donn&eacute;es et pr&eacute;traiter les images.</li>
+									<li>Entra&icirc;ner compl&egrave;tement un r&eacute;seau de neurones.</li>
+									<li>Entra&icirc;ner partiellement un r&eacute;seau de neurones en utilisant le <i>transfer learning</i>.</li>
+									<li>Cr&eacute;er une application de pr&eacute;diction.</li>
+								</ul>
+								<b>Les &eacute;tapes suivantes seront r&eacute;alis&eacute;es : </b><br><br>
+								<ul>
+									<li>Pr&eacute;paration des images.</li>
+									<li>Approche 1 : cr&eacute;ation et entra&icirc;nement d'un r&eacute;seau de neurones avec TensorFlow.</li>
+									<li>Approche 2 : test de la technique du <i>transfer learning</i> avec trois r&eacute;seaux pr&eacute;entra&icirc;n&eacute;s.</li>
+									<li>Cr&eacute;ation de l'application avec <a href="https://streamlit.io/" target="_blank">Streamlit</a>.</li>
+								</ul>
+
+							</p>
+
+
+							<p>
+								<blockquote>
+									<img src="images/info.png" width="35" height="35"/>
+									<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+								</blockquote>
+							</p>
+
+
+							<h1>Chargement et d&eacute;couverte du dataset</h1>
+						
+						<p>
+							<b>Chargement des images</b><br><br>
+							Les images de notre dataset sont r&eacute;parties dans des dossiers pour chaque classe, nous allons les parcourir
+							et charger les images avec la biblioth&egrave;que <a href="https://pypi.org/project/pillow/" target="_blank"><i>Pillow</i></a>.
+						</p>
+						<pre><code>
+import os  # Manipulations de fichiers
+import copy  # Utilis&eacute; pour importer un grand nombre de fichiers
+from PIL import Image  # Importation des images
+
+# R&eacute;cup&eacute;ration des noms des dossiers (qui repr&eacute;sentent les noms des labels)
+# [len(path):] pour ne r&eacute;cup&eacute;rer que les noms des dossiers, sans le chemin
+list_labels = [os.path.dirname(dossier)[len(path):] for dossier in data_path]
+
+# R&eacute;cup&eacute;ration des noms des fichiers pour la gestion des doublons 
+# et la sauvegarde &agrave; la fin de nos traitements
+file_names = [os.path.basename(dossier) for dossier in data_path]
+
+# Ouverture des images avec PIL.image
+# L'utilisation de copy.deepcopy() permet d'&eacute;viter les erreurs
+# lors de l'ouverture d'un grand nombre de fichiers avec Image.open()
+img_pil = [copy.deepcopy(Image.open(ligne)) for ligne in data_path]
+						</pre></code>
+
+							<p>
+								<br>Pour commencer, nous devons v&eacute;rifier si les classes de notre dataset ne sont pas trop d&eacute;s&eacute;quilibr&eacute;es.
+							</p>
+							<p align="center">
+								<b>Occurrences des classes</b><br><br>
+									<img src="images/05-classer-des-images/06-occurrences.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Pour plus de lisibilit&eacute;, seules 60 classes ont &eacute;t&eacute; repr&eacute;sent&eacute;es ici.</i>
+							</p>
+							<p>
+								Les classes ne sont pas trop d&eacute;s&eacute;quilibr&eacute;es, avec toujours plus de 100 individus par classe.
+								Le nombre d'images pour chaque classe n'&eacute;tant pas tr&egrave;s &eacute;lev&eacute;, nous pourrons envisager d'inclure une &eacute;tape de data augmentation lors de l'entra&icirc;nement de nos mod&egrave;les.
+								<br><br>
+								<b>Gestion des doublons : </b><br>
+									Des doublons sont pr&eacute;sents dans ce dataset : au sein de m&ecirc;mes classes, mais aussi entre certaines classes. Tout d'abord, ceci va <b>introduire un biais</b> au moment de passer les images dans nos mod&egrave;les,
+									surtout avec les doublons interclasse. De plus, la pr&eacute;sence de ces doublons peut cr&eacute;er des <b>erreurs au moment de la r&eacute;alisation des pr&eacute;traitements</b>, comme pour la ZCA Whitening. Ces doublons <b>doivent donc &ecirc;tre supprim&eacute;s</b>.
+									<br><br>
+									Pour supprimer les doublons, je me base sur la taille des fichiers. La probabilit&eacute; que deux fichiers JPG repr&eacute;sentant des choses diff&eacute;rentes aient une taille identique &agrave; l'octet pr&egrave;s &eacute;tant faible,
+									je juge la quantit&eacute; d'images non doublonn&eacute;es potentiellement perdues comme acceptable.
+									<br><br>
+
+								<b>Suppression des doublons</b>
+							</p>
+
+							<pre><code>
+avec_doublon = len(img_pil)
+
+# Cr&eacute;er un dictionnaire pour stocker les indices uniques par taille de fichier
+unique_indices_dict = {}
+
+# Remplir le dictionnaire avec les indices des images pour chaque classe
+for i, file_name in enumerate(file_names):
+	
+	# Obtenir la taille du fichier
+	file_size = os.path.getsize(data_path[i])
+
+	# Utiliser une cl&eacute; unique bas&eacute;e sur la taille du fichier
+	key = (file_size)
+
+	# Si la cl&eacute; n'existe pas dans le dictionnaire, ajouter l'indice
+	if key not in unique_indices_dict:
+		unique_indices_dict[key] = i
+
+# Utiliser les indices pour obtenir l'ensemble de donn&eacute;es sans doublons
+unique_indices = list(unique_indices_dict.values())
+
+data_without_duplicates = [img_pil[i] for i in unique_indices]
+list_labels_without_duplicates = [list_labels[i] for i in unique_indices]
+file_names_without_duplicates = [file_names[i] for i in unique_indices]
+
+# On r&eacute;affecte nos donn&eacute;es sans doublons aux variables
+img_pil = data_without_duplicates
+list_labels = list_labels_without_duplicates
+file_names = file_names_without_duplicates
+
+print(f"{avec_doublon - len(img_pil)} doublons ont &eacute;t&eacute; supprim&eacute;s.")
+							</pre></code>
+
+							<p align="center">
+								<b>Dimensions des images</b><br><br>
+									<img src="images/05-classer-des-images/07-dimensions.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Il n'y a pas trop de variations dans la taille des images.</i>
+							</p>
+							<br><br>
+							<h1>Pr&eacute;traitements de base</h1>
+
+							<p>
+								Nous allons commencer par des pr&eacute;traitements de base sur nos images.
+							</p>
+							<p align="center">
+								<b>Exemple d'image avant les traitements</b><br><br>
+									<img src="images/05-classer-des-images/08-image-raw.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<br><br>
+								<b>Redimensionnement</b><br><br>
+								<img src="images/05-classer-des-images/09-redimensionnement.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+								<i>Les mod&egrave;les de deep learning que nous allons utiliser attendent en entr&eacute;e des images carr&eacute;es.</i>
+								<br><br>
+								<b>D&eacute;bruitage</b><br><br>
+								<img src="images/05-classer-des-images/10-debruitage.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+								<i>Le bruit sur les images peut perturber les mod&egrave;les.</i>
+								<br><br>
+								<b>&Eacute;galisation</b><br><br>
+								<img src="images/05-classer-des-images/11-egalisation.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								Une &eacute;tape de contraste automatique (<i>autocontrast()</i> de la biblioth&egrave;que <i>Pillow</i>), qui s'applique donc seulement en cas de besoin, termine nos traitements de base.
+							</p>
+							
+							<h1>ZCA Whitening</h1>
+							<p>
+							La ZCA (Zero Component Analysis) whitening est bas&eacute;e sur la PCA (Principal Component Analysis) whitening. Avec la ZCA whitening, la derni&egrave;re &eacute;tape comporte une multiplication de matrice suppl&eacute;mentaire
+							avec la matrice de valeurs propres. Cette technique permet de mieux conserver la structure des donn&eacute;es que la PCA whitening, mais est plus coûteuse en termes de calculs.
+							Avec cette technique les images transform&eacute;es ressemblent plus aux images originales.
+							Plus d'<a href="https://www.aiplusinfo.com/blog/pca-whitening-vs-zca-whitening-what-is-the-difference/" target="_blank">informations &agrave; ce sujet ici</a>.
+							<br>
+							<br>
+							Le module <a href="https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator" target="_blank"><i>ImageDataGenerator</i></a> de Keras poss&egrave;de une impl&eacute;mentation de la ZCA whitening.
+								<br>
+								<br>
+								<b>Remarque : </b><br>
+								Cette technique est coûteuse en ressources, notamment en m&eacute;moire vive.
+								En effet, la matrice de corr&eacute;lation qui va &ecirc;tre cr&eacute;&eacute;e lors du processus aura pour dimension <i>hauteur &times; largeur &times; canaux</i> des images,
+								ce qui peut vite donner des dimensions tr&egrave;s grandes en fonction de la taille des images. Pour cette raison, les images vont &ecirc;tre redimensionn&eacute;es en 100x100 pour ce traitement.
+							</p>
+
+							<p align="center">
+								<b>R&eacute;capitulatif du traitement et exemples d'images trait&eacute;es</b><br><br>
+									<img src="images/05-classer-des-images/12-recap-zca.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<br>
+							<h1>Approche 1 : cr&eacute;ation et entra&icirc;nement d'un r&eacute;seau de neurones avec TensorFlow</h1>
+
+							<p>
+								Nous allons nous baser sur l'architecture de VGG16, que l'on peut retrouver <a href="https://github.com/keras-team/keras-applications/blob/master/keras_applications/vgg16.py" target="_blank">ici</a>.
+								<br><br>
+								Nous allons limiter nos exp&eacute;rimentations sur 10 classes. Voici une fonction nous permettant de cr&eacute;er un tel mod&egrave;le avec TensorFlow : 
+							</p>
+							<pre><code>
+def create_model_base() :
+
+# Taille des images en entr&eacute;e
+# On reprend bien la taille qu'on avait sp&eacute;cifi&eacute;e
+# lors de la cr&eacute;ation de nos datasets
+input_shape = (224, 224, 3)
+
+# Structure du mod&egrave;le
+model = Sequential([
+
+# BLOC 1
+Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu', input_shape=input_shape, name='block1_conv1'),
+Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu', name='block1_conv2'),
+MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block1_pool'),
+
+# BLOC 2
+Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu', name='block2_conv1'),
+Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu', name='block2_conv2'),
+MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block2_pool'),
+
+# BLOC 3    
+Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu', name='block3_conv1'),
+Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu', name='block3_conv2'),
+Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu', name='block3_conv3'),
+MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block3_pool'),
+
+# BLOC 4    
+Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block4_conv1'),
+Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block4_conv2'),
+Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block4_conv3'),
+MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block4_pool'),
+
+# BLOC 5
+Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block5_conv1'),
+Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block5_conv2'),
+Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block5_conv3'),
+MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block5_pool'),
+
+# Bloc de classification
+Flatten(name='flatten'),
+Dense(4096, activation='relu', name='fc1'),
+Dense(4096, activation='relu', name='fc2'),
+Dense(nb_classes, activation='softmax', name='predictions')  
+# nb_classes : nombre de classes, nous nous limiterons ici &agrave; 10
+
+], name='Base')
+
+# Compilation du mod&egrave;le 
+model.compile(loss="categorical_crossentropy", optimizer='adam', metrics=["accuracy"])
+
+# Affichage de la structure du mod&egrave;le
+print(model.summary())
+
+return model
+							</pre></code>
+
+							<p align="center">
+								<b>Structure de notre premier mod&egrave;le</b><br><br>
+									<img src="images/05-classer-des-images/13-premier-modele.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+
+							<p>
+								<br><b>Lors de l'entra&icirc;nement d'un tel mod&egrave;le, notre dataset doit &ecirc;tre divis&eacute; en trois parties : </b><br>
+								<ul>
+									<li><i><b>Train</b></i> : pour l'entra&icirc;nement &agrave; proprement parler.</li>
+									<li><i><b>Validation</b></i> : au cours de l'entra&icirc;nement, le mod&egrave;le va &ecirc;tre test&eacute;, sur une m&eacute;trique choisie, via la cr&eacute;ation 
+									d'un <i>callback</i> et les poids seront enregistr&eacute;s en cas d'am&eacute;lioration. L'entra&icirc;nement pourra &ecirc;tre interrompu si les performances
+								n'&eacute;voluent plus.</li>
+									<li><i><b>Test</b></i> : une fois l'entra&icirc;nement termin&eacute;, le mod&egrave;le sera test&eacute; sur cette portion de dataset, qu'il n'aura donc jamais <i>vu</i>.
+									Les performances seront &eacute;valu&eacute;es &agrave; l'aide de diff&eacute;rentes m&eacute;triques.</li>
+								</ul>
+							</p>
+
+							<p align="center">
+								<b>Segmentation du dataset et m&eacute;triques utilis&eacute;es</b><br><br>
+									<img src="images/05-classer-des-images/14-split-metriques.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+
+							<p align="center">
+								<b>R&eacute;sultats pour ce premier mod&egrave;le</b><br><br>
+									<img src="images/05-classer-des-images/15-results-model-base.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<img src="images/05-classer-des-images/16-results-model-base-2.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								<b>Les r&eacute;sultats ne sont pas du tout satisfaisants, le mod&egrave;le n'apprend pas.</b>
+								<br><br>
+								Comme &eacute;voqu&eacute; pr&eacute;c&eacute;demment, les classes poss&egrave;dent un nombre assez faible de repr&eacute;sentants. Pour tenter de pallier ceci, nous allons ajouter une &eacute;tape
+								de <b>data augmentation</b> &agrave; notre mod&egrave;le qui appliquera diff&eacute;rentes modifications de mani&egrave;re al&eacute;atoire &agrave; nos images au cours des cycles d'entra&icirc;nement.<br>
+								Ceci a pour but d'introduire artificiellement plus de <b>variabilit&eacute; dans nos donn&eacute;es d'entra&icirc;nement</b>.
+							</p>
+							<p align="center">
+								<b>Ajout d'une &eacute;tape de data augmentation</b><br><br>
+									<img src="images/05-classer-des-images/17-base-data-augmente.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Les diff&eacute;rentes modifications s'appliquent al&eacute;atoirement aux images au cours des cycles d'entra&icirc;nement du mod&egrave;le.</i>
+							</p>
+
+							<p align="center">
+								<b>R&eacute;sultats pour le mod&egrave;le avec data augmentation</b><br><br>
+									<img src="images/05-classer-des-images/18-results-model-data-aug.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<img src="images/05-classer-des-images/19-results-model-data-aug-2.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								<b>La data augmentation n'a pas permis ici d'am&eacute;liorer les r&eacute;sultats, le mod&egrave;le n'apprend toujours pas.</b>
+								<br><br>
+								Nous allons maintenant modifier les hyperparam&egrave;tres de notre mod&egrave;le pour tenter d'am&eacute;liorer au maximum les r&eacute;sultats.
+								Apr&egrave;s diff&eacute;rents tests, les meilleurs r&eacute;sultats ont &eacute;t&eacute; obtenus avec ces modifications : 
+							</p>
+							<p align="center">
+								<b>R&eacute;capitulatif des modifications apport&eacute;es au mod&egrave;le</b><br><br>
+									<img src="images/05-classer-des-images/20-modele-tuned.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<br>
+								<b>La fonction <i>LeakyReLU</i></b><br>
+									<img src="images/05-classer-des-images/21-leaky-relu.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Contrairement &agrave; ReLU, LeakyReLU laisse l&eacute;g&egrave;rement passer les valeurs n&eacute;gatives</i>
+							</p>
+							<p align="center">
+								<b>R&eacute;sultats pour le mod&egrave;le optimis&eacute;</b><br><br>
+									<img src="images/05-classer-des-images/22-results-tuned-1.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<img src="images/05-classer-des-images/23-results-tuned-2.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								<b>Les optimisations ont permis ici d'am&eacute;liorer les r&eacute;sultats, les pr&eacute;dictions sont meilleures que des pr&eacute;dictions al&eacute;atoires, le mod&egrave;le a donc appris.</b>
+								<br><br>
+								<b>Remarque : </b>les meilleurs r&eacute;sultats ont &eacute;t&eacute; obtenus en nous basant sur les images avec les traitements de base, donc sans le ZCA Whitening.
+								<br><br>
+								Cependant, <b>30 % d'<i>accuracy</i> n'est clairement pas suffisant</b> pour notre id&eacute;e d'application de reconnaissance de races de chien.
+								Nous allons donc passer &agrave; l'approche suivante pour tenter de r&eacute;soudre notre probl&eacute;matique.
+							</p>
+
+							<h1>Approche 2 : technique du <i>transfer learning</i></h1>
+
+							<p>
+								L'approche consistant &agrave; entra&icirc;ner compl&egrave;tement un r&eacute;seau de neurones ne donnant pas de bons r&eacute;sultats avec notre dataset, nous allons essayer des techniques de <a href="https://datascientest.com/transfer-learning" target="_blank">transfer learning</a> pour voir si nous pouvons obtenir de meilleures performances.
+								<br><br>
+								Nous continuerons &agrave; baser nos entra&icirc;nements sur notre dataset <a href="http://vision.stanford.edu/aditya86/ImageNetDogs/" target="_blank">Stanford Dogs Dataset</a>.
+								<br><br>
+								Comme pr&eacute;c&eacute;demment, afin de limiter les temps de calculs, bien qu'acc&eacute;l&eacute;r&eacute;s gr&acirc;ce &agrave; une carte graphique, nous ne baserons nos exp&eacute;rimentations que sur 10 classes.
+								<br><br>
+								<b>En quoi consiste le <i>transfer learning</i> ?</b>
+								<br><br>
+								Nous allons utiliser des mod&egrave;les de r&eacute;seaux de neurones d&eacute;j&agrave; entra&icirc;n&eacute;s sur des donn&eacute;es similaires, en l'occurrence ici : des images.
+								Ces mod&egrave;les ont &eacute;t&eacute; entra&icirc;n&eacute;s sur de tr&egrave;s grandes quantit&eacute;s de donn&eacute;es. Ce qui va nous int&eacute;resser ici est de r&eacute;cup&eacute;rer ce que ces mod&egrave;les ont appris
+								concernant tout un ensemble de caract&eacute;ristiques g&eacute;n&eacute;riques, comme par exemple les bords, les coins, les contours, les surfaces, certains motifs, etc.
+								<br>
+								Nous allons ensuite r&eacute;entra&icirc;ner uniquement les derni&egrave;res couches de ces mod&egrave;les sur notre probl&eacute;matique, &agrave; savoir la classification de races de chiens.
+							</p>
+							<p align="center">
+									<img src="images/05-classer-des-images/24-transfer.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Seules les derni&egrave;res couches des mod&egrave;les seront r&eacute;entra&icirc;n&eacute;es.</i>
+							</p>
+							<p>
+								<b>Trois mod&egrave;les vont &ecirc;tre test&eacute;s avec cette approche :</b>
+								<ul>
+									<li><b>VGG16</b> : 16 couches (Univ. Oxford, 2014)</li>
+									<li><b>ResNet50</b> : 50 couches (Microsoft, 2015)</li>
+									<li><b>InceptionV3</b> : 48 couches (Google, 2016)</li>
+								</ul>
+								Ces trois mod&egrave;les ont &eacute;t&eacute; entra&icirc;n&eacute; sur 1000 classes d'<a href="https://www.image-net.org/" target="_blank">ImageNet</a>, un dataset de plusieurs millions d'images annot&eacute;es.
+								<br><br>
+								<b>Point de vigilance : </b><br>
+								Notre dataset de travail, le <b>Stanford Dogs Dataset</b>, a &eacute;t&eacute; constitu&eacute; &agrave; partir d'<b>images provenant d'ImageNet</b>,
+								ce qui implique que notre <b>set de test</b> utilis&eacute; pour &eacute;valuer notre mod&egrave;le contiendra des <b>images qui auront d&eacute;j&agrave; &eacute;t&eacute; <i>vues</i></b> par les mod&egrave;les pr&eacute;entra&icirc;n&eacute;s.
+								Ceci peut donc cr&eacute;er <b>un biais qu'il faudra consid&eacute;rer</b>.
+								Il faudra donc prendre soin de tester &eacute;galement notre mod&egrave;le sur quelques <b>images ne provenant pas d'ImageNet</b>, donc totalement inconnues.
+
+							</p>
+							<p align="center">
+								<b>R&eacute;sultats avec le transfer learning bas&eacute; sur VGG16</b><br><br>
+									<img src="images/05-classer-des-images/25-results-vgg16-1.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<img src="images/05-classer-des-images/26-results-vgg16-2.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Le terme &laquo; nouvelles images &raquo; signifie ici : ne provenant pas d'ImageNet</i>
+							</p>
+							<p>
+								Les <b>r&eacute;sultats sont tr&egrave;s bons</b>, rien &agrave; voir avec notre premi&egrave;re approche !
+							</p>
+							<p align="center">
+								<b>R&eacute;sultats avec le transfer learning bas&eacute; sur ResNet50</b><br><br>
+									<img src="images/05-classer-des-images/27-results-resnet-1.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<img src="images/05-classer-des-images/28-results-resnet-2.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Le terme &laquo; nouvelles images &raquo; signifie ici : ne provenant pas d'ImageNet</i>
+							</p>
+							<p>
+								Les <b>r&eacute;sultats sont encore meilleurs</b>. Les performances sont suffisantes pour notre id&eacute;e d'application de reconnaissance.<br>
+								Testons maintenant le troisi&egrave;me mod&egrave;le.
+							</p>
+							<p align="center">
+								<b>R&eacute;sultats avec le transfer learning bas&eacute; sur InceptionV3</b><br><br>
+									<img src="images/05-classer-des-images/29-results-inception-1.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<img src="images/05-classer-des-images/30-results-inception-2.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Le terme &laquo; nouvelles images &raquo; signifie ici : ne provenant pas d'ImageNet</i>
+							</p>
+							<p>
+								Les r&eacute;sultats sont <b>proches de la perfection</b>. C'est le <b>mod&egrave;le que nous retiendrons</b> pour notre application.
+								<br><br>
+								<b>Remarque : </b>ces r&eacute;sultats ont pu &ecirc;tre obtenus en nous basant sur les <b>images sans pr&eacute;traitement</b>, hormis le redimensionnement requis en entr&eacute;e des mod&egrave;les.
+								Ce qui simplifiera l'&eacute;tape de conception de notre application.
+								<br><br>
+								<b>Les avantages du transfer learning :</b>
+								<ul>
+									<li><b>Dur&eacute;es d'entra&icirc;nement plus courtes :</b> moins de couches &agrave; entra&icirc;ner.</li>
+									<li><b>Des performances tr&egrave;s &eacute;lev&eacute;es :</b> bien sup&eacute;rieures &agrave; notre premi&egrave;re approche.</li>
+									<li><b>Pas besoin de pr&eacute;traitement des images :</b> il suffit de redimensionner les images avant d'obtenir nos pr&eacute;dictions.</li>
+								</ul>
+							</p>
+								<br>
+								<h1>Cr&eacute;ation de l'application avec Streamlit</h1>
+								<p>
+									Maintenant que nous avons un mod&egrave;le performant, nous allons pouvoir cr&eacute;er notre application. Nous allons utiliser <a href="https://streamlit.io/" target="_blank">Streamlit</a>,
+									une biblioth&egrave;que open-source en Python con&ccedil;ue pour cr&eacute;er facilement des applications web interactives et conviviales.
+									<br><br>
+									Quelques lignes de code nous suffiront pour cr&eacute;er notre application : 
+								</p>
+								<pre><code>
+# On commence par importer streamlit
+import streamlit as st
+
+# Titre de la page (onglet)
+st.set_page_config(page_title="Dog detector")
+# Titre
+st.title("D&eacute;tecteur de race de chien")
+
+################################
+# CHARGEMENT DES BIBLIOTHEQUES #
+################################
+
+# st.spinner : pour afficher un message durant l'ex&eacute;cution d'un bloc de code
+with st.spinner('⏳ Chargement des biblioth&egrave;ques, veuillez patienter...'):
+	import numpy as np  # Manipulation d'arrays et utilisation de np.argmax
+	from tensorflow.keras.models import Sequential
+	from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, Dropout, Rescaling
+	# Mod&egrave;le pr&eacute;entra&icirc;n&eacute; InceptionV3
+	from tensorflow.keras.applications.inception_v3 import InceptionV3
+	from tensorflow.keras.preprocessing.image import load_img, img_to_array
+
+###########
+# CLASSES #
+###########
+
+# Classes sur lesquelles avait &eacute;t&eacute; entra&icirc;n&eacute; notre mod&egrave;le
+class_names = [
+"n02085620-Chihuahua",
+"n02085782-Japanese Spaniel",
+"n02085936-Maltese Dog",
+"n02086079-Pekinese",
+"n02086240-Shih-Tzu",
+"n02086646-Blenheim Spaniel",
+"n02086910-Papillon",
+"n02087046-Toy Terrier",
+"n02087394-Rhodesian Ridgeback",
+"n02088094-Afghan Hound",
+]
+# Cr&eacute;ation d'un string pour affichier
+# les classes sur la page de l'app
+race_connues_string = "Les races connues par le mod&egrave;le sont les suivantes :\n\n"
+for i in class_names:
+	race_connues_string += f"- {i[10:]}\n"  # [10:] pour masquer le code de classe
+
+######################
+# CREATION DU MODELE #
+######################
+
+@st.cache_resource(show_spinner=False)  # Mettre en cache cette fonction pour r&eacute;ex&eacute;cution plus rapide
+def model_creator():
+
+	txt_creation = "🛠️ Initialisation du mod&egrave;le, veuillez patienter..."
+	model_bar = st.progress(0, text=txt_creation)  # Cr&eacute;ation d'une barre de progression
+	# Cr&eacute;ation et compilation du mod&egrave;le
+	# sans GPU, pour un fonctionnement universel
+	# R&eacute;cup&eacute;ration du mod&egrave;le pr&eacute;-entra&icirc;n&eacute;
+	model_base = InceptionV3(include_top=False,
+	# On ne prend pas les derni&egrave;res couches, que l'on va adapter &agrave; notre probl&eacute;matique
+								weights="imagenet",
+								input_shape=(299, 299, 3)
+								# Format d'entr&eacute;e par d&eacute;faut pour ce mod&egrave;le
+					)
+	model_bar.progress(20, text=txt_creation)  # Avanc&eacute;e de la barre de progression
+	# On fige les couches du mod&egrave;le pr&eacute;entra&icirc;n&eacute;
+	# les poids ne seront pas modifi&eacute;s
+	for layer in model_base.layers:
+		layer.trainable = False
+	model_bar.progress(30, text=txt_creation)  # Avanc&eacute;e de la barre de progression
+	# D&eacute;finition du nouveau mod&egrave;le
+	model_incep = Sequential([Rescaling(1./127.5, offset=-1, input_shape=(299, 299, 3)),
+	# Pour ce mod&egrave;le, rescaler les images augmente &eacute;norm&eacute;ment les performances.
+	# Changement : [0, 255] vers [-1, 1]. Ce layer est appliqu&eacute; lors du training et de l'inference
+								model_base,  # Mod&egrave;le pr&eacute;entra&icirc;n&eacute; sans les top layers
+								GlobalAveragePooling2D(),
+								Dense(256, activation='relu'),
+								Dropout(0.5),
+								Dense(len(class_names), activation='softmax')
+								# len(class_names) : nombre de classes
+					])
+	model_bar.progress(60, text=txt_creation)  # Avanc&eacute;e de la barre de progression
+	# Compilation du mod&egrave;le 
+	model_incep.compile(loss="categorical_crossentropy", optimizer='Adagrad', metrics=["accuracy"])
+	model_bar.progress(90, text=txt_creation)  # Avanc&eacute;e de la barre de progression
+	# Chargement des meilleurs poids des couches sp&eacute;cifiques
+	# aux races de chiens obtenus lors de l'entra&icirc;nement
+	model_incep.load_weights("model_incep_best_weights.h5")
+	model_bar.progress(100, text=txt_creation)  # Avanc&eacute;e de la barre de progression
+	model_bar.empty()  # Suppression de la barre de progression
+
+	return model_incep
+
+# Cr&eacute;ation et compilation du mod&egrave;le
+model_incep = model_creator()
+
+##################################
+# FONCTION DE CHARGEMENT D'IMAGE #
+#    ET CONVERSION EN ARRAY      #
+##################################
+
+def chargeur_image(image=None):
+
+	# Chargement du fichier
+	img = load_img(image, target_size=(299, 299))
+	# Conversion en array
+	img = img_to_array(img)
+	# Rechape de l'array
+	img = img.reshape(1,299,299,3)
+	return img
+
+##########################
+# FONCTION DE PREDICTION #
+##########################
+
+# fait un model.predict sur une image (array)
+def predicteur(img=None, class_names=None, model=None):
+
+	prediction = model.predict(img, verbose=False)
+	prediction = np.argmax(prediction)
+	return class_names[prediction]
+
+###################
+# FONCTION MAIN() #
+###################
+
+def main():
+
+	# On affiche les races de chien que
+	# le mod&egrave;le est capable de pr&eacute;dire
+	st.code(race_connues_string)
+
+	fichier = st.file_uploader("Chargez la photo d'un chien dont vous souhaitez pr&eacute;dire la race : ",
+								# Un seul fichier &agrave; la fois
+								accept_multiple_files=False,
+								# Formats accept&eacute;s
+								type=['jpg', 'png', 'jpeg', 'bmp', 'gif', 'tiff']
+				)
+	empl_image = st.empty()
+	empl_resultat = st.empty()
+	
+	# Si un fichier a &eacute;t&eacute; charg&eacute;
+	if fichier is not None:
+		with st.spinner("Chargement de l'image..."):
+			# Affichage de l'image charg&eacute;e
+			empl_image.image(fichier, width=299)
+		with st.spinner('Pr&eacute;diction en cours...'):
+			# Chargement et convertion de l'image en array
+			img = chargeur_image(image=fichier)
+			# Predict du mod&egrave;le sur l'array
+			resultat = predicteur(img=img, class_names=class_names, model=model_incep)
+			# Message dans encart vert
+			empl_resultat.success(f"Race de chien trouv&eacute;e : {resultat[10:]}", icon="🐶")
+			# [10:] pour masquer le code de classe
+
+# Si le script est lanc&eacute; en propre, pas import&eacute;
+# dans un autre script, alors lancer main()
+if __name__ == "__main__":
+	main()
+
+								</pre></code>
+								<br>
+								<p align="center">
+									<b>L'application en action</b><br><br>
+										<img src="images/05-classer-des-images/31-app-screen.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+										<i>Il suffit de charger une photo de chien et l'application fournit sa pr&eacute;diction.</i>
+								</p>
+
+								<h1>Conclusion</h1>
+
+								<p>
+									<b>Nous avons atteint les objectifs que nous nous &eacute;tions fix&eacute;s, &agrave; savoir : </b>
+									<ul>
+										<li>Rapidement explorer les donn&eacute;es et pr&eacute;traiter les images.</li>
+										<li>Entra&icirc;ner compl&egrave;tement un r&eacute;seau de neurones.</li>
+										<li>Entra&icirc;ner partiellement un r&eacute;seau de neurones en utilisant le <i>transfer learning</i>.</li>
+										<li>Cr&eacute;er une application de pr&eacute;diction.</li>
+									</ul>
+									Le transfer learning s'av&egrave;re &ecirc;tre une tr&egrave;s bonne technique pour r&eacute;duire les ressources n&eacute;cessaires &agrave; l'entra&icirc;nement de nos mod&egrave;les,
+									tout en permettant d'obtenir de tr&egrave;s bonnes performances, m&ecirc;me avec un dataset de taille modeste.
+									<br><br>
+									Notre application fonctionne &eacute;galement sur des images ne provenant pas d'ImageNet, donc inconnues du mod&egrave;le.
+								</p>
+
+								<h1>Perspectives</h1>
+
+								<p>
+									<b>&Agrave; l'issue de ce premier travail, nous pouvons envisager les perspectives suivantes : </b>
+									<ul>
+										<li>Entra&icirc;ner le meilleur mod&egrave;le sur plus de classes (races de chiens)</li>
+										<li>Tester d'autres mod&egrave;les pr&eacute;entra&icirc;n&eacute;s plus r&eacute;cents.</li>
+										<li>Tester sur un plus grand nombre d'images inconnues.</li>
+										<li>D&eacute;ployer l'application sur le cloud pour une utilisation partag&eacute;e.</li>
+									</ul>
+								</p>
+
+
+							<p>
+								<blockquote>
+									<img src="images/info.png" width="35" height="35"/>
+									<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+								</blockquote>
+							</p>
+
+							<p align="center">
+									<img src="images/05-classer-des-images/32-picto-fin.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Trouvez les chiens en double.</i>
+							</p>
+
 						</div>
 					</div>
 
