@@ -221,14 +221,14 @@ WHERE  posts.creationdate BETWEEN CONVERT(DATETIME, '2022-01-01') AND
 
 							<p>
 							Les mod&egrave;les <b>LDA</b> et <b>NMF</b> commencent par parcourir le corpus (l'ensemble des documents) et g&eacute;n&egrave;rent des sujets. Chaque sujet peut ensuite &ecirc;tre associ&eacute; &agrave; chacun des documents.
-							Ces sujets sont une suite de mots class&eacute;s par ordre d'importance par rapport au sujet donn&eacute;. <b>Notons que les mots constituant les sujets proviennent tous du corpus de documents</b>. &Agrave; partir de l&agrave;, pour g&eacute;n&eacute;rer des mots-cl&eacute;s pour chaque documents, deux approches sont possibles :
+							Ces sujets sont une suite de mots class&eacute;s par ordre d'importance par rapport au sujet donn&eacute;. <b>Notons que les mots constituant les sujets proviennent tous du corpus de documents</b>. &Agrave; partir de l&agrave;, pour g&eacute;n&eacute;rer des mots-cl&eacute;s pour chaque document, deux approches sont possibles :
 							<ul>
 								<li><b>Approche 1</b> : conserver les premiers mots du sujet, par exemple les 5 premiers.</li>
 								<li><b>Approche 2</b> : prendre une plage de mot plus &eacute;tendue du sujet, par exemple 50, et ne conserver que ceux qui apparaissent aussi dans le document.</li>
 							</ul>
 
 							Nous pourrons alors &eacute;valuer la qualit&eacute; des tags pr&eacute;dits en les comparant avec les tags r&eacute;els associ&eacute;s aux documents (ceux qui ont &eacute;t&eacute; indiqu&eacute;s par les auteurs des messages).							
-							Pour cela, il nous faut mettre en place des m&eacute;triques pour pouvoir comparer nos diff&eacute;rentes approches. Nous avons la possibilit&eacute; d'utiliser des m&eacute;triques classsiques et/ou des m&eacute;triques orient&eacute;es m&eacute;tier.
+							Pour cela, il nous faut mettre en place des m&eacute;triques pour pouvoir comparer nos diff&eacute;rentes approches. Nous avons la possibilit&eacute; d'utiliser des m&eacute;triques classiques et/ou des m&eacute;triques orient&eacute;es m&eacute;tier.
 							</p>
 
 							<p align="center">
