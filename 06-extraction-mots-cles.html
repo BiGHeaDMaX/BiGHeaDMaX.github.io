@@ -48,7 +48,7 @@
 						<li><a href="03-segmenter-des-clients.html">Segmenter des clients d'un site e-commerce</a></li>
 						<li><a href="04-suggestion-mots-cles.html">Suggestion automatique de mots-cl&eacute;s</a></li>
 						<li><a href="05-classer-des-images.html">Classer des images &agrave; l'aide d'algorithmes de Deep Learning</a></li>
-						<li><a href="06-extraction-mots-cles.html">Nouvelles méthodes d'extraction de mots-cl&eacute;s</a></li>
+						<li><a href="06-extraction-mots-cles.html">Nouvelles m&eacute;thodes d'extraction de mots-cl&eacute;s</a></li>
 						<li><a href="07-traitement-aws-spark.html">R&eacute;aliser un traitement Big Data avec Spark</a></li>
 						<li><a href="08-cadrage-ia.html">R&eacute;aliser le cadrage d'un projet IA</a></li>
 					</ul>
@@ -57,11 +57,314 @@
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
-							<!-- <h1>Nouvelles méthodes d'extraction de mots-cl&eacute;s</h1> -->
-							<span class="image main"><img src="images/06-extraction-mots-cles/01-extraction-mots-cles-titre.png" alt="Nouvelles méthodes d'extraction de mots-cl&eacute;s" /></span>
-							<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-							<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
+							<span class="image main"><img src="images/06-extraction-mots-cles/01-extraction-mots-cles-titre.png" alt="Nouvelles m&eacute;thodes d'extraction de mots-cl&eacute;s" /></span>
+							
+							<h1>Introduction</h1>
+							<p>
+								Ce projet a pour but de d&eacute;velopper une preuve de concept. Il se base <a href="04-suggestion-mots-cles.html" target="_blank">sur un pr&eacute;c&eacute;dent projet</a> dont l'objectif &eacute;tait de concevoir un outil permettant de
+								<b>sugg&eacute;rer des mots-cl&eacute;s</b> lors de la r&eacute;daction d'un message sur un forum. Le travail sera bas&eacute;, comme pour le pr&eacute;c&eacute;dent projet, sur un dataset constitu&eacute; de 50 000 messages
+								provenant du forum <b><a href="https://stackoverflow.com/" target="_blank">Stack Overflow</a></b>.
+								<br><br>
+
+
+								
+								<b>Les objectifs du projet sont les suivants : </b>
+								<ul>
+									<li>R&eacute;aliser une veille afin d'identifier des mod&egrave;les permettant d'am&eacute;liorer les r&eacute;sultats du <a href="04-suggestion-mots-cles.html" target="_blank">pr&eacute;c&eacute;dent projet</a>.</li>
+									<li>&Eacute;valuer ces mod&egrave;les.</li>
+									<li>R&eacute;aliser un dashboard pour faire une d&eacute;mo du nouveau concept.</li>
+								</ul>
+
+
+								<p>
+									<blockquote>
+										<img src="images/info.png" width="35" height="35"/>
+										<span><b>Retrouvez tout le code et les fichiers de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+									</blockquote>
+								</p>	
+
+							<h1>Dataset utilis&eacute;</h1>
+							<p>
+								50 000 messages et les mots-cl&eacute;s associ&eacute;s ont &eacute;t&eacute; r&eacute;cup&eacute;r&eacute;s sur <a href="https://stackoverflow.com/" target="_blank">Stack Overflow</a>, en prenant soin de ne pas r&eacute;cup&eacute;rer de donn&eacute;es personnelles
+								concernant les auteurs pour &eacute;viter les probl&eacute;matiques li&eacute;es au RGPD.
+								<br><br>
+								Les messages sont constitu&eacute;s d'un titre et d'un corps, qui seront fusionn&eacute;s pour constituer nos documents, pour lesquels nous aurons des mots-cl&eacute;s r&eacute;els,
+								c'est-&agrave;-dire ceux qui ont &eacute;t&eacute; d&eacute;termin&eacute;s par les auteurs des messages.
+								<br><br>
+								Afin de nous assurer de la bonne qualit&eacute; de nos donn&eacute;es de travail, les messages sont r&eacute;cup&eacute;r&eacute;s en respectant certains crit&egrave;res, comme par exemple le score du message, la r&eacute;putation de l'auteur, etc.
+
+							</p>
+							<p align="center">
+								<b>R&eacute;cup&eacute;ration des donn&eacute;es via le Stack Data Exchange Explorer</b><br><br>
+									<img src="images/06-extraction-mots-cles/02-recup-messages.png" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+
+							<p>La requ&ecirc;te SQL suivante a &eacute;t&eacute; utilis&eacute;e afin de r&eacute;cup&eacute;rer les 50 000 messages (et leur tags associ&eacute;s) de notre dataset : <br></p>
+
+							<pre><code>
+SELECT TOP(50000) posts.id,
+posts.creationdate,
+title,
+body,
+tags,
+users.reputation,
+-- R&eacute;putation moyenne des users avec les crit&egrave;res actuels
+				(SELECT Avg(reputation)
+					FROM   users) AS moyenne_reputation
+FROM   posts
+-- Jointure pour r&eacute;cup&eacute;rer la r&eacute;putation des users
+		JOIN users
+		ON posts.owneruserid = users.id
+WHERE  posts.creationdate BETWEEN CONVERT(DATETIME, '2022-01-01') AND
+										CONVERT(DATETIME, '2023-12-31')
+		AND posts.score > 0 -- Questions avec un score positif
+		AND posts.answercount > 0 -- Au moins une r&eacute;ponse
+		AND posts.commentcount > 0 -- Au moins un commentaire
+		AND users.reputation >= 91 -- Soit la r&eacute;putation moyenne sur cette p&eacute;riode avec ces crit&egrave;res
+							</code></pre>
+
+
+							<p>
+								Diff&eacute;rents <b>traitements ont ensuite &eacute;t&eacute; r&eacute;alis&eacute;s</b> sur ces documents (suppression des balises HTML, uniformisations des tags, etc.),
+								ils sont <b>d&eacute;taill&eacute;s dans mon article sur le <a href="04-suggestion-mots-cles.html" target="_blank">pr&eacute;c&eacute;dent projet</a></b> sur lequel ce travail est bas&eacute;.
+							</p>
+
+
+						
+							<h1>Nouveaux mod&egrave;les</h1>
+							
+							<p>
+								Afin d'identifier de nouvelles approches, il est important de consulter des <b>sources reconnues</b>.
+								<br><br>
+								<b>En voici quelques-unes pour exemple : </b>
+								<ul>
+									<li><a href="https://arxiv.org/" target="_blank">Arxiv</a></li>
+									<li><a href="https://fastml.com/" target="_blank">FastML</a></li>
+									<li><a href="https://machinelearningmastery.com/" target="_blank">Machine Learning Mastery</a></li>
+									<li><a href="https://towardsdatascience.com/" target="_blank">Towards Data Science</a></li>
+									<li><a href="https://www.kdnuggets.com/" target="_blank">KDnuggets</a> : </li>
+									<li><a href="https://jack-clark.net/" target="_blank">import AI</a> : </li>
+									<li><a href="https://www.technologyreview.com/" target="_blank">MIT tech review</a> : </li>
+									<li><a href="https://news.mit.edu/topic/machine-learning" target="_blank">MIT news ML</a></li>
+									<li><a href="https://dataelixir.com/" target="_blank">Data Elixir</a> (newsletter)</li>
+									<li><a href="https://www.datascienceweekly.org/" target="_blank">Data Science Weekly</a> (newsletter)</li>
+								</ul>
+
+								<b>Suite &agrave; mes recherches, deux nouvelles approches ont &eacute;t&eacute; identifi&eacute;es et seront test&eacute;es : <br><br></b>
+								<ul>
+									<li>Extraction de mots-cl&eacute;s avec <a href="https://maartengr.github.io/KeyBERT/api/keybert.html" target="_blank">KeyBERT</a>.</li>
+									<li>Pr&eacute;diction de mots-cl&eacute;s avec le LLM <a href="https://mistral.ai/fr/" target="_blank">Mistral 7B</a>.</li>
+								</ul>
+								Pour &eacute;valuer ces mod&egrave;les, il sera n&eacute;cessaire de les <b>comparer &agrave; une baseline</b>. S'agissant de deux <b>approches non supervis&eacute;es</b>, je choisis donc &eacute;galement comme
+							<b>baseline une approche non supervis&eacute;e</b>, &agrave; savoir l'approche <b>bas&eacute;e sur NMF</b> test&eacute;e dans le cadre de mon <a href="04-suggestion-mots-cles.html" target="_blank">pr&eacute;c&eacute;dent projet</a>.
+
+							</p>
+
+							<h1>Premier mod&egrave;le : KeyBERT</h1>
+							<p>
+							<span class="image left"><img src="images/06-extraction-mots-cles/03-kb-logo.png" alt="" /></span>
+							<a href="https://maartengr.github.io/KeyBERT/api/keybert.html" target="_blank">KeyBERT</a> est un mod&egrave;le cr&eacute;&eacute; par Maarten Grootendorst en 2020 qui permet d'extraire les mots-cl&eacute;s d'un document textuel.
+							Il s'agit d'un mod&egrave;le non supervis&eacute;, ne n&eacute;cessitant pas d'entra&icirc;nement ni de traitement pr&eacute;alable. Il est simple &agrave; impl&eacute;menter et n&eacute;cessite peu de ressources pour fonctionner.
+							Il est r&eacute;put&eacute; comme performant et est modulable. Il a actuellement plus de 3000 &#9733; et 300 forks sur <a href="https://github.com/MaartenGr/keyBERT" target="_blank">GitHub</a>,
+							est cit&eacute; dans 8 &eacute;tudes sur <a href="https://arxiv.org/search/?query=keybert&searchtype=all&source=header" target="_blank">Arxiv</a>
+							et a fait l'objet d'un article sur <a href="https://towardsdatascience.com/keyword-extraction-with-bert-724efca412ea" target="_blank">Towards Data Science</a>.
+							Pour ne rien g&acirc;cher, il dispose d'une <a href="https://maartengr.github.io/KeyBERT/api/keybert.html" target="_blank">documentation tr&egrave;s compl&egrave;te</a>.
+							<br><br>
+							<b>Le fonctionnement de KeyBERT est bas&eacute; sur un concept assez simple, mais tr&egrave;s efficace :</b>
+							<ul>
+								<li>Le mod&egrave;le prend en entr&eacute;e un document texte, sans traitement pr&eacute;alable particulier.</li>
+								<li>Le document est tok&eacute;nis&eacute;, par d&eacute;faut avec <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html" target="_blank">CountVectorizer</a> de Scikit-Learn.</li>
+								<li>Des embeddings sont extraits, d'une part pour chaque mot, d'autre part pour le document entier.
+									Par d&eacute;faut un <a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2" target="_blank">mod&egrave;le d&eacute;riv&eacute; de BERT</a> est utilis&eacute;, mais il peut &ecirc;tre remplac&eacute; par tout autre mod&egrave;le
+								capable de r&eacute;aliser ce type d'embedding.</li>
+								<li>Les embeddings de chaque token, autrement dit de chaque mot-cl&eacute; candidat, sont compar&eacute;s avec l'embedding du document.
+									Par d&eacute;faut, la <a href="https://fr.wikipedia.org/wiki/Similarit%C3%A9_cosinus" target="_blank">similarit&eacute; cosinus</a> est utilis&eacute;e.</li>
+								<li>Il ne reste plus alors qu'&agrave; s&eacute;lectionner les tokens avec le plus de similarit&eacute; avec le document complet, ils repr&eacute;senteront les mots-cl&eacute;s les plus pertinents pour d&eacute;finir le document.</li>
+							</ul>
+							</p>
+							<p align="center">
+								<b>Fonctionnement de KeyBERT</b><br><br>
+									<img src="images/06-extraction-mots-cles/04-keybert-fonctionnement.png" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<br>
+							<h1>Mise en &oelig;uvre : baseline et KeyBERT</h1>
+							<p>
+								Comme mentionn&eacute; pr&eacute;c&eacute;demment, notre <b>baseline sera bas&eacute;e sur NMF</b>, approche test&eacute;e dans le cadre de mon <a href="04-suggestion-mots-cles.html" target="_blank">pr&eacute;c&eacute;dent projet</a>.
+								Nous allons voir que cette approche est assez fastidieuse, elle comporte de nombreuses &eacute;tapes.
+							</p>
+							<p align="center">
+								<b>Fonctionnement de la baseline NMF</b><br><br>
+									<img src="images/06-extraction-mots-cles/05-baseline-fonctionnement.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Cette approche n&eacute;cessite une phase de d&eacute;couverte, de pr&eacute;traitements et d'extraction.</i>
+									<br><br><br>
+								<b>Fonctionnement de KeyBERT</b><br><br>
+									<img src="images/06-extraction-mots-cles/06-keybert-fonctionnement-simp.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>KeyBERT g&egrave;re les pr&eacute;traitements et l'extraction, aucune phase de d&eacute;couverte n'est n&eacute;cessaire.</i>
+							</p>
+							<br>
+							<p>
+								Pour fonctionner, <b>NMF</b> a besoin de passer par une &eacute;tape de <b>d&eacute;couverte des sujets</b>, durant laquelle <b>tout le corpus</b> (ensemble des documents) va &ecirc;tre explor&eacute;.
+								<b>KeyBERT</b> n'a pas besoin de cette &eacute;tape et peut donc <b>fournir des mots-cl&eacute;s &agrave; partir d'un seul document</b>, sans plus de contexte : cet avantage est consid&eacute;rable.
+							</p>
+							<br>
+							<h1>&Eacute;valuation des performances</h1>
+							<p>
+								Il va falloir d&eacute;finir une m&eacute;thode d'&eacute;valuation des performances pour pouvoir comparer KeyBERT avec notre baseline.
+								<br><br>
+								<b>Nous allons nous concentrer sur deux m&eacute;triques m&eacute;tier : </b><br>
+								<ul>
+									<li><b>&laquo; Au moins un tag commun &raquo; </b>: avec les tags r&eacute;els, ceux indiqu&eacute;s par les auteurs des messages.</li>
+									<li><b>&laquo; Absence de pr&eacute;diction &raquo; </b>: est-ce que le mod&egrave;le est capable de toujours fournir une pr&eacute;diction ?</li>
+								</ul>
+								En plus de ceci, <b>dans le cas o&ugrave; il n'y a pas de tag en commun</b>, les mots-cl&eacute;s pr&eacute;dits seront pass&eacute;s en revue : <b>sont-ils malgr&eacute; tout coh&eacute;rents</b> par rapport au contenu du document ?
+
+							</p>
+							<p align="center">
+								<b>M&eacute;thode d'&eacute;valuation des performances</b><br><br>
+									<img src="images/06-extraction-mots-cles/07-eval-perf.png" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<br>
+							<h1>Baseline Vs KeyBERT : les r&eacute;sultats</h1>
+
+							<p>
+								Comparons les r&eacute;sultats obtenus en utilisant la m&eacute;thode d'&eacute;valuation des performances pr&eacute;c&eacute;demment d&eacute;crite.
+							</p>
+							<p align="center">
+								<b>M&eacute;thode d'&eacute;valuation des performances</b><br><br>
+									<img src="images/06-extraction-mots-cles/08-eval-kb-tab.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>La premi&egrave;re colonne indique le temps n&eacute;cessaire pour r&eacute;aliser les pr&eacute;dictions sur 100 documents.</i>
+							</p>
+							<p>
+								Notons que les temps de pr&eacute;dictions mentionn&eacute;s ci-dessus <b>n'incluent pas la dur&eacute;e n&eacute;cessaire &agrave; la d&eacute;couverte des sujets</b>, qui n'est pas n&eacute;gligeable. Rappelons que cette &eacute;tape n'est <b>pr&eacute;sente que pour la baseline NMF</b>.
+							</p>
+							<br>
+							<p align="center">
+								<b>Passage en revue en cas d'&eacute;chec de pr&eacute;vision</b><br><br>
+									<img src="images/06-extraction-mots-cles/09-eval-fail-nmf-kb.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>&laquo; &Eacute;chec &raquo; sous-entend ici : aucun tag en commun avec les tags r&eacute;els.</i>
+							</p>
+							<p>
+								Les r&eacute;sultats sont sans appel : <b>KeyBERT est bien plus performant</b> que notre baseline, son fonctionnement est bien <b>plus simple</b> et n&eacute;cessite <b>moins de ressources</b> pour fonctionner.
+							</p>
+							<p align="center">
+								<b>Wordclouds des tags r&eacute;els et pr&eacute;dits sur les documents test&eacute;s avec KeyBERT</b><br><br>
+									<img src="images/06-extraction-mots-cles/10-comparo-wordclouds.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Grande similitude entre les tags r&eacute;els et pr&eacute;dits.</i>
+							</p>
+							<p>
+								Ce nouveau mod&egrave;le KeyBERT apporte des <b>r&eacute;sultats tr&egrave;s satisfaisants</b>, mais est-il possible d'<b>am&eacute;liorer encore ces r&eacute;sultats</b> et &agrave; <b>quel co&ucirc;t</b> ? C'est ce que nous allons voir avec l'approche suivante.
+							</p>
+							<br>
+							<h1>Aller plus loin : utiliser un <i>Large Language Model</i> (LLM)</h1>
+							<p>
+								Pour cette approche, nous allons utiliser le <b>LLM <a href="https://mistral.ai/fr/" target="_blank">Mistral 7B</a></b>, un r&eacute;cent grand mod&egrave;le de langage d&eacute;velopp&eacute; par l'entreprise Fran&ccedil;aise Mistral AI.
+								Ce mod&egrave;le comporte 7 milliards de param&egrave;tres, une taille restreinte par rapport &agrave; ses concurrents.
+								En tant que mod&egrave;le de traitement du langage naturel, <b>Mistral est con&ccedil;u pour comprendre et g&eacute;n&eacute;rer du texte de mani&egrave;re contextuelle</b>, ce qui va ici nous servir &agrave; g&eacute;n&eacute;rer des mots-cl&eacute;s r&eacute;sumant au mieux nos documents.
+								<br><br>
+								Plus exactement, nous utiliserons la <b>version quantifi&eacute;e</b> <i>mistral-7b-instruct-v0.1.Q5_K_M</i>, n&eacute;cessitant moins de ressources pour fonctionner, au prix d'une r&eacute;duction de sa pr&eacute;cision.
+								Concr&egrave;tement, une version quantifi&eacute;e signifie que ses poids ont &eacute;t&eacute; simplifi&eacute;s, arrondis (moins de nombres apr&egrave;s la virgule).
+								<br><br>
+								Le concept est <b>on ne peut plus simple</b> : il suffit de <b>fournir le contenu du document</b> au mod&egrave;le et <b>lui <i>demander</i> de nous fournir des mots-cl&eacute;s</b> pertinents, le tout via un &laquo; prompt &raquo;.
+							</p>
+							<p align="center">
+								<b>Prédiction de mots-cl&eacute;s avec Mistral</b><br><br>
+									<img src="images/06-extraction-mots-cles/11-concept-mistral.png" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>						
+							<p>
+								Pour des r&eacute;sultats plus pr&eacute;cis, il est utile d'<b>optimiser le prompt</b>, notamment en fournissant au mod&egrave;le un <b>exemple pr&eacute;alable</b>. Voici pour exemple le prompt utilis&eacute; pour ce projet :
+							</p>
+							<pre><code>
+prompt = f"""
+&lt;s&gt;[INST]
+Please provide {nb_tags} and only {nb_tags} relevant keywords, separated by a coma, for this text:
+"how can i convert an array into a dataframe"
+
+Please give me {nb_tags} most relevant keywords in this document and separate them with commas. Your reponse should be only: keyword 1, keyword 2, keyword 3, keyword 4, keyword 5
+Make sure you to only return the {nb_tags} keywords and say nothing else. Not two, not four, just {nb_tags} keywords, no less, no more.
+[/INST]pandas, dataFrame, array, python, conversion&lt;/s&gt;
+
+[INST]
+Please provide {nb_tags} and only {nb_tags} relevant keywords, separated by a coma, for this text:
+{document}
+
+Please give me {nb_tags} most relevant keywords in this document and separate them with commas. Your reponse should be only: keyword 1, keyword 2, keyword 3, keyword 4, keyword 5
+Make sure you to only return the {nb_tags} keywords and say nothing else. Not two, not four, just {nb_tags} keywords, no less, no more.
+[/INST]
+"""
+							</code></pre>
+							<br><br>
+							<h1>R&eacute;sultats de l'approche LLM</h1>
+							<p>
+								Faisons le bilan des trois approches : baseline, KeyBERT et Mistral.
+							</p>
+							<p align="center">
+								<b>Bilan des trois approches</b><br><br>
+									<img src="images/06-extraction-mots-cles/12-results-mistral.png" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								Les r&eacute;sultats fournis par Mistral sont <b>excellents</b>, avec des mots-cl&eacute;s pr&eacute;dits encore plus proches des mots-cl&eacute;s r&eacute;els.
+								Et dans les cas o&ugrave; il n'y a pas de mot-cl&eacute; en commun, les <b>propositions du mod&egrave;le sont tr&egrave;s pertinentes</b>.
+								<br><br>
+								<b>Diff&eacute;rence majeure avec la baseline et KeyBERT : </b>il ne s'agit pas d'une simple extraction, <b>les mots-cl&eacute;s propos&eacute;s ne proviennent pas forc&eacute;ment du document</b>.
+								Il y a une part d'interpr&eacute;tation, de reformulation, le mod&egrave;le de langage <i>comprend</i> le document.
+								Bien entendu le terme &laquo; comprend &raquo; est une image, &agrave; ne pas confondre avec la compr&eacute;hension humaine.
+								<br><br>
+								<b>Co&ucirc;t d'un tel gain de performances : </b>la dur&eacute;e de pr&eacute;diction sur 100 documents est <b>86 fois plus &eacute;lev&eacute;e qu'avec KeyBERT</b>, alors m&ecirc;me que les calculs de Mistral ont &eacute;t&eacute; acc&eacute;l&eacute;r&eacute;s avec une carte graphique.
+								De plus, le LLM n&eacute;cessite bien plus de m&eacute;moire RAM pour fonctionner, malgr&eacute; l'utilisation d'une version quantifi&eacute;e du mod&egrave;le.
+								Mettre en production un mod&egrave;le d'une telle complexit&eacute; pour une simple t&acirc;che d'extraction de mots-cl&eacute;s est, &agrave; l'heure actuelle tout du moins, <b>une option compl&egrave;tement d&eacute;mesur&eacute;e</b>.
+								<br><br>
+								<b>Nous allons donc porter notre choix sur le mod&egrave;le KeyBERT, dont le ratio co&ucirc;t/performances est bien plus int&eacute;ressant.</b>
+							</p>
+
+								<h1>D&eacute;mo du nouveau concept</h1>
+
+								<p>
+									Dans le cadre de ce projet, pour faire une d&eacute;monstration du concept, j'ai r&eacute;alis&eacute; une application/dashboard avec <a href="https://streamlit.io/" target="_blank">Streamlit</a>,
+									une biblioth&egrave;que open-source en Python con&ccedil;ue pour cr&eacute;er facilement des applications web interactives (notamment les graphiques) et conviviales.
+									Tout le code est disponible sur mon GitHub.
+									L'application avait ensuite &eacute;t&eacute; int&eacute;gr&eacute;e dans une image Docker puis d&eacute;ploy&eacute;e dans une instance de conteneur sur Azure.
+								</p>
+								<p align="center">
+									<b>Application en action</b><br><br>
+										<img src="images/06-extraction-mots-cles/13-app-screen-1.png" alt="" style="max-width: 100%; height: auto;" /><br>
+										<img src="images/06-extraction-mots-cles/14-app-screen-2.png" alt="" style="max-width: 100%; height: auto;" /><br>
+										<img src="images/06-extraction-mots-cles/15-app-screen-3.png" alt="" style="max-width: 100%; height: auto;" /><br>
+								</p>
+
+								<h1>Conclusion</h1>
+
+								<p>
+									<b>Nous avons atteint les objectifs que nous nous &eacute;tions fix&eacute;s, &agrave; savoir : </b>
+									<ul>
+										<li>R&eacute;aliser une veille afin d'identifier des mod&egrave;les permettant d'am&eacute;liorer les r&eacute;sultats du <a href="04-suggestion-mots-cles.html" target="_blank">pr&eacute;c&eacute;dent projet</a>.</li>
+										<li>&Eacute;valuer ces mod&egrave;les.</li>
+										<li>R&eacute;aliser un dashboard pour faire une d&eacute;mo du nouveau concept.</li>
+									</ul>
+								</p>
+	
+								<h1>Perspectives</h1>
+	
+								<p>
+									<b>&Agrave; l'issue de ce travail, nous pouvons envisager les perspectives suivantes : </b>
+									<ul>
+										<li>Tester KeyBERT avec d'autres mod&egrave;les d'embedding.</li>
+										<li>R&eacute;entra&icirc;ner partiellement ces mod&egrave;les d'embedding sur des th&eacute;matiques sp&eacute;cifiques.</li>
+										<li>Tester d'autres mod&egrave;les LLM moins co&ucirc;teux en ressources.</li>
+										<li>R&eacute;entra&icirc;ner partiellement ces mod&egrave;les LLM sur des th&eacute;matiques sp&eacute;cifiques.</li>
+									</ul>
+
+									<b>Remarque : </b>dans le cadre de ce projet, je m'&eacute;tais contraint de produire des documents sp&eacute;cifiques &agrave; la cr&eacute;ation d'une preuve de concept (plan de travail pr&eacute;visionnel et note m&eacute;thodologique)
+									que vous pourrez retrouver sur mon GitHub.
+	
+								</p>
+	
+							<p>
+								<blockquote>
+									<img src="images/info.png" width="35" height="35"/>
+									<span><b>Retrouvez tout le code et les fichiers de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+								</blockquote>
+							</p>
+						
 						</div>
 					</div>
 
