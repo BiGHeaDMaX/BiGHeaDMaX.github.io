@@ -213,7 +213,7 @@ print(f"{avec_doublon - len(img_pil)} doublons ont &eacute;t&eacute; supprim&eac
 							<h1>ZCA Whitening</h1>
 							<p>
 							La ZCA (Zero Component Analysis) whitening est bas&eacute;e sur la PCA (Principal Component Analysis) whitening. Avec la ZCA whitening, la derni&egrave;re &eacute;tape comporte une multiplication de matrice suppl&eacute;mentaire
-							avec la matrice de valeurs propres. Cette technique permet de mieux conserver la structure des donn&eacute;es que la PCA whitening, mais est plus coûteuse en termes de calculs.
+							avec la matrice de valeurs propres. Cette technique permet de mieux conserver la structure des donn&eacute;es que la PCA whitening, mais est plus co&ucirc;teuse en termes de calculs.
 							Avec cette technique les images transform&eacute;es ressemblent plus aux images originales.
 							Plus d'<a href="https://www.aiplusinfo.com/blog/pca-whitening-vs-zca-whitening-what-is-the-difference/" target="_blank">informations &agrave; ce sujet ici</a>.
 							<br>
@@ -222,7 +222,7 @@ print(f"{avec_doublon - len(img_pil)} doublons ont &eacute;t&eacute; supprim&eac
 								<br>
 								<br>
 								<b>Remarque : </b><br>
-								Cette technique est coûteuse en ressources, notamment en m&eacute;moire vive.
+								Cette technique est co&ucirc;teuse en ressources, notamment en m&eacute;moire vive.
 								En effet, la matrice de corr&eacute;lation qui va &ecirc;tre cr&eacute;&eacute;e lors du processus aura pour dimension <i>hauteur &times; largeur &times; canaux</i> des images,
 								ce qui peut vite donner des dimensions tr&egrave;s grandes en fonction de la taille des images. Pour cette raison, les images vont &ecirc;tre redimensionn&eacute;es en 100x100 pour ce traitement.
 							</p>
