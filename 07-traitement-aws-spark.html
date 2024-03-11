@@ -48,7 +48,7 @@
 						<li><a href="03-segmenter-des-clients.html">Segmenter des clients d'un site e-commerce</a></li>
 						<li><a href="04-suggestion-mots-cles.html">Suggestion automatique de mots-cl&eacute;s</a></li>
 						<li><a href="05-classer-des-images.html">Classer des images &agrave; l'aide d'algorithmes de Deep Learning</a></li>
-						<li><a href="06-extraction-mots-cles.html">Nouvelles méthodes d'extraction de mots-cl&eacute;s</a></li>
+						<li><a href="06-extraction-mots-cles.html">Nouvelles m&eacute;thodes d'extraction de mots-cl&eacute;s</a></li>
 						<li><a href="07-traitement-aws-spark.html">R&eacute;aliser un traitement Big Data avec Spark</a></li>
 						<li><a href="08-cadrage-ia.html">R&eacute;aliser le cadrage d'un projet IA</a></li>
 					</ul>
@@ -57,11 +57,272 @@
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
-							<!-- <h1>Titre</h1> -->
-							<span class="image main"><img src="images/07-realiser-un-traitement/01-realiser-un-traitement.jpg" alt="Traitement Spark" /></span>
-							<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-							<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
+							<span class="image main"><img src="images/07-realiser-un-traitement/01-realiser-un-traitement.png" alt="Traitement Spark" /></span>
+						<h1>Introduction</h1>
+						<p>
+							Ce projet a pour but de <b>r&eacute;aliser un traitement sur des donn&eacute;es volumineuses &agrave; l'aide de Spark dans le cloud</b>.
+							L'id&eacute;e apr&egrave;s ce premier traitement serait &agrave; terme de cr&eacute;er une application mobile de reconnaissance de fruits et l&eacute;gumes &agrave; partir de photos.
+							<br><br>
+							Ici le projet se concentrera sur la mise en place des premi&egrave;res briques de traitement qui serviront au moment de <b>passer &agrave; l'&eacute;chelle en termes de volume de donn&eacute;es</b>.
+							<br><br>
+							Notre travail sera bas&eacute; sur le dataset <b><a href="https://www.kaggle.com/datasets/moltean/fruits" target="_blank">Fruits-360</a></b>, qui contient 90 000 <b>photos d&eacute;tour&eacute;es de fruits et l&eacute;gumes</b>.
+							<br><br>
+							<b>Les objectifs du projet sont les suivants : </b>
+							<ul>
+								<li>Proc&eacute;der &agrave; une extraction de features des images.</li>
+								<li>R&eacute;duire la dimension des features obtenues.</li>
+								<li>Nos traitements devront pouvoir &ecirc;tre pass&eacute;s &agrave; l'&eacute;chelle.</li>
+								<li>Notre code devra &ecirc;tre d&eacute;ploy&eacute; sur le cloud.</li>
+							</ul>
+
+							<b>Pour y parvenir, les &eacute;tapes suivantes seront r&eacute;alis&eacute;es : </b><br><br>
+							<ul>
+								<li>L'extraction de features sera r&eacute;alis&eacute;e par <i>transfer learning</i>, &agrave; l'aide d'un mod&egrave;le pr&eacute;entrain&eacute;.</li>
+								<li>La r&eacute;duction de dimension sera r&eacute;alis&eacute;e avec une ACP.</li>
+								<li>Pour assurer la mise &agrave; l'&eacute;chelle, nous utiliserons Spark via la biblioth&egrave;que <a href="https://spark.apache.org/docs/latest/api/python/index.html" target="_blank">PySpark</a>.</li>
+								<li>Le tout sera d&eacute;ploy&eacute; sur <a href="https://aws.amazon.com/fr/" target="_blank">AWS</a>, avec un cluster <a href="https://aws.amazon.com/fr/emr/" target="_blank">EMR</a> pour les calculs et un serveur <a href="https://aws.amazon.com/fr/s3/" target="_blank">S3</a> pour le stockage.</li>
+							</ul>
+						</p>
+						
+
+						<p>
+							<blockquote>
+								<img src="images/info.png" width="35" height="35"/>
+								<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+							</blockquote>
+						</p>
+						
+						<h1>Jeu de donn&eacute;es</h1>
+
+						Notre dataset <a href="https://www.kaggle.com/datasets/moltean/fruits" target="_blank">Fruits-360</a>, contient donc 90 000 photos d&eacute;tour&eacute;es de fruits et l&eacute;gumes.
+						<br><br>
+						<p align="center">
+								<img src="images/07-realiser-un-traitement/02-dataset.png" alt="" style="max-width: 100%; height: auto;" /><br>
+						</p>
+						<p>
+							Pour r&eacute;aliser les captures, chaque fruit et l&eacute;gume a &eacute;t&eacute; plac&eacute; sur un axe rotatif et film&eacute; avec une cam&eacute;ra.
+							Des photos ont alors &eacute;t&eacute; r&eacute;cup&eacute;r&eacute;es des vid&eacute;os, permettant ainsi de disposer de tous les angles de vues des fruits et l&eacute;gumes.
+						</p>
+						<p align="center">
+							<b>Quelques exemples</b><br><br>
+								<img src="images/07-realiser-un-traitement/03-exemples.png" alt="" style="max-width: 100%; height: auto;" /><br>
+								<i>Les fruits et l&eacute;gumes sont d&eacute;tour&eacute;s et donc sortis de tout contexte.</i>
+						</p>
+						<br><br>
+						<h1>Cr&eacute;ation de l'environnement big data</h1>
+						<p>
+							Pour ex&eacute;cuter nos traitements, nous allons mettre en place notre environnement Big Data &agrave; l'aide des services propos&eacute;s par <b><a href="https://aws.amazon.com/fr/" target="_blank">Amazon Web Service</a></b>.
+							
+						</p>
+						<p align="center">
+							<br>
+								<img src="images/07-realiser-un-traitement/04-services.png" alt="" style="max-width: 100%; height: auto;" /><br>
+								<i>Pour anticiper toute probl&eacute;matique RGPD &agrave; venir, nous baserons nos traitements et stockage en France.</i>
+						</p>
+						<br><br>
+						<h1>EMR (Elastic MapReduce)</h1>
+
+						<p>
+							<a href="https://aws.amazon.com/fr/emr/" target="_blank">EMR</a> (Elastic MapReduce) est un service de <b>cloud computing</b> g&eacute;r&eacute; par Amazon Web Services (AWS) con&ccedil;u pour traiter et
+							analyser de <b>grandes quantit&eacute;s de donn&eacute;es</b> &agrave; l'aide du framework open-source <b><a href="https://hadoop.apache.org/" target="_blank">Apache Hadoop</a></b> et d'autres outils associ&eacute;s
+							tels que <b><a href="https://spark.apache.org/" target="_blank">Apache Spark</a></b>.
+							EMR simplifie le processus de configuration, de d&eacute;ploiement et de gestion de clusters de traitement de donn&eacute;es, permettant d'ex&eacute;cuter des t&acirc;ches de <b>traitement
+							et d'analyse de donn&eacute;es &agrave; grande &eacute;chelle</b>. Avec EMR, les utilisateurs peuvent <b>facilement redimensionner leurs clusters pour s'adapter &agrave; la demande</b>, optimiser les performances
+							et r&eacute;duire les co&ucirc;ts gr&acirc;ce &agrave; des options de tarification flexibles bas&eacute;es sur l'utilisation.
+							<br><br>
+							Ici, pour limiter les co&ucirc;ts de nos exp&eacute;rimentation, nous limiterons la taille du cluster &agrave; trois machines : un Master qui ex&eacute;cutera notre code et s'occupera de r&eacute;partir les t&acirc;ches
+							et deux Cores qui r&eacute;aliseront les t&acirc;ches.
+							<br><br>
+							Notre code prendra la forme d'un <b>notebook Jupyter</b>. Ce notebook, les donn&eacute;es produites par notre traitement (les features extraites)
+							ainsi que tous les logs d'ex&eacute;cutions de notre programme Spark seront <b>stock&eacute;s sur notre serveur S3 (Simple Storage Service)</b> et non sur le cluster EMR.
+							Nos images &agrave; traiter seront &eacute;galement stock&eacute;es sur S3.
+							<br><br>
+							Ce point est important car il permettra la <b>persistance des donn&eacute;es</b>. En effet, pour limiter les co&ucirc;ts, le cluster ne sera actif que le temps de l'ex&eacute;cution de notre programme.
+							Si nos donn&eacute;es &eacute;taient localis&eacute;es sur notre cluster, par exemple sur notre n&oelig;ud Master, <b>elles seraient toutes perdues</b> au moment de la r&eacute;siliation du cluster !
+							Il conviendra de bien situer notre cluster EMR et notre serveur S3 <b>dans le m&ecirc;me <a href="https://aws.amazon.com/fr/vpc/" target="_blank">VPC</a></b> (Virtual Private Cloud) afin de nous assurer d'une bonne communication entre les deux.
+							<br><br>
+							Diff&eacute;rents <b>frameworks et applications</b> sont propos&eacute;s au moment de la configuration du cluster EMR. Nous devrons aussi <b>param&eacute;trer un bootstrap</b> qui installera quelques d&eacute;pendances
+							suppl&eacute;mentaires &agrave; l'instanciation des machines. Nous y pr&eacute;ciserons une version un peu ant&eacute;rieure de la biblioth&egrave;que <i>Pandas</i> pour &eacute;viter un probl&egrave;me de compatibilit&eacute;
+							avec la version de <i>NumPy</i> actuellement install&eacute;e par d&eacute;faut sur les machines. La surcouche <i>Keras</i> devra &eacute;galement &ecirc;tre install&eacute;e, puisque l'installation de <i>TensorFlow</i>
+							propos&eacute;e ne l'inclue pas.
+						</p>
+						<br><br>
+						<p align="center">
+							<b>R&eacute;capitulatif de la configuration du cluster EMR</b><br><br>
+								<img src="images/07-realiser-un-traitement/05-config-emr.png" alt="" style="max-width: 100%; height: auto;" /><br>
+								<i>La persistance des donn&eacute;es sera mise en place avec notre serveur S3.</i>
+						</p>
+						<p>
+							Une fois notre cluster EMR configur&eacute;, il va falloir s'y connecter. Nous nous connecterons ici uniquement sur le n&oelig;ud Master, sur lequel sera ex&eacute;cut&eacute; notre notebook, via un <b>tunnel SSH</b>.
+							Il faudra donc au pr&eacute;alable penser &agrave; ouvrir le port 22 de cette machine, ferm&eacute; par d&eacute;faut. L'acc&egrave;s au notebook se fera via un navigateur, il faudra donc y param&eacute;trer un <b>proxy</b>.
+							Pour ce projet j'ai utilis&eacute; <a href="https://chromewebstore.google.com/detail/foxyproxy/gcknhkkoolaabfmlnjonogaaifnjlfnp?hl=fr" target="_blank">FoxyProxy</a> qui est tr&egrave;s simple d'utilisation.
+						</p>
+						<br><br>
+						<p align="center">
+							<b>Connexion au cluster EMR et ex&eacute;cution du programme</b><br><br>
+								<img src="images/07-realiser-un-traitement/06-connect-emr.png" alt="" style="max-width: 100%; height: auto;" /><br>
+								<i>Nous nous connectons au n&oelig;ud Master, qui ex&eacute;cute le notebook &eacute;crit en PySpark, ce qui permet d'ex&eacute;cuter le programme sur Spark, qui distribue alors les t&acirc;ches &agrave; r&eacute;aliser sur les Cores.</i>
+						</p>
+						<br><br>
+						<h1>Concernant le serveur S3</h1>
+						<p>
+							J'ai jusqu'ici parl&eacute; de <i>serveur S3</i>, il faudra bien entendu y cr&eacute;er un <b><i>bucket</i></b>. C'est sur ce dernier que seront stock&eacute;es nos donn&eacute;es. Les &eacute;changes de donn&eacute;es entre l'EMR et notre bucket
+							seront faciles, puisque nous avons pris soin de placer ces derniers <b>sur le m&ecirc;me <a href="https://aws.amazon.com/fr/vpc/" target="_blank">VPC</a></b> (Virtual Private Cloud).
+							<br><br>
+							Par d&eacute;faut, l'ensemble des fichiers stock&eacute;s sur un bucket est <b>inaccessible depuis l'ext&eacute;rieur</b> (notamment de notre VPC). Si nous souhaitons rendre accessibles certains fichiers,
+							il faudra alors d&eacute;sactiver cette option &laquo; Bloquer l'acc&egrave;s public &raquo; par d&eacute;faut et param&eacute;trer l'acc&egrave;s des fichiers que l'on souhaite partager.
+							Cette option du blocage de tous les fichiers est un bon garde-fou pour assurer la s&eacute;curit&eacute; de nos donn&eacute;es, <b>la d&eacute;sactiver n&eacute;cessitera la plus grande vigilance</b> dans nos param&eacute;trages.
+							<br><br>
+							Dans &laquo; Strat&eacute;gie de compartiment &raquo; il est possible de <b>param&eacute;trer l'acc&egrave;s &agrave; certains fichiers/dossiers</b>, au format JSON. Par exemple pour partager le notebook et le fichier de sortie de notre programme :
+						</p>
+						<pre><code>
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Principal": "*",
+			"Action": "s3:GetObject",
+			"Resource": "arn:aws:s3:::Nom_Du_Bucket/jupyter/jovyan/02 - Traitements (AWS-EMR).ipynb"
+		},
+		{
+			"Effect": "Allow",
+			"Principal": "*",
+			"Action": "s3:GetObject",
+			"Resource": "arn:aws:s3:::Nom_Du_Bucket/Results/pcaFeatures.csv"
+		}
+	]
+}
+						</code></pre>
+						<p>
+							&laquo; "Principal": "*" &raquo; signifie que n'importe qui disposant du lien pourra acc&eacute;der aux fichiers. <b>Prudence donc avec ce type de configuration tr&egrave;s ouverte</b>.
+							Il est aussi possible de restreindre cet acc&egrave;s par exemple &agrave; des utilisateurs, groupes d'utilisateurs ou r&ocirc;les <a href="https://aws.amazon.com/fr/iam/" target="_blank">IAM</a> (Identity and Access Management),
+						<b>ce qui serait une meilleure pratique</b>.
+						</p>
+						<br><br>
+						<h1>Chaine de traitement des images</h1>
+						<p>
+							Dans le cadre d'un traitement distribu&eacute; avec Spark, l'&eacute;valuation des op&eacute;rations est dite &laquo; paresseuse &raquo; (&laquo; lazy evaluation &raquo;), c'est-&agrave;-dire que Spark <b>attend le plus possible
+							pour ex&eacute;cuter</b> le graphe des instructions de traitement. Plus pr&eacute;cis&eacute;ment, une <b>action d&eacute;clenche l'ex&eacute;cution</b> des transformations qui la pr&eacute;c&egrave;dent.
+							<br><br>
+							<b><u>Chargement des donn&eacute;es</u> : </b><br><br>
+							Nous chargeons nos images contenues dans le dossier sur notre bucket S3 au sein d'un <b><a href="https://spark.apache.org/docs/latest/sql-programming-guide.html" target="_blank">Spark Dataframe</a></b>,
+							au format binaire, ce qui offre plus de souplesse dans la fa&ccedil;on de pr&eacute;traiter les images. Nous ajoutons une colonne <i>label</i> &agrave; notre dataframe en r&eacute;cup&eacute;rant les noms des dossiers des diff&eacute;rentes images.
+							<br><br>
+							<b><u>Pr&eacute;paration du mod&egrave;le et extraction des features</u> : </b><br><br>
+							Nous allons extraire les features des images &agrave; l'aide de la technique de <b><i>transfert learning</i></b>. Pour ce faire, utiliserons le mod&egrave;le <b><a href="https://keras.io/api/applications/mobilenet/" target="_blank">MobileNetV2</a></b>, 
+							connu pour sa <b>rapidit&eacute; d'ex&eacute;cution</b> compar&eacute;e &agrave; d'autres mod&egrave;les comme <i>VGG16</i> par exemple. Nous allons donc r&eacute;cup&eacute;rer <b>l'avant derni&egrave;re couche du mod&egrave;le en sortie</b>.
+							La <b>derni&egrave;re couche</b>, avec sa fonction d'activation <i>Softmax</i>, est destin&eacute;e &agrave; la <b>classification</b>, ce que nous ne souhaitons pas ici.
+							<br><br>
+							MobileNetV2, lorsqu'on l'utilise en incluant toutes ses couches, attend obligatoirement des images de dimension (224,224,3).
+							Nos images &eacute;tant toutes de dimension (100,100,3), nous devrons simplement les <b>redimensionner</b> avant de les confier au mod&egrave;le.
+
+							<ol>
+							 <li>Nous chargeons le mod&egrave;le MobileNetV2 avec les <b>poids pr&eacute;calcul&eacute;s</b> issus d'<a href="https://www.image-net.org/" target="_blank">ImageNet</a> et en sp&eacute;cifiant le format de nos images en entr&eacute;e.</li>
+							 <li>Nous cr&eacute;ons un nouveau mod&egrave;le avec :</li>
+								<ul>
+							  <li>En entr&eacute;e : l'entr&eacute;e du mod&egrave;le MobileNetV2</li>
+							  <li>En sortie : l'avant derni&egrave;re couche du mod&egrave;le MobileNetV2</li>
+								</ul>
+							</ol>
+							Tous les workeurs (sur les Cores) doivent pouvoir <b>acc&eacute;der au mod&egrave;le ainsi qu'&agrave; ses poids</b>. Une bonne pratique consiste &agrave; charger le mod&egrave;le sur le driver (Master)
+							puis &agrave; <b>diffuser ensuite les poids</b> aux diff&eacute;rents workeurs en faisant un <i>broadcast</i> des poids.
+							<br><br>
+							Puis, nous lan&ccedil;ons l'extraction des features. Pour rappel, il s'agit ici d'une &eacute;tape de <b><i>transformation</i></b> dans Spark, autrement dit l'extraction r&eacute;elle des features <b>n'aura pas encore lieu</b>,
+							elle sera <b>d&eacute;clench&eacute;e par une action</b> plus tard.
+							<br><br>
+							<b><u>R&eacute;alisation de la PCA</u> : </b><br><br>
+							Spark dispose d'une <b><a href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.ml.feature.PCA.html" target="_blank">impl&eacute;mentation de PCA</a></b>.
+							Nous ferons au pr&eacute;alable une <b>conversion de la colonne <i>features</i> en vecteurs</b>, car c'est le format d'entr&eacute;e requis pour faire une PCA avec Spark.
+							<br><br>
+							La r&eacute;alisation de la PCA va constituer une <b>action</b> qui va d&eacute;clencher les calculs de featurisation. En effet, pour r&eacute;aliser la PCA, <b>l'ensemble des features doit &ecirc;tre disponible</b>
+							pour pouvoir calculer la matrice de covariance, les vecteurs propres et les valeurs propres associ&eacute;es. Par cons&eacute;quent, on ne peut pas effectuer une PCA au fur et &agrave; mesure que les valeurs sont cr&eacute;&eacute;es.
+							<br><br>
+							<b><u>Enregistrement des r&eacute;sultats</u> : </b><br><br>
+							Les donn&eacute;es de sortie seront stock&eacute;es sur notre bucket S3 au <b>format <a href="https://parquet.apache.org/" target="_blank">Parquet</a></b>. Ce format offre une <b>compression efficace</b>,
+							un <b>sch&eacute;ma de colonnes</b> et prend en charge le <b>partitionnement des donn&eacute;es</b>, ce qui en fait un choix populaire pour les environnements Apache Hadoop et Spark. 
+							<br><br>
+							Ensuite nous pourrons lire ces donn&eacute;es au format Parquet &agrave; l'aide de Pandas, puis <b>exporter nos features r&eacute;duites par PCA au format CSV</b>, que nous stockerons &eacute;galement sur notre bucket S3.
+						</p>
+						<p align="center">
+							<b>R&eacute;capitulatifs des traitements r&eacute;alis&eacute;s</b><br><br>
+								<img src="images/07-realiser-un-traitement/07-recap-traitements.png" alt="" style="max-width: 100%; height: auto;" /><br>
+								
+						</p>
+						<p>
+							L'avantage d'avoir mis en place la <b>persistance des logs de Spark</b> sur notre bucket S3 est que nous pouvons prendre le temps d'<b>analyser en d&eacute;tail
+							l'historique d'ex&eacute;cution</b> de notre programme, dont la granularit&eacute; est assez &eacute;lev&eacute;e, m&ecirc;me une fois notre cluster EMR r&eacute;sili&eacute;.
+							<br><br>
+							<b>Cette &eacute;tape est importante</b>, puisqu'elle nous permettra d'identifier notamment d'&eacute;ventuels goulots d'&eacute;tranglement dans le traitement de nos donn&eacute;es,
+							dans le but d'<b>optimiser notre code</b>. Spark &eacute;tant assez verbeux dans ses logs, <b>cette &eacute;tape peut prendre du temps</b>.
+						</p>
+						<br>
+						<p align="center">
+							<b>Interface du serveur d'historique Spark</b><br><br>
+								<img src="images/07-realiser-un-traitement/08-historique.png" alt="" style="max-width: 100%; height: auto;" /><br>
+								
+						</p>
+						<br><br>
+						<h1>Axes d'am&eacute;lioration</h1>
+						<p>
+							Quelques axes d'am&eacute;lioration sont &agrave; envisager pour nos traitements.
+							<br><br>
+							<b><u>Concernant la PCA</u> : </b>
+							<ul>
+								<li>Toutes les variables ont-elles un impact similaire ? &rarr; Effectuer un scaling des donn&eacute;es avant de r&eacute;aliser la PCA.</li>
+								<li>Le co&ucirc;t en ressources de la r&eacute;alisation de la PCA augmente rapidement avec la quantit&eacute; de donn&eacute;es &rarr; R&eacute;aliser une PCA par lot ou utiliser une autre m&eacute;thode de r&eacute;duction de dimension.</li>
+							</ul>
+							<b><u>Concernant le dataset <i>Fruits-360</i></u> : </b><br><br>
+							L'id&eacute;e est de cr&eacute;er une application mobile reconnaissant les fruits et l&eacute;gumes.<br><br>
+							<ul>
+								<li>Le nombre de classes de notre dataset (131) est-il suffisant ?</li>
+								<li>Les images sont d&eacute;tour&eacute;es : donc hors contexte et pas repr&eacute;sentatives de photos prises avec un smartphone.</li>
+							</ul>
+							&rarr; Chercher ou cr&eacute;er un dataset plus pertinent, bas&eacute; par exemple sur ImageNet.
+
+
+
+						</p>
+
+						<h1>Conclusion</h1>
+
+						<p>
+							<b>Nous avons atteint les objectifs que nous nous &eacute;tions fix&eacute;s, &agrave; savoir : </b>
+							<ul>
+								<li>Extraction des features avec MobileNetV2.</li>
+								<li>R&eacute;duction de dimension des features par PCA.</li>
+								<li>Scalabilit&eacute; des traitements avec Spark.</li>
+								<li>D&eacute;ploiement de nos traitements sur le cloud avec AWS.</li>
+							</ul>
+						</p>
+
+						<h1>Perspectives</h1>
+
+						<p>
+							<b>&Agrave; l'issue de ce travail, nous pouvons envisager les perspectives suivantes : </b>
+							<ul>
+								<li>Entrainer et &eacute;valuer le mod&egrave;le.</li>
+								<li>Si besoin changer de dataset.</li>
+								<li>Utiliser une autre technique de r&eacute;duction de dimension.</li>
+								<li>Tester d'autres mod&egrave;les.</li>
+							</ul>
+
+							<b>Remarque : </b>toutes les &eacute;tapes de la mise en place de l'environnement Big Data sont d&eacute;taill&eacute;es dans le readme du repository associ&eacute; &agrave; ce projet sur mon GitHub.
+
+						</p>
+
+						<p>
+							<blockquote>
+								<img src="images/info.png" width="35" height="35"/>
+								<span><b>Retrouvez tout le code de ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+							</blockquote>
+						</p>
+
+						<p align="center">
+								<img src="images/07-realiser-un-traitement/09-picto-fin.png" alt="" style="max-width: 100%; height: auto;" /><br>
+								
+						</p>
+						
 						</div>
 					</div>
 
