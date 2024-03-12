@@ -49,7 +49,7 @@
 						<li><a href="03-segmenter-des-clients.html">Segmenter des clients d'un site e-commerce</a></li>
 						<li><a href="04-suggestion-mots-cles.html">Suggestion automatique de mots-cl&eacute;s</a></li>
 						<li><a href="05-classer-des-images.html">Classer des images &agrave; l'aide d'algorithmes de Deep Learning</a></li>
-						<li><a href="06-extraction-mots-cles.html">Nouvelles méthodes d'extraction de mots-cl&eacute;s</a></li>
+						<li><a href="06-extraction-mots-cles.html">Nouvelles m&eacute;thodes d'extraction de mots-cl&eacute;s</a></li>
 						<li><a href="07-traitement-aws-spark.html">R&eacute;aliser un traitement Big Data avec Spark</a></li>
 						<li><a href="08-cadrage-ia.html">R&eacute;aliser le cadrage d'un projet IA</a></li>
 					</ul>
@@ -59,11 +59,445 @@
 				<!-- Main -->
 				<div id="main">
 					<div class="inner">
-						<!-- <h1>Titre</h1> -->
 						<span class="image main"><img src="images/08-cadrage-projet-ia/01-cadrage-projet-ia.jpg" alt="Traitement Spark" /></span>
-						<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Curabitur sapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique.</p>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-						<p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
+						
+						<h1>Introduction</h1>
+						<p>
+							Le but de ce projet est de s'entrainer &agrave; <b>r&eacute;aliser le cadrage d'un projet orient&eacute; IA</b>, dans un contexte <b><a href="https://fr.wikipedia.org/wiki/M%C3%A9thode_agile" target="_blank">Agile</a></b>.
+							Il ne s'agira pas de fournir un chiffrage forc&eacute;ment tr&egrave;s r&eacute;aliste, nous allons ici <b>nous concentrer sur la m&eacute;thodologie</b>.
+							<br><br>
+							Nous nous baserons sur un <b>projet fictif d'application mobile de recommandation de v&ecirc;tements</b> &agrave; partir de la tenue port&eacute;e par l'utilisateur.
+							Dans ce contexte fictif, nous sommes une entreprise qui commercialise des articles vestimentaires, qui dispose d&eacute;j&agrave; d'un r&eacute;seau de boutiques physiques et d'un site e-commerce.
+							<br><br>
+							<b>Les objectifs du projet sont les suivants : </b>
+							<ul>
+								<li>Identifier les objectifs du projet d'application mobile.</li>
+								<li>Cr&eacute;er le <i>backlog</i> des <i>users stories</i>.</li>
+								<li>Dimensionner le projet : &eacute;quipe, co&ucirc;ts et gains attendus.</li>
+								<li>Planifier le d&eacute;roul&eacute; du projet.</li>
+								<li>Ma&icirc;triser les enjeux l&eacute;gaux et &eacute;thiques.</li>
+								<li>Identifier et mitiger les risques li&eacute;s au projet.</li>
+							</ul>
+
+						</p>
+						<p>
+							<blockquote>
+								<img src="images/info.png" width="35" height="35"/>
+								<span><b>Retrouvez tous les fichiers associ&eacute;s &agrave; ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+							</blockquote>
+						</p>
+						<br>
+						<h1>Identifier les objectifs du projet</h1>
+						<p>
+							Avant de se lancer t&ecirc;te baiss&eacute;e dans le cadrage du projet, il faut v&eacute;rifier si nous sommes en mesure de <b>r&eacute;pondre simplement &agrave; ce type de questions</b> (la liste n'est pas exhaustive) :
+							<ul>
+								<li>&Agrave; quoi sert ce projet, quel est son but concret ?</li>
+								<li>Comment la r&eacute;ussite du projet sera-t-elle &eacute;valu&eacute;e ?</li>
+								<li>Les livrables du projet sont-ils pr&eacute;cis&eacute;ment d&eacute;finis ?</li>
+								<li>Est-ce que toutes les parties prenantes ont les m&ecirc;mes r&eacute;ponses &agrave; ces questions ?</li>
+							</ul>
+							Ces questions peuvent paraitre &eacute;videntes et pourtant, j'ai constat&eacute; au cours de mes exp&eacute;riences professionnelles qu'elles <b>ne sont pas assez souvent pos&eacute;es</b>, surtout la derni&egrave;re !
+							Ne pas prendre le temps de bien d&eacute;finir en &eacute;quipe <b>l&agrave; o&ugrave; on veut aller, pourquoi et comment</b>, m&egrave;nera tr&egrave;s souvent &agrave; l'&eacute;chec du projet, quelle qu'en soit la nature.
+							<br><br>
+							Nous pourrions d&eacute;finir les objectifs suivants pour notre projet fictif :<br><br>
+							<ul>
+								<li>Augmenter les ventes.</li>
+								<li>Recruter des clients.</li>
+								<li>Am&eacute;liorer la r&eacute;putation de l'entreprise.</li>
+								<li>Minimiser les risques du projet.</li>
+							</ul>
+							<br><br>
+							<h1>Pr&eacute;sentation du concept fictif</h1>
+							<p>
+								Pour rappel, nous nous concentrons ici sur la m&eacute;thodologie de cadrage d'un projet. Il n'est pas tr&egrave;s important ici de savoir s'il est r&eacute;aliste ou pas,
+								mais cette question devra bien s&ucirc;r &ecirc;tre pos&eacute;e dans une situation r&eacute;elle !
+								<br><br>
+
+							</p>
+							<p align="center">
+								<img src="images/08-cadrage-projet-ia/02-concept.png" alt="" style="max-width: 100%; height: auto;" /><br>
+								<i>L'application aura des aspects classiques et d'autres plus innovants</i>
+							</p>
+							<p>
+								<b>Partie classique : </b>
+								<ul>
+									<li>Il s'agit d'une application mobile.</li>
+									<li>Propose des recommandations de v&ecirc;tements en fonction de pr&eacute;f&eacute;rences de marques/styles.</li>
+									<li>Il est possible de faire des achats In-App.</li>
+								</ul>
+								<b>Partie innovante : </b><br><br>
+								<ul>
+									<li>L'application peut identifier sur une photo les v&ecirc;tements port&eacute;s par l'utilisateur.</li>
+									<li>Recommandations de v&ecirc;tements en fonction des v&ecirc;tements port&eacute;s par l'utilisateur.</li>
+									<li>Affichage des v&ecirc;tements recommand&eacute;s sur la photo de l'utilisateur : essayage virtuel.</li>
+								</ul>
+
+							</p>
+							<br><br>
+							<h1>Cr&eacute;ation du backlog</h1>
+							<p>
+								Le backlog est une liste dynamique et prioris&eacute;e de toutes les fonctionnalit&eacute;s, exigences, am&eacute;liorations et correctifs n&eacute;cessaires pour compl&eacute;ter un projet.
+								Il s'agit d'un artefact central utilis&eacute; dans le d&eacute;veloppement logiciel <a href="https://fr.wikipedia.org/wiki/M%C3%A9thode_agile" target="_blank">Agile</a> pour planifier et organiser le travail &agrave; r&eacute;aliser.
+								<ol>
+									<li><b>Liste des &eacute;l&eacute;ments &agrave; r&eacute;aliser : </b>Le backlog contient tous les &eacute;l&eacute;ments qui sont n&eacute;cessaires pour livrer le produit final.
+										Ces &eacute;l&eacute;ments peuvent &ecirc;tre des fonctionnalit&eacute;s, des bugs, des am&eacute;liorations, des t&acirc;ches de maintenance, etc.</li>
+									<li><b>Priorisation : </b>Les &eacute;l&eacute;ments du backlog sont class&eacute;s par ordre de priorit&eacute;. Cela permet &agrave; l'&eacute;quipe de d&eacute;veloppement de se concentrer
+										sur les &eacute;l&eacute;ments qui apportent le plus de valeur au produit.</li>
+									<li><b>Dynamisme : </b>Le backlog est un artefact dynamique qui &eacute;volue tout au long du projet. De nouveaux &eacute;l&eacute;ments peuvent &ecirc;tre ajout&eacute;s,
+										d'autres peuvent &ecirc;tre modifi&eacute;s ou supprim&eacute;s en fonction des besoins du produit et des retours d'exp&eacute;rience.</li>
+									<li><b>Estimation : </b>Chaque &eacute;l&eacute;ment du backlog doit &ecirc;tre estim&eacute; en termes d'effort n&eacute;cessaire pour le r&eacute;aliser.
+										Cela permet &agrave; l'&eacute;quipe de planifier ses it&eacute;rations ou ses sprints en fonction de sa capacit&eacute; de travail.</li>
+									<li><b>Transparence : </b>Le backlog est accessible &agrave; toute l'&eacute;quipe de d&eacute;veloppement ainsi qu'aux parties prenantes du projet.
+										Cela favorise la transparence et permet &agrave; chacun de comprendre les objectifs et les priorit&eacute;s du projet.</li>
+									<li><b>Collaboration : </b>Le backlog est souvent collaboratif, avec la participation de diff&eacute;rentes parties prenantes telles que les propri&eacute;taires de produit,
+										les d&eacute;veloppeurs, les testeurs, etc. Cette collaboration permet de s'assurer que le backlog refl&egrave;te bien les besoins du produit.</li>
+									<li><b>D&eacute;coupage en &eacute;l&eacute;ments g&eacute;rables : </b>Les &eacute;l&eacute;ments du backlog sont g&eacute;n&eacute;ralement d&eacute;coup&eacute;s en petites t&acirc;ches ou user stories qui peuvent &ecirc;tre r&eacute;alis&eacute;es 
+										dans une it&eacute;ration ou un sprint. Cela permet une progression incr&eacute;mentale du produit.</li>
+								</ol>
+
+								Le backlog va nous permettre d'&ecirc;tre s&ucirc;rs de ne rien oublier dans notre projet, de mettre la priorit&eacute; sur les fonctionnalit&eacute;s importantes
+								ou encore de d&eacute;finir les ressources humaines et financi&egrave;res n&eacute;cessaires &agrave; la r&eacute;alisation des fonctionnalit&eacute;s.
+								<b>Il nous servira de base pour programmer nos <a href="https://fr.wikipedia.org/wiki/Sprint_(d%C3%A9veloppement_logiciel)" target="_blank">sprints</a> &agrave; venir.</b>
+								<br><br>
+								Concernant la priorisation, nous utiliserons la <a href="https://fr.wikipedia.org/wiki/M%C3%A9thode_MoSCoW" target="_blank">m&eacute;thode MoSCoW</a>,
+								en associant chaque user story &agrave; de ces <b>quatre niveaux de priorit&eacute; :</b><br><br>
+								<ul>
+									<li><b>&laquo; Must have &raquo; : </b>sont indispensables, sans ces fonctionnalit&eacute;s, pas d'application (vital).</li>
+									<li><b>&laquo; Should have &raquo; : </b>doit &ecirc;tre fait dans la mesure du possible (essentiel).</li>
+									<li><b>&laquo; Could have &raquo; : </b>pourrait &ecirc;tre fait dans la mesure o&ugrave; cela n'a pas d'impact sur les autres t&acirc;ches (confort).</li>
+									<li><b>&laquo; Won't have &raquo; : </b>ne sera pas fait cette fois mais pourra &ecirc;tre fait plus tard (luxe).</li>
+								</ul>
+
+								Concernant l'estimation de la charge de chaque user story, il conviendra de r&eacute;aliser les &eacute;tapes suivantes : <br><br>
+								<ul>
+									<li><b>Choisir le profil</b> qui va produire cette user story.</li>
+									<li>Estimer la charge, en <b>jours de travail</b>, dont ce profil va avoir besoin pour r&eacute;aliser cette t&acirc;che.</li>
+									<li>Multiplier cette charge en jour par le <b>co&ucirc;t journalier</b> du profil pour avoir la <b>charge financi&egrave;re</b> de la user story.</li>
+									<li>Calculer la <b>proportion de la charge</b> repr&eacute;sent&eacute;e par cette user story par rapport &agrave; l'ensemble du projet.</li>
+								</ul>
+							</p>
+							<p align="center">
+								<b>User stories de notre projet</b><br><br>
+									<img src="images/08-cadrage-projet-ia/03-backlog-1.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<img src="images/08-cadrage-projet-ia/04-backlog-2.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Le fichier Excel avec le backlog se trouve sur mon GitHub si le d&eacute;tail des users stories vous int&eacute;resse.</i>
+							</p>
+							<p>
+								Nous nous concentrons ici sur la m&eacute;thodologie de cadrage d'un projet, dans la r&eacute;alit&eacute; <b>tous les profils intervenant sur le projet doivent participer &agrave; l'&eacute;laboration
+								du backlog</b>, afin de mieux estimer les charges gr&acirc;ce &agrave; leur exp&eacute;rience m&eacute;tier et de n'oublier aucune user story.
+								<br><br>
+								Dans ce projet fictif, nous imaginons que notre profil <i>Data Scientist</i> est junior et qu'un prestataire externe IA est n&eacute;cessaire &agrave; la r&eacute;alisation de certaines t&acirc;ches.
+
+							</p>
+							<br><br>
+							<h1>Dimensionner le projet : &eacute;quipe</h1>
+							<p>
+								Nous pouvons envisager un organigramme de ce type pour notre projet :
+							</p>
+							<p align="center">
+								<b>&Eacute;quipe projet</b><br><br>
+									<img src="images/08-cadrage-projet-ia/05-team.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Toutes les parties prenantes doivent communiquer fr&eacute;quemment, sauf &eacute;ventuellement le profil externe qui sera pilot&eacute; par le Data Scientist.</i>
+									<br><br>
+									<b>Charge par profil</b><br><br>
+									<img src="images/08-cadrage-projet-ia/06-team-charge.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>La charge totale de 100 jours ne signifie pas une dur&eacute;e de d&eacute;veloppement de 100 jours. Nous avons plusieurs profils
+										 et donc certaines t&acirc;ches pourront &ecirc;tre r&eacute;alis&eacute;es simultan&eacute;ment.</i>
+							</p>
+							<br><br>
+							<h1>Dimensionner le projet : co&ucirc;ts</h1>
+							<p>
+								&Agrave; partir de notre backlog, nous pouvons d&eacute;terminer les charges et les co&ucirc;ts en ce qui concerne les user stories, mais d'autres co&ucirc;ts seront &eacute;galement &agrave; consid&eacute;rer.
+							</p>
+							<p align="center">
+								<b>Co&ucirc;t des user stories</b><br><br>
+									<img src="images/08-cadrage-projet-ia/07-couts-user-stories.png" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								Concernant les <b>co&ucirc;ts d'infrastructure</b>, ils ont &eacute;t&eacute; &eacute;valu&eacute;s en optant pour Azure
+								et son service <a href="https://azure.microsoft.com/fr-fr/pricing/calculator/" target="_blank"><i>Azure AI Custom Vision</i></a>.
+							</p>
+							<p align="center">
+								<b>Co&ucirc;t de l'infrastructure</b><br><br>
+									<img src="images/08-cadrage-projet-ia/08-couts-infra.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Les co&ucirc;ts de formation du mod&egrave;le (entrainement) constituent une part importante des co&ucirc;ts initiaux du projet.</i>
+							</p>
+							<p>
+								Il faut &eacute;galement consid&eacute;rer les <b>co&ucirc;ts de maintenance</b>. Ceux-ci sont estim&eacute; &agrave; 15 % du co&ucirc;t initial.
+							</p>
+							<p align="center">
+								<b>Co&ucirc;t de maintenance</b><br><br>
+									<img src="images/08-cadrage-projet-ia/09-couts-maintenance.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Il pourra &ecirc;tre n&eacute;cessaire de r&eacute;&eacute;valuer ces co&ucirc;ts de maintenance une fois l'application en production.</i>
+							</p>
+							<p>
+								Cr&eacute;er une application de qualit&eacute; est important, la faire connaitre l'est tout aussi, car nous &eacute;voluons dans un march&eacute; tr&egrave;s concurrentiel.
+								<b>Les co&ucirc;ts marketing sont donc &agrave; consid&eacute;rer d&egrave;s le cadrage du projet.</b>
+								<ul>
+									<li>Campagne lancement produit (display + influenceurs) : <b>30 000 €</b></li>
+									<li>Campagne mensuelle apr&egrave;s lancement (display) : <b>3000 €</b></li>
+								</ul>
+							</p>
+
+							<br><br>
+							<h1>Dimensionner le projet : gains attendus</h1>
+							<p>
+								Estimons tout d'abord les gains apport&eacute;s par notre projet.
+							</p>
+							<p align="center">
+								<b>Estimation des gains apport&eacute;s par l'application</b><br><br>
+									<img src="images/08-cadrage-projet-ia/10-gains.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Elle devra &ecirc;tre r&eacute;&eacute;valu&eacute;e r&eacute;guli&egrave;rement au cours de la vie du produit.</i>
+							</p>
+							<p>
+								Maintenant que nous connaissons les co&ucirc;ts initiaux, mensuels et les gains potentiels, nous pouvons estimer la rentabilit&eacute; dans notre application.
+							</p>
+							<p align="center">
+								<b>Rentabilit&eacute; de l'application</b><br><br>
+									<img src="images/08-cadrage-projet-ia/11-rentabilite.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>La rentabilit&eacute; serait atteinte &agrave; partir du 8&egrave;me mois une fois l'application en production.</i>
+							</p>
+							<p>
+								<b>Remarque : </b>Retrouvez le d&eacute;tail de ce dimensionnement dans le fichier Excel associ&eacute; sur mon GitHub.
+							</p>
+							<br><br>
+							<h1>La m&eacute;thode Agile Scrum</h1>
+							<p>
+								Le cadrage de ce projet fictif a &eacute;t&eacute; imagin&eacute; dans un contexte <a href="https://fr.wikipedia.org/wiki/M%C3%A9thode_agile" target="_blank">Agile</a>,
+								dans sa variante <a href="https://fr.wikipedia.org/wiki/Scrum_(d%C3%A9veloppement)" target="_blank">Scrum</a>.
+								<br><br>
+								<b>Quelques-uns des grands principes de la m&eacute;thode Agile :</b>
+								<ul>
+									<li>Respect des d&eacute;lais.</li>
+									<li>Flexibilit&eacute;, adaptation.</li>
+									<li>Envois fr&eacute;quents des livrables.</li>
+									<li>Coop&eacute;ration, communication.</li>
+									<li>Monitoring.</li>
+									<li>Privil&eacute;gier la simplicit&eacute;.</li>
+								</ul>
+								<b>La variante Scrum est bas&eacute;e sur la m&eacute;thode Agile, avec quelques sp&eacute;cificit&eacute;s :</b><br><br>
+								<ul>
+									<li>Un cadre un peu plus structur&eacute;.</li>
+									<li>Pr&eacute;sence d'un <i>Product Owner</i>.</li>
+									<li>Pr&eacute;sence d'un <i>Scrum Master</i>.</li>
+									<li>Le <i>product backlog</i>, que nous avons cr&eacute;&eacute; pr&eacute;c&eacute;demment.</li>
+									<li>Les <i>sprints</i>, durant lesquels un certain nombre de user stories seront trait&eacute;es.</li>
+									<li>Des points r&eacute;guliers afin de s'assurer du bon d&eacute;roulement du processus.</li>
+								</ul>
+								<b>Un cycle Scrum se d&eacute;roule de la mani&egrave;re suivante :</b><br><br>
+								<ul>
+									<li><b>Un point planification : </b>les user stories &agrave; traiter lors du sprint &agrave; venir sont choisies.</li>
+									<li><b>Sprint : </b>les user stories sont trait&eacute;es par les profils mobilis&eacute;s sur ce sprint.</li>
+									<li><b>Daily stand-up : </b>un point de 15 min, tous les jours durant le sprint, debout pour &eacute;viter les r&eacute;unions qui s'&eacute;ternisent, pour v&eacute;rifier le bon d&eacute;roulement
+										du processus et identifier d'&eacute;ventuels probl&egrave;mes.</li>
+									<li><b>Point pilotage et replanification : </b>uniquement si le besoin a &eacute;t&eacute; identifi&eacute; lors d'un daily stand-up, pas de r&eacute;union inutile.</li>
+									<li><b>Point revue : </b>&agrave; la fin du sprint, les user stories sont pass&eacute;es en revue pour v&eacute;rifier qu'elles ont bien toutes &eacute;t&eacute; trait&eacute;es.</li>
+									<li><b>Point r&eacute;trospective : </b>&agrave; la suite du point revue, une r&eacute;trospective du sprint est faite pour faire le bilan des probl&egrave;mes rencontr&eacute;s et des optimisations
+										&agrave; mettre en place pour les prochains sprints.</li>
+
+								</ul>
+							</p>
+							<p align="center">
+								<b>Un cycle Scrum</b><br><br>
+									<img src="images/08-cadrage-projet-ia/12-cycle-scrum.png" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								<b>&Eacute;viter le pi&egrave;ge de la r&eacute;unionite : </b>ce cadre de travail comprend de nombreux points qui sont tr&egrave;s importants pour le bon d&eacute;roul&eacute; du processus.
+								Attention cependant &agrave; ne pas tomber dans une d&eacute;rive qui serait n&eacute;faste : chaque point ne doit avoir lieu que s'il est utile, ne faire intervenir que les personnes
+								r&eacute;ellement impliqu&eacute;es, &ecirc;tre de courte dur&eacute;e, &ecirc;tre bien cadr&eacute; avec des objectifs clairs.
+							</p>
+							<br><bR>
+							<h1>Planning de d&eacute;veloppement</h1>
+							<p>
+								Gr&acirc;ce &agrave; notre backlog, nous allons pouvoir planifier nos sprints. Pour ce projet, j'en ai imagin&eacute; trois. Ils ont tous le m&ecirc;me d&eacute;roul&eacute; comme expliqu&eacute; pr&eacute;c&eacute;demment, 
+								mais les profils impliqu&eacute;s, le nombre de user stories &agrave; traiter et donc la dur&eacute;e de chaque sprint peut varier.
+							</p>
+							<p align="center">
+								<b>Sprints planifi&eacute;s</b><br><br>
+									<img src="images/08-cadrage-projet-ia/13-sprints.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>En rouge : les diff&eacute;rents profils mobilis&eacute;s sur les sprints.</i>
+									<br><br>
+								<b>Burndown chart</b><br><br>
+									<img src="images/08-cadrage-projet-ia/14-burndown-chart.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Le burndown chart nous permet d'avoir une meilleure vision de l'avanc&eacute;e du projet dans le temps.</i>	
+							</p>
+							<br><br>
+							<h1>Enjeux l&eacute;gaux</h1>
+							<p align="center">
+									<img src="images/08-cadrage-projet-ia/14-2-rgpd.png" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								Les utilisateurs vont indiquer des pr&eacute;f&eacute;rences, se prendre en photo, il va donc y avoir des donn&eacute;es personnelles impliqu&eacute;es dans notre projet.
+								<br><br>
+								<b>Les principes du <a href="https://fr.wikipedia.org/wiki/R%C3%A8glement_g%C3%A9n%C3%A9ral_sur_la_protection_des_donn%C3%A9es" target="_blank">RGPD</a> devront donc &ecirc;tre respect&eacute;s : </b>
+								<ul>
+									<li>Collecter uniquement les donn&eacute;es n&eacute;cessaires &agrave; nos traitements.</li>
+									<li>&Ecirc;tre transparent vis-&agrave;-vis de l'utilisateur concernant les donn&eacute;es collect&eacute;es.</li>
+									<li>Garantir un droit d'acc&egrave;s de l'utilisateur aux donn&eacute;es le concernant.</li>
+									<li>Fixer des dur&eacute;es de conservation pour toutes les donn&eacute;es personnelles.</li>
+									<li>S&eacute;curiser le stockage des donn&eacute;es personnelles.</li>
+									<li>Localiser le stockage et le traitement de ces donn&eacute;es sur le territoire Europ&eacute;en.</li>
+									<li>Tous les principes pr&eacute;c&eacute;dents doivent s'inscrire dans la dur&eacute;e, tout au long de la vie du produit.</li>
+								</ul>
+								<br>
+							</p>
+							<p align="center">
+								<img src="images/08-cadrage-projet-ia/14-3-cnil.png" alt="" style="max-width: 100%; height: auto;" /><br>
+							</p>
+							<p>
+								Tout traitement concernant des donn&eacute;es personnelles doit &ecirc;tre d&eacute;clar&eacute; &agrave; la <a href="https://fr.wikipedia.org/wiki/Commission_nationale_de_l%27informatique_et_des_libert%C3%A9s" target="_blank">CNIL</a>.
+								<br><br>
+								<b>J'en ai identifi&eacute; quatre pour ce projet : </b><br>
+								<ul>
+									<li>Analyse de la photo de l'utilisateur pour produire des recommandations.</li>
+									<li>Analyse de la photo de l'utilisateur pour l'essayage virtuel des v&ecirc;tements.</li>
+									<li>Recommandations en fonction des pr&eacute;f&eacute;rences des utilisateurs.</li>
+									<li>Affinage des recommandations en fonction des &eacute;valuations donn&eacute;es par l'utilisateur aux pr&eacute;c&eacute;dentes recommandations.</li>
+								</ul>
+								<b>Remarque : </b>Retrouvez le d&eacute;tail de ces d&eacute;clarations dans le fichier Excel associ&eacute; sur mon GitHub.
+							</p>
+							<br><br>
+							<h1>Enjeux &eacute;thiques</h1>
+							<p>
+								Nous allons fournir en entr&eacute;e de notre mod&egrave;le des photos des utilisateurs ainsi que des donn&eacute;es de pr&eacute;f&eacute;rences.
+								Le mod&egrave;le produira &agrave; partir de ces donn&eacute;es des pr&eacute;dictions (recommandations de v&ecirc;tements).
+								Nous devons <b>identifier de potentiels biais du mod&egrave;le</b>, car ces derniers pourraient heurter la sensibilit&eacute; des utilisateurs, d&eacute;clencher des pol&eacute;miques
+								et plus globalement fournir des recommandations de mauvaise qualit&eacute; qui d&eacute;boucheront sur un moins bon taux de conversion.
+								<ul>
+									<li>Le mod&egrave;le fait-il toujours le m&ecirc;me type de recommandation pour un type morphologique donn&eacute; ?</li>
+									<li>M&ecirc;me interrogation concernant le genre exprim&eacute; ?</li>
+									<li>Ou encore en fonction de l'ethnie de l'utilisateur ?</li>
+								</ul>
+								Toutes sortes de biais peuvent apparaitre avec ce type de mod&egrave;les d'intelligence artificielle. <b>Certains pourront &ecirc;tre anticip&eacute;s,
+								d'autres seront d&eacute;couverts une fois le mod&egrave;le en production</b>. Nous en reparlerons dans la partie suivante qui concerne la mitigation des risques.
+							</p>
+							<br><br>
+							<h1>Identifier et mitiger les risques</h1>
+							<p>
+								<b>Tout projet comporte des risques</b>, qu'il faudra identifier et <b>hi&eacute;rarchiser selon leur criticit&eacute;</b>. Pour d&eacute;terminer la criticit&eacute; d'un risque,
+								nous multiplions son impact potentiel (not&eacute; de 1 &agrave; 3) par la probabilit&eacute; que ce risque se r&eacute;alise (not&eacute; de 1 &agrave; 3).
+								<br><br>
+								Les risques <b>les plus critiques doivent &ecirc;tre trait&eacute;s en priorit&eacute;</b>, mais &agrave; terme il est bien s&ucirc;r n&eacute;cessaire que l'ensemble des risques soient trait&eacute;s.
+								<br><br>
+								Pour chaque risque il faut d&eacute;terminer : 
+								<ul>
+									<li>Son impact, ses cons&eacute;quences.</li>
+									<li>Les actions de pr&eacute;vention &agrave; mettre en place pour r&eacute;duire la probabilit&eacute; de r&eacute;alisation du risque.</li>
+									<li>Les actions de correction &agrave; d&eacute;clencher en cas de r&eacute;alisation du risque.</li>
+								</ul>
+								J'ai identifi&eacute; <b>10 risques</b> pour ce projet. Je ne les d&eacute;taillerai pas tous ici, mais vous pouvez retrouver leur description compl&egrave;te dans le fichier Excel associ&eacute; sur mon GitHub.
+							</p>
+							<p align="center">
+								<b>Risques identifi&eacute;s</b><br><br>
+									<img src="images/08-cadrage-projet-ia/15-liste-risques.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Les risques n'ont pas tous la m&ecirc;me criticit&eacute;.</i>
+									<br><br>
+								<b>Profil de risque du projet</b><br><br>
+									<img src="images/08-cadrage-projet-ia/16-profil-risques.png" alt="" style="max-width: 100%; height: auto;" /><br>
+									<i>Certains risques d&eacute;coulent du contexte que nous avons imagin&eacute; pour notre projet fictif.</i>
+							</p>
+							<p>
+								D&eacute;taillons les <b>trois risques les plus critiques</b> pour ce projet.
+								<br><br>
+								<b><u>Biais du mod&egrave;le</u> : </b><br><br>
+								Nous l'avons &eacute;voqu&eacute; dans la partie pr&eacute;c&eacute;dente sur les enjeux &eacute;thiques, ce risque est pour moi le plus critique. Ses cons&eacute;quences sont importantes :
+								<ul>
+									<li>Bad buzz, pol&eacute;miques.</li>
+									<li>Baisse de la r&eacute;putation de l'entreprise.</li>
+									<li>Attrition (perte de clients).</li>
+									<li>Baisse du chiffre d'affaires.</li>
+									<li>Co&ucirc;ts suppl&eacute;mentaires n&eacute;cessaires &agrave; la mise en place des correctifs.</li>
+								</ul>
+								Pour mitiger ce risque, nous pouvons envisager les points suivants :<br><br>
+								<ul>
+									<li>S'assurer de la bonne qualit&eacute; et diversit&eacute; des donn&eacute;es d'entrainement pour notre mod&egrave;le.</li>
+									<li>Effectuer des tests rigoureux pendant et apr&egrave;s l'entrainement du mod&egrave;le.</li>
+									<li>&Eacute;ventuellement lancer un b&ecirc;ta-test ferm&eacute; de l'application avant la mise &agrave; disposition au grand public.</li>
+									<li>&Eacute;tablir un contrat de maintenance avec le prestataire IA afin de garantir des d&eacute;lais courts pour la mise en place des correctifs.</li>
+									<li>Pr&eacute;parer un plan de communication en cas d'identification publique d'un biais, afin de rapidement &eacute;teindre tout d&eacute;but de pol&eacute;mique.</li>
+								</ul>
+								<b><u>Manquements au RGPD</u> : </b><br><br>
+								Ce risque n'est pas &agrave; n&eacute;gliger, les cons&eacute;quences peuvent &ecirc;tre tr&egrave;s lourdes :<br><br>
+								<ul>
+									<li>Condamnations, amendes.</li>
+									<li>Baisse de la r&eacute;putation de l'entreprise.</li>
+									<li>Interruption du service impos&eacute; par les autorit&eacute;s en attendant la mise en place des correctifs.</li>
+									<li>Baisse du chiffre d'affaires.</li>
+									<li>Co&ucirc;ts suppl&eacute;mentaires n&eacute;cessaires &agrave; la mise en place des correctifs.</li>
+								</ul>
+								Pour mitiger ce risque, nous pouvons envisager les points suivants :<br><br>
+								<ul>
+									<li>Faire valider tous les points sensibles par le <a href="https://fr.wikipedia.org/wiki/D%C3%A9l%C3%A9gu%C3%A9_%C3%A0_la_protection_des_donn%C3%A9es" target="_blank">DPO</a>.</li>
+									<li>Le DPO doit &ecirc;tre impliqu&eacute; durant toute la dur&eacute;e de vie du produit, car ce dernier peut &eacute;voluer, ainsi que les r&eacute;glementations en vigueur.</li>
+								</ul>
+								<b><u>D&eacute;couverte r&eacute;duite</u> : </b><br><br>
+								Notre application va proposer des recommandations en fonction des pr&eacute;f&eacute;rences de l'utilisateur, ainsi que sa fa&ccedil;on actuelle de s'habiller.
+								Si l'utilisateur a d&eacute;j&agrave; ses placards remplis de produits similaires, pourquoi passerait-il commande ? 
+								Si les produits recommand&eacute;s sont trop &eacute;loign&eacute;s des go&ucirc;ts de l'utilisateur, il ne les ach&egrave;tera pas non plus.
+								Cette notion de d&eacute;couverte peut sembler secondaire, mais si elle est mal dos&eacute;e, c'est l'&eacute;chec garanti de l'application :<br><br>
+								<ul>
+									<li>Faible taux de conversion.</li>
+									<li>Chiffre d'affaires en dessous des pr&eacute;visions.</li>
+									<li>Rentabilit&eacute; plus longue &agrave; s'&eacute;tablir.</li>
+									<li>Perte d'int&eacute;r&ecirc;t de l'utilisateur, attrition.</li>
+									<li>Co&ucirc;ts suppl&eacute;mentaires n&eacute;cessaires &agrave; la mise en place des correctifs.</li>
+								</ul>
+								Pour mitiger ce risque, nous pouvons envisager les points suivants :<br><br>
+								<ul>
+									<li>Bien doser la notion de d&eacute;couverte lors de l'&eacute;laboration et des tests du mod&egrave;le.</li>
+									<li>Int&eacute;grer r&eacute;guli&egrave;rement les nouveaut&eacute;s du catalogue aux recommandations du mod&egrave;le (nouvelles marques, nouveaux styles).</li>
+									<li>Prendre en compte les retours des b&ecirc;ta-testeurs, puis des utilisateurs concernant les recommandations.</li>
+								</ul>
+							</p>
+							<br><br>
+							<h1>Axes d'am&eacute;lioration</h1>
+							<p>
+								Ce projet avait pour but de pratiquer la m&eacute;thodologie n&eacute;cessaire au cadrage d'un projet IA, il &eacute;tait bas&eacute; sur un sc&eacute;nario fictif.
+								En situation r&eacute;elle, <b>certains axes d'am&eacute;lioration sont &agrave; consid&eacute;rer</b>, ils n&eacute;cessiteront la consultation de <b>diff&eacute;rents experts m&eacute;tier</b> : 
+								<ul>
+									<li>Inclure les co&ucirc;ts des profils du <i>Product Owner</i> et du <i>Scrum Master</i> dans le chiffrage.</li>
+									<li>Quand bien m&ecirc;me dans notre sc&eacute;nario le Data Scientist est un profil junior, il y a un d&eacute;s&eacute;quilibre excessif entre les apports de ce dernier et ceux du prestataire IA.</li>
+									<li>Il manque la partie conception d'architecture dans le cadrage.</li>
+									<li>Une partie testing devrait &ecirc;tre chiffr&eacute;e et int&eacute;gr&eacute;e au planning.</li>
+									<li>Cadrer et chiffrer la mani&egrave;re dont seront pris en compte les retours utilisateurs pour le d&eacute;veloppement des versions ult&eacute;rieures.</li>
+								</ul>
+							</p>
+							<br><br>
+							<h1>Conclusion</h1>
+							<p>
+								Nous avons pu atteindre les objectifs que nous nous &eacute;tions fix&eacute;s, &agrave; savoir : 
+								<ul>
+									<li>Identifier les objectifs du projet d'application mobile.</li>
+									<li>Cr&eacute;er le backlog des users stories.</li>
+									<li>Dimensionner le projet : &eacute;quipe, co&ucirc;ts et gains attendus.</li>
+									<li>Planifier le d&eacute;roul&eacute; du projet.</li>
+									<li>Ma&icirc;triser les enjeux l&eacute;gaux et &eacute;thiques.</li>
+									<li>Identifier et mitiger les risques li&eacute;s au projet.</li>
+								</ul>
+							</p>
+							<br><br>
+							<h1>Perspectives</h1>
+							<p>
+								Pour un tel projet d'application mobile, nous pourrions envisager les perspectives suivantes : 
+								<ul>
+									<li>R&eacute;aliser une &eacute;tude plus &eacute;tendue des risques.</li>
+									<li>Envisager des fonctionnalit&eacute;s suppl&eacute;mentaires pour notre application.</li>
+									<li>Cr&eacute;ation d'une version en <i>marque blanche</i> de notre application pour le march&eacute; B2B (pour d'autres revendeurs).</li>
+									<li>Cr&eacute;er une variante de l'application pour un autre univers produits, par exemple la d&eacute;coration de la maison.</li>
+								</ul>
+							</p>
+						<p>
+							<blockquote>
+								<img src="images/info.png" width="35" height="35"/>
+								<span><b>Retrouvez tous les fichiers associ&eacute;s &agrave; ce projet sur <a href="https://github.com/BiGHeaDMaX?tab=repositories" target="_blank">mon GitHub</a></b></span>
+							</blockquote>
+						</p>
+						<br><br>
+						<p align="center">
+								<img src="images/08-cadrage-projet-ia/17-picto-fin.jpg" alt="" style="max-width: 100%; height: auto;" /><br>
+						</p>
+
+
 					</div>
 				</div>
 
