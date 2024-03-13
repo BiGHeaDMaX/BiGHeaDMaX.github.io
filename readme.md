@@ -1,3 +1,5 @@
+<img src="https://bigheadmax.github.io/images/banner-black.jpg">
+
 # **Bienvenue !**
 
 Bienvenue sur le repository de mon portfolio. Ce dernier est utilisé pour héberger mon portfolio.<br>
