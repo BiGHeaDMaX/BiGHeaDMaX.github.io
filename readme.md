@@ -1,4 +1,6 @@
+<p align="center">
 <img src="https://bigheadmax.github.io/images/banner-black.jpg">
+</p>
 
 # **Bienvenue !**
 
