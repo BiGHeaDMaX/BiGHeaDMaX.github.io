@@ -1,0 +1,574 @@
+4).<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Pipeline PostgreSQL > Power BI</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<link rel="icon" href="images/ai-icon.ico" type="image/x-icon">
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<div class="inner">
+
+							<!-- Logo -->
+							<a href="index.html" class="logo">
+								<span class="symbol"><img src="images/home.png" alt="" /></span><span class="title">Accueil</span>
+							</a>
+
+							<!-- Nav -->
+								<nav>
+									<ul>
+										<li><a href="#menu">Menu</a></li>
+									</ul>
+								</nav>
+
+						</div>
+					</header>
+
+
+				<!-- Menu -->
+				<nav id="menu">
+					<h2><a href="index.html">Accueil</a></h2>
+					<h2><a href="00-cv.html">Mon CV</a></h2>
+					<hr style="height: 1px; background-color: white;">
+					<h2>Projets</h2>
+					<ul>	
+						<li><a href="01-preparer-des-donnees.html">Pr&eacute;parer des donn&eacute;es et mener une analyse exploratoire</a></li>
+						<li><a href="02-anticiper-la-consommation.html">Pr&eacute;dire la consommation et les &eacute;missions de b&acirc;timents</a></li>
+						<li><a href="03-segmenter-des-clients.html">Segmenter les clients d'un site e-commerce</a></li>
+						<li><a href="04-suggestion-mots-cles.html">Suggestion automatique de mots-cl&eacute;s</a></li>
+						<li><a href="05-classer-des-images.html">Identifier des races de chiens sur des photos avec TensorFlow</a></li>
+						<li><a href="06-extraction-mots-cles.html">Nouvelles m&eacute;thodes d'extraction de mots-cl&eacute;s</a></li>
+						<li><a href="07-traitement-aws-spark.html">Extraction de features sur des donn&eacute;es massives avec Spark</a></li>
+						<li><a href="08-cadrage-ia.html">R&eacute;aliser le cadrage d'un projet IA</a></li>
+						<li><a href="09-pipeline-postgresql-powerbi.html">Pipeline PostgreSQL > Power BI</a></li>
+					</ul>
+			</nav>
+
+
+				<!-- Main -->
+				<div id="main">
+					<div class="inner">
+						<span class="image main"><img src="images/09-pipeline-postgresql-powerbi/titre.png" alt="Pipeline PostgreSQL > Power BI" /></span>
+						
+						<h1>Introduction</h1>
+						<p>
+							Dans ce projet, j'ai souhait&eacute; construire un pipeline de donn&eacute;es analytique de bout en bout &agrave; partir du dataset e-commerce br&eacute;silien Olist disponible sur <a href="https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce" target="_blank">Kaggle</a>.
+							L'objectif n'&eacute;tait pas uniquement de cr&eacute;er un dashboard Power BI, mais de reproduire une architecture d&eacute;cisionnelle r&eacute;aliste inspir&eacute;e des pratiques de Data Engineering et de Business Intelligence utilis&eacute;es en entreprise.
+							<br><br>
+							<b>Le projet couvre l'ensemble de la cha&icirc;ne analytique :</b>
+							<ul>
+								<li>Ingestion de fichiers CSV dans PostgreSQL</li>
+								<li>Structuration des donn&eacute;es en couches RAW / STG / DWH</li>
+								<li>Mise en place de contr&ocirc;les qualit&eacute;</li>
+								<li>Mod&eacute;lisation en &eacute;toile</li>
+								<li>Cr&eacute;ation d'un dashboard Power BI interactif</li>
+								<li>D&eacute;veloppement de mesures DAX avanc&eacute;es</li>
+							</ul>
+
+						</p>
+						<p>
+							<blockquote>
+								<img src="images/info.png" width="35" height="35"/>
+								<span><b>Retrouvez tous les fichiers associ&eacute;s &agrave; ce projet sur <a href="XXXXXXXXXXX" target="_blank">mon GitHub</a></b></span>
+							</blockquote>
+						</p>
+						<p>
+						<p>
+						<b>Ce projet m'a permis de travailler plusieurs probl&eacute;matiques concr&egrave;tes souvent rencontr&eacute;es dans les projets BI :</b>
+						<ul>
+						<li>Gestion des types et du nettoyage de donn&eacute;es</li>
+						<li>Contr&ocirc;le de la qualit&eacute; des donn&eacute;es</li>
+						<li>Mod&eacute;lisation multi-facts</li>
+						<li>Gestion du contexte de filtre dans DAX</li>
+						<li>Cr&eacute;ation de mesures de time intelligence</li>
+						<li>Optimisation du mod&egrave;le Power BI</li>
+						</ul>
+						Le dataset Olist est particuli&egrave;rement int&eacute;ressant pour ce type d'exercice 
+							car il contient plusieurs dimensions m&eacute;tier : Commandes, Clients, Produits, Avis, etc.
+						Dans cet article, je vais pr&eacute;senter les diff&eacute;rentes &eacute;tapes de construction du pipeline ainsi que les principaux choix techniques effectu&eacute;s au cours du projet.
+						</p>
+											
+						
+						<h1>Architecture globale du pipeline</h1>
+						<p>
+						J'ai organis&eacute; le pipeline en plusieurs couches distinctes : <i><b>RAW → STG → DWH → Power BI</b></i>
+						<br>
+						Cette s&eacute;paration permet d'isoler les donn&eacute;es brutes, centraliser les traitements de nettoyage et construire un mod&egrave;le analytique optimis&eacute; pour Power BI.
+						<br><br>
+						<b>Le pipeline suit les &eacute;tapes suivantes :</b>
+						<ul>
+						<li>Ingestion des fichiers CSV dans PostgreSQL</li>
+						<li>Nettoyage et standardisation des donn&eacute;es</li>
+						<li>Construction du Data Warehouse</li>
+						<li>Exploitation analytique dans Power BI</li>
+						</ul>
+
+                        <p align="center"><a href="images/09-pipeline-postgresql-powerbi/pipeline.png", target="_blank"><img src="images/09-pipeline-postgresql-powerbi/pipeline.png" width="1193" height="474"/></a></p>
+
+						
+						<h1>Construction du pipeline SQL</h1>
+						<p>
+						L'ensemble du pipeline a &eacute;t&eacute; construit dans PostgreSQL &agrave; l'aide de scripts SQL/PSQL organis&eacute;s par &eacute;tape.
+						Le pipeline peut &ecirc;tre ex&eacute;cut&eacute; automatiquement via un script psql qui orchestre les diff&eacute;rentes &eacute;tapes dans le bon ordre.
+						
+						Le projet commence par la cr&eacute;ation des diff&eacute;rents sch&eacute;mas : <i>raw</i>, <i>stg</i>, <i>dwh</i>, <i>dq</i> (pour les contr&ocirc;les qualit&eacute;).
+						<br><br>
+						<b style="font-size: 32px;">1). Couche RAW</b>
+						<br><br>
+						Les fichiers CSV sont ensuite charg&eacute;s dans la couche RAW via un script <i>psql</i>. Il est n&eacute;cessaire de passer par un script <i>psql</i>, car j'utilise la commande <i>\copy</i>.
+						<br><br>
+						<u>Exemple pour un fichier</u> :
+						<pre><code>-- olist_orders_dataset.csv
+TRUNCATE raw.orders;
+\copy raw.orders FROM '../data/raw/olist_orders_dataset.csv' DELIMITER ',' CSV HEADER</code></pre>
+						<u>Remarque</u> : ici, les tables RAW sont vid&eacute;es avec <i>TRUNCATE</i> avant chaque chargement car le dataset CSV utilis&eacute; est statique et non incr&eacute;mental.  
+						Dans un contexte de production, un pipeline aliment&eacute; r&eacute;guli&egrave;rement utiliserait plut&ocirc;t une logique d'upsert ou de chargement incr&eacute;mental afin de conserver l'historique des donn&eacute;es.
+						<br><br>
+						Toutes les colonnes sont volontairement charg&eacute;es en <i>TEXT</i> afin d'&eacute;viter les erreurs de typage lors de l'ingestion initiale. 
+						On force bien le format UTF8 (WIN1252 par d&eacute;faut), avec <i>\encoding UTF8</i> pour &eacute;viter des probl&egrave;mes avec les caract&egrave;res sp&eacute;ciaux du Portugais, surtout pour le fichier reviews.
+						<br><br>
+
+						Une fois les donn&eacute;es charg&eacute;es, plusieurs contr&ocirc;les qualit&eacute; simples sont ex&eacute;cut&eacute;s :
+						<br><br><ul>
+						<li>V&eacute;rification du nombre de lignes charg&eacute;es</li>
+						<li>D&eacute;tection de cl&eacute;s nulles</li>
+						<li>D&eacute;tection de doublons</li>
+						<li>Contr&ocirc;le de valeurs invalides</li>
+						</ul>
+						Tout au long de notre pipeline, des v&eacute;rifications sont effectu&eacute;es et les r&eacute;sultats sont stock&eacute;s dans la table <i>dq.check_results</i> : 
+                        <br><br>
+						<p align="center"><img src="images/09-pipeline-postgresql-powerbi/05_dq_table.png" width="816" height="848"/></a></p>
+						<u>Exemple en cas d'&eacute;chec de chargement des CSV</u> : 
+						<br><br>
+                        <p align="center"><img src="images/09-pipeline-postgresql-powerbi/06_dq_table_fails.png" width="771" height="224"/></a></p>						
+						<u>Exemples de v&eacute;rifications</u> : 
+						<br><br>
+<pre><code>-- Des lignes ont-elles &eacute;t&eacute; charg&eacute;es ?
+INSERT INTO dq.check_results (layer, table_name, check_name, row_count, status)
+SELECT
+  -- On ne renseigne pas run_ts, on laisse le default faire son travail
+  'raw' AS layer,
+  t.table_name,
+  'rows_loaded' AS check_name,
+  t.row_count::int AS row_count,
+  CASE WHEN t.row_count > 0 THEN 'OK' ELSE 'FAIL' END AS status
+FROM (
+  SELECT 'orders' AS table_name, COUNT(*) AS row_count FROM raw.orders
+  UNION ALL SELECT 'order_items', COUNT(*) FROM raw.order_items
+  UNION ALL SELECT 'customers', COUNT(*) FROM raw.customers
+  UNION ALL SELECT 'products', COUNT(*) FROM raw.products
+  UNION ALL SELECT 'sellers', COUNT(*) FROM raw.sellers
+  UNION ALL SELECT 'order_payments', COUNT(*) FROM raw.order_payments
+  UNION ALL SELECT 'order_reviews', COUNT(*) FROM raw.order_reviews
+  UNION ALL SELECT 'geolocation', COUNT(*) FROM raw.geolocation
+  UNION ALL SELECT 'category_translation', COUNT(*) FROM raw.product_category_name_translation
+) t;</code></pre>
+
+<pre><code>-- outliers review_score dans order_reviews
+INSERT INTO dq.check_results (layer, table_name, check_name, row_count, status)
+SELECT
+  'raw',
+  'order_reviews',
+  'invalid_review_score',
+  COUNT(*),
+  CASE WHEN COUNT(*) = 0 THEN 'OK' ELSE 'WARN' END
+FROM raw.order_reviews
+-- Ici on teste avec regex car au layer raw on est encore en TEXT
+WHERE review_score !~ '^[1-5]$';</code></pre>
+						
+						
+						
+						<b style="font-size: 32px;">2). Couche STG</b>
+						<br><br>
+						La couche staging permet ensuite de nettoyer et standardiser les donn&eacute;es avant leur int&eacute;gration dans le Data Warehouse. C'est dans cette couche que sont r&eacute;alis&eacute;s :
+						<br><br><ul>
+						<li>Typage des colonnes</li>
+						<li>Conversion des dates</li>
+						<li>Cr&eacute;ation de m&eacute;triques</li>
+						<li>Gestion des valeurs nulles</li>
+						<li>Ajout des contraintes et cl&eacute;s primaires</li>
+						</ul>
+						Exemple de m&eacute;trique cr&eacute;&eacute;e (table stg.orders) : 
+						<br><br>
+<pre><code>	-- lead_time_days : Commande -> Livraison
+	CASE
+	  WHEN NULLIF(order_delivered_customer_date, '') IS NULL
+	    OR NULLIF(order_purchase_timestamp, '') IS NULL
+	  THEN NULL
+	  ELSE
+	  	-- On traite les valeurs n&eacute;gatives.
+	    CASE
+	      WHEN (
+	        NULLIF(order_delivered_customer_date, '')::date
+	        - NULLIF(order_purchase_timestamp, '')::date
+	      ) < 0
+	      THEN NULL
+	      ELSE (
+	        NULLIF(order_delivered_customer_date, '')::date
+	        - NULLIF(order_purchase_timestamp, '')::date
+	      )
+	    END
+	END</code></pre>
+
+						Les cha&icirc;nes vides sont transform&eacute;es en <i>NULL</i> avant conversion :
+						<br><br>
+						<pre><code>NULLIF(TRIM(review_score), '')::int</code></pre>
+						Exemple de v&eacute;rification qualit&eacute; sur la table <i>stg.order_reviews</i> : 
+						<br><br>
+<pre><code>-- R&eacute;f&eacute;rence manquante vers orders
+----------------------------------
+INSERT INTO dq.check_results (layer, table_name, check_name, row_count, status)
+SELECT
+  'stg' AS layer,
+  'order_reviews' AS table_name,
+  'missing_order_reference' AS check_name,
+  COUNT(*) AS row_count,
+  CASE WHEN COUNT(*) = 0 THEN 'OK' ELSE 'FAIL' END AS status
+FROM stg.order_reviews r
+LEFT JOIN stg.orders o
+  ON o.order_id = r.order_id
+WHERE o.order_id IS NULL;</code></pre>				
+
+						<b style="font-size: 32px;">3). Couche DWH</b>
+						<br><br>
+						La couche Data Warehouse a &eacute;t&eacute; mod&eacute;lis&eacute;e selon une architecture en &eacute;toile afin d'optimiser les performances analytiques dans Power BI.
+						Le mod&egrave;le repose sur plusieurs dimensions (<i>dim_dates</i>, <i>dim_products</i>, <i>dim_customers</i>, etc.) reli&eacute;es &agrave; plusieurs tables de faits
+						 (<i>fact_orders</i>, <i>fact_order_items</i> et <i>fact_order_reviews</i>)
+						<br><br>
+						Le choix d'un mod&egrave;le multi-facts permet de s&eacute;parer les diff&eacute;rents niveaux de granularit&eacute; m&eacute;tier :
+						<br><br>						
+						<ul>
+						<li>Commande</li>
+						<li>Ligne de commande</li>
+						<li>Avis client</li>
+						</ul>
+						Chaque dimension utilise une surrogate key (cl&eacute; substitutive) g&eacute;n&eacute;r&eacute;e automatiquement avec PostgreSQL, exemple :
+						<br><br>
+<pre><code>product_key INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY</code></pre>
+PostgreSQL g&eacute;n&egrave;rera toujours (ALWAYS) automatiquement les valeurs de cette cl&eacute; technique. 						
+Ce choix permet de d&eacute;coupler le mod&egrave;le analytique des cl&eacute;s m&eacute;tier sources tout en simplifiant les jointures c&ocirc;t&eacute; Power BI.
+						<br><br>
+						Une dimension calendrier (<i>dim_dates</i>) a &eacute;galement &eacute;t&eacute; construite afin de pouvoir g&eacute;rer les analyses temporelles et les mesures de time intelligence dans Power BI.
+						La table est g&eacute;n&eacute;r&eacute;e dynamiquement &agrave; partir des dates pr&eacute;sentes dans les tables m&eacute;tier :
+						<br><br>
+<pre><code>-- &ccedil;a permettra de relier les faits &agrave; une dimension date
+-- plut&ocirc;t que manipuler les timestamps bruts partout dans Power BI.
+-- Grain : 1 ligne = 1 jour.
+-- Cl&eacute; : YYYYMMDD
+
+CREATE TABLE dwh.dim_dates (
+    date_key INT PRIMARY KEY,
+    full_date DATE NOT NULL,
+    year INT NOT NULL,
+	iso_year INT NOT NULL,
+    quarter INT NOT NULL,
+    month INT NOT NULL,
+    day INT NOT NULL,
+    month_name TEXT NOT NULL,
+    day_of_week INT NOT NULL,
+    day_name TEXT NOT NULL,
+    iso_week_of_year INT NOT NULL,
+    is_weekend BOOLEAN NOT NULL
+);
+
+-- On r&eacute;cup&egrave;re min/max date de nos diff&eacute;rentes tables.
+-- &ccedil;a nous servira pour g&eacute;n&eacute;rer la series.
+WITH bounds AS (
+    SELECT
+        MIN(date_value) AS min_date,
+        MAX(date_value) AS max_date
+    FROM (
+        SELECT purchase_ts::date AS date_value FROM stg.orders
+        UNION ALL
+        SELECT approved_ts::date FROM stg.orders
+        UNION ALL
+        SELECT delivered_carrier_ts::date FROM stg.orders
+        UNION ALL
+        SELECT delivered_customer_ts::date FROM stg.orders
+        UNION ALL
+        SELECT estimated_delivery_ts::date FROM stg.orders
+        UNION ALL
+        SELECT review_creation_ts::date FROM stg.order_reviews
+    ) d
+    WHERE date_value IS NOT NULL
+)
+
+INSERT INTO dwh.dim_dates
+SELECT
+    TO_CHAR(d::date,'YYYYMMDD')::int AS date_key,
+    d::date AS full_date,
+    -- ann&eacute;e calendrier
+    EXTRACT(YEAR FROM d)::int AS year,
+    -- ann&eacute;e ISO (pour coh&eacute;rence avec semaine ISO)
+    EXTRACT(ISOYEAR FROM d)::int AS iso_year,
+    EXTRACT(QUARTER FROM d)::int AS quarter,  -- Pas d'ISO pour quarter.
+    EXTRACT(MONTH FROM d)::int AS month,
+    EXTRACT(DAY FROM d)::int AS day,
+    TRIM(TO_CHAR(d,'Month')) AS month_name,  -- TRIM car PostgreSQL padde les noms de mois
+    EXTRACT(ISODOW FROM d)::int AS day_of_week,  -- ISODOW : Lundi=1 et Dimanche=7
+    TRIM(TO_CHAR(d,'Day')) AS day_name,  -- TRIM, pareil pour les noms de jours
+    EXTRACT(WEEK FROM d)::int AS iso_week_of_year,  -- D&eacute;j&agrave; ISO
+    CASE
+        WHEN EXTRACT(ISODOW FROM d) IN (6,7)
+        THEN TRUE
+        ELSE FALSE
+    END AS is_weekend
+FROM bounds,
+generate_series(bounds.min_date, bounds.max_date, interval '1 day') d;</code></pre>
+						
+						<br><br>
+						<h1>Power BI</h1>
+						Le dashboard Power BI a &eacute;t&eacute; construit directement &agrave; partir des tables du Data Warehouse PostgreSQL. 
+						L'objectif &eacute;tait de cr&eacute;er un mod&egrave;le analytique relativement l&eacute;ger c&ocirc;t&eacute; Power BI en limitant les transformations Power Query et en centralisant la logique m&eacute;tier dans PostgreSQL.
+						<br><br>
+						Exemple de petit traitement au niveau de Power Query :
+						<br><br>
+<pre><code>let
+    Source = PostgreSQL.Database("localhost", "olist_dwh"),
+
+    dwh_dim_products = Source{[
+        Schema = "dwh",
+        Item = "dim_products"
+    ]}[Data],
+
+    // Cleaning des noms de produits
+    #"Majuscule &agrave; chaque mot" = Table.TransformColumns(
+        dwh_dim_products,
+        {
+            {
+                "product_category_name_english",
+                Text.Proper,
+                type text
+            }
+        }
+    ),
+
+    #"Underscores remplac&eacute;s par espaces" = Table.ReplaceValue(
+        #"Majuscule &agrave; chaque mot",
+        "_",
+        " ",
+        Replacer.ReplaceText,
+        {"product_category_name_english"}
+    )
+in
+    #"Underscores remplac&eacute;s par espaces"</code></pre>
+
+
+
+						Le mod&egrave;le Power BI repose directement sur les tables du DWH :
+						</p>
+                        <p align="center"><a href="images/09-pipeline-postgresql-powerbi/star_model.png", target="_blank"><img src="images/09-pipeline-postgresql-powerbi/star_model.png" width="729" height="553"/></a></p>
+						<p>
+						<b style="font-size: 32px;">Le dashboard contient trois pages principales : </b>
+						<br><br>
+						<b style="font-size: 20px;">a). Une vue ex&eacute;cutive orient&eacute;e chiffre d'affaires et commandes</b>
+						</p>
+						<p align="center"><a href="images/09-pipeline-postgresql-powerbi/01_executive_overview.png", target="_blank"><img src="images/09-pipeline-postgresql-powerbi/01_executive_overview.png" width="1214" height="683"/></a></p>
+						<p>
+						<b style="font-size: 20px;">b). Une vue logistique et satisfaction client</b>
+						</p>
+						<p align="center"><a href="images/09-pipeline-postgresql-powerbi/02_operations_customers.png", target="_blank"><img src="images/09-pipeline-postgresql-powerbi/02_operations_customers.png" width="1214" height="683"/></a></p>
+						<p>
+						<b style="font-size: 20px;">c). Une vue produits et vendeurs</b>
+						</p>
+						<p align="center"><a href="images/09-pipeline-postgresql-powerbi/03_products_sellers.png", target="_blank"><img src="images/09-pipeline-postgresql-powerbi/03_products_sellers.png" width="1214" height="683"/></a></p>
+						<b>Le dashboard final permet ainsi de croiser plusieurs dimensions m&eacute;tier :</b>
+						<br><br><ul>
+						<li>Performance commerciale</li>
+						<li>Logistique</li>
+						<li>Satisfaction client</li>
+						<li>Performance produit et vendeurs</li>
+						</ul>
+
+
+						<b style="font-size: 32px;">Le dashboard en action</b>
+						<br><br>
+						<p align="center">
+								<img src="images/09-pipeline-postgresql-powerbi/dashboard_demo.gif" alt="" style="max-width: 100%; height: auto;" /><br>
+						</p>
+						<b>Une vid&eacute;o est &eacute;galement disponible <a href="xxxxxxxxx", target="_blank">ici</a>.</b>
+						
+
+
+						</p>
+						<br><br>						
+
+						<h1>Difficult&eacute;s techniques rencontr&eacute;es</h1>
+						<p>
+						<b style="font-size: 32px;">Gestion des relations entre plusieurs tables de faits</b>
+						<br><br>
+						Le mod&egrave;le Power BI repose sur plusieurs tables de faits (<i>fact_orders</i>, <i>fact_order_items</i>, <i>fact_order_reviews</i>). 
+						Cette approche est plus propre d'un point de vue analytique, mais elle complexifie certaines analyses crois&eacute;es.
+						<br><br>
+						Par exemple, pour analyser la relation entre les d&eacute;lais de livraison et la satisfaction client, il fallait faire interagir :
+						<ul>
+						<li>Les donn&eacute;es logistiques provenant de <i>fact_orders</i></li>
+						<li>Les notes clients provenant de <i>fact_order_reviews</i></li>
+						</ul>
+						Une relation directe bidirectionnelle entre les tables aurait cr&eacute;&eacute; un mod&egrave;le plus ambigu et potentiellement instable. J'ai donc utilis&eacute; <i>TREATAS</i> afin de propager manuellement le contexte de filtre entre les deux tables.
+						<br><br>
+<pre><code>Avg Review Score (via orders) = 
+// Relie dynamiquement fact_orders et fact_order_reviews via order_id
+// pour calculer la note moyenne dans le contexte des d&eacute;lais de livraison
+CALCULATE(
+    AVERAGE(fact_order_reviews[review_score]),
+    TREATAS(
+        VALUES(fact_orders[order_id]),
+        fact_order_reviews[order_id]
+    )
+)</code></pre>
+
+						Cette approche permet de conserver un mod&egrave;le propre tout en r&eacute;alisant des analyses transverses entre plusieurs faits.
+						<br><br>
+						<b style="font-size: 32px;">Gestion des mesures YTD</b>
+						<br><br>
+						La cr&eacute;ation des mesures de cumul annuel (YTD) a &eacute;galement soulev&eacute; plusieurs probl&eacute;matiques. 
+						L'utilisation directe de <i>TOTALYTD</i> fonctionnait correctement, mais les courbes cumul&eacute;es continuaient apr&egrave;s le dernier mois contenant r&eacute;ellement du chiffre d'affaires, 
+						cr&eacute;ant un plateau artificiel sur les visualisations.
+						<br><br>
+						Pour r&eacute;soudre ce probl&egrave;me, j'ai ajout&eacute; une logique conditionnelle permettant de retourner <i>BLANK()</i> apr&egrave;s le dernier mois contenant du revenue r&eacute;el. 
+						Cette gestion personnalis&eacute;e permet d'obtenir des graphiques plus coh&eacute;rents visuellement et plus justes analytiquement.
+						
+						<br><br>
+
+<pre><code>Revenue YTD = 
+VAR LastMonthWithRevenue =
+    // Calcule le dernier mois (YearMonthSort) o&ugrave; il y a du Revenue
+    // ALL(dim_dates) enl&egrave;ve les filtres (ann&eacute;e, mois, slicers)
+    // pour obtenir une r&eacute;f&eacute;rence globale
+    CALCULATE(
+        MAX(dim_dates[YearMonthSort]),
+        FILTER(
+            ALL(dim_dates),
+            NOT ISBLANK([Revenue])  // garde uniquement les mois avec du revenue
+        )
+    )
+
+VAR CurrentMonth =
+    // Mois courant dans le contexte du visuel (ex: le point affich&eacute;)
+    MAX(dim_dates[YearMonthSort])
+
+RETURN
+IF(
+    // Si on est apr&egrave;s le dernier mois avec revenue
+    CurrentMonth > LastMonthWithRevenue,
+    
+    // On renvoie BLANK() pour couper la courbe
+    BLANK(),
+    
+    // Sinon, on calcule le cumul annuel classique
+    TOTALYTD(
+        [Revenue],
+        dim_dates[full_date]
+    )
+)</code></pre>
+						
+
+						<b style="font-size: 32px;">Gestion des dimensions temporelles</b>
+						<br><br>
+						La gestion des analyses temporelles a n&eacute;cessit&eacute; la cr&eacute;ation d'une dimension calendrier d&eacute;di&eacute;e (<i>dim_dates</i>). Cette table centralise :
+						<br><br>						
+						<ul>
+						<li>Informations calendaires classiques</li>
+						<li>Semaines ISO</li>
+						<li>Ann&eacute;es ISO</li>
+						<li>Indicateurs temporels utilis&eacute;s dans Power BI</li>
+						</ul>
+
+						J'ai &eacute;galement rencontr&eacute; plusieurs probl&eacute;matiques li&eacute;es au tri des mois dans Power BI, notamment lorsque les noms de mois &eacute;taient utilis&eacute;s comme axe textuel dans les visualisations.
+						Ces probl&egrave;mes ont &eacute;t&eacute; r&eacute;solus via des colonnes de tri d&eacute;di&eacute;es (<i>month</i>, <i>YearMonthSort</i>) utilis&eacute;es pour ordonner correctement les axes temporels.
+						<br><br>
+						<b style="font-size: 32px;">S&eacute;paration des responsabilit&eacute;s entre PostgreSQL et Power BI</b>
+						<br><br>
+						Une autre difficult&eacute; importante concernait la r&eacute;partition des traitements entre PostgreSQL et Power BI. 
+						J'ai volontairement choisi de :
+						<br><br>						
+						<ul>
+						<li>Centraliser le nettoyage et la logique m&eacute;tier dans PostgreSQL</li>
+						<li>Limiter les transformations Power Query</li>
+						<li>Conserver un mod&egrave;le Power BI relativement l&eacute;ger</li>
+						</ul>
+						Cette approche demande davantage de travail c&ocirc;t&eacute; SQL mais permet de construire un pipeline plus clair et plus facilement maintenable.
+						</p>
+
+						<h1>Conclusion</h1>
+						<p>
+
+						Ce projet m'a permis de travailler l'ensemble de la cha&icirc;ne d&eacute;cisionnelle, depuis l'ingestion de donn&eacute;es brutes jusqu'&agrave; la cr&eacute;ation d'un dashboard analytique dans Power BI.
+						<br><br>
+						Au-del&agrave; des aspects purement techniques, il m'a surtout permis de mieux comprendre plusieurs probl&eacute;matiques concr&egrave;tes rencontr&eacute;es dans les projets BI :
+						<ul>
+						<li>Structuration d'un pipeline de donn&eacute;es</li>
+						<li>S&eacute;paration des couches de traitement</li>
+						<li>Mod&eacute;lisation en &eacute;toile</li>
+						<li>Gestion de plusieurs tables de faits</li>
+						<li>Contr&ocirc;le de la qualit&eacute; des donn&eacute;es</li>
+						</ul>
+						Le projet m'a &eacute;galement permis de constater l'importance des choix de mod&eacute;lisation dans Power BI. Une grande partie de la complexit&eacute; analytique se joue en r&eacute;alit&eacute; bien avant la cr&eacute;ation des visualisations, notamment dans la construction du Data Warehouse et du mod&egrave;le relationnel.
+						<br><br>
+						Enfin, ce travail m'a permis de pratiquer des probl&eacute;matiques de time intelligence et de DAX avanc&eacute; dans un contexte relativement r&eacute;aliste, avec plusieurs cas n&eacute;cessitant des mesures personnalis&eacute;es et une gestion fine du contexte de filtre.
+						<br><br>
+						<b>Plusieurs pistes d'am&eacute;liorations pourraient &ecirc;tre envisag&eacute;es pour aller plus loin :</b>
+						<br><br><ul>
+						<li>Automatisation du pipeline</li>
+						<li>Ajout de tests de qualit&eacute; plus avanc&eacute;s</li>
+						<li>Orchestration avec dbt</li>
+						<li>D&eacute;ploiement cloud du Data Warehouse</li>
+						<li>Traitement et utilisation des donn&eacute;es GPS</li>
+						</ul>
+						</p>
+						
+						<p>
+							<blockquote>
+								<img src="images/info.png" width="35" height="35"/>
+								<span><b>Retrouvez tous les fichiers associ&eacute;s &agrave; ce projet sur <a href="XXXXXXXXXXXXXXXXXXX" target="_blank">mon GitHub</a></b></span>
+							</blockquote>
+						</p>
+
+
+					</div>
+				</div>
+
+
+				<!-- Footer -->
+				<footer id="footer">
+					<div class="inner">
+
+						<section>
+							<h2>Restons en contact !</h2>
+							<ul class="icons">
+								<li><a href="https://github.com/BiGHeaDMaX" class="icon brands style2 fa-github" target="blank"><span class="label">GitHub</span></a></li>
+								<li><a href="https://www.linkedin.com/in/maximelecoq/" class="icon brands style2 fa-linkedin" target="blank"><span class="label">Linkedin</span></a></li>
+								<li><a href="https://twitter.com/BiGHeaDMaX" class="icon brands style2 fa-twitter" target="blank"><span class="label">Twitter</span></a></li>
+								<li><a href="mailto:%6Da%78i%6De&period;l%65%63%6Fq&commat;h%6F%74%6Da%69%6C&period;%63o%6D" class="icon solid style2 fa-envelope"><span class="label" target="blank">Email</span></a></li>
+							</ul>
+						</section>
+						<ul class="copyright">
+							<li>&copy; Maxime Lecoq - Tous droits r&eacute;serv&eacute;s</li><li>Design: <a href="http://html5up.net" target="blank">HTML5 UP</a></li>
+						</ul>
+					</div>
+				</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
