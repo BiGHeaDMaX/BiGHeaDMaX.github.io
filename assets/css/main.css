@@ -3384,3 +3384,8 @@ pre[class*="language-"] code {
     background: none;
     box-shadow: none;
 }
+
+/* Supprime les fonds clairs sur les mots-clés/tokens Prism */
+pre[class*="language-"] .token {
+    background: transparent !important;
+}
