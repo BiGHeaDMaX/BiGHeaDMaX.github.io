@@ -10,6 +10,11 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+		
+		<!-- Coloration syntaxique -->
+		<link rel="stylesheet" href="assets/css/prism.css">
+		<script src="assets/js/prism.js" defer></script>
+
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<link rel="icon" href="images/ai-icon.ico" type="image/x-icon">
 	</head>
@@ -130,7 +135,7 @@
 						Les fichiers CSV sont ensuite charg&eacute;s dans la couche RAW via un script <i>psql</i>. Il est n&eacute;cessaire de passer par un script <i>psql</i>, car j'utilise la commande <i>\copy</i>.
 						<br><br>
 						<u>Exemple pour un fichier</u> :
-						<pre><code>-- olist_orders_dataset.csv
+						<pre><code class="language-sql">-- olist_orders_dataset.csv
 TRUNCATE raw.orders;
 \copy raw.orders FROM '../data/raw/olist_orders_dataset.csv' DELIMITER ',' CSV HEADER</code></pre>
 						<u>Remarque</u> : ici, les tables RAW sont vid&eacute;es avec <i>TRUNCATE</i> avant chaque chargement car le dataset CSV utilis&eacute; est statique et non incr&eacute;mental.  
@@ -155,7 +160,7 @@ TRUNCATE raw.orders;
                         <p align="center"><img src="images/09-pipeline-postgresql-powerbi/06_dq_table_fails.png" width="771" height="224"/></a></p>						
 						<u>Exemples de v&eacute;rifications</u> : 
 						<br><br>
-<pre><code>-- Des lignes ont-elles &eacute;t&eacute; charg&eacute;es ?
+<pre><code class="language-sql">-- Des lignes ont-elles &eacute;t&eacute; charg&eacute;es ?
 INSERT INTO dq.check_results (layer, table_name, check_name, row_count, status)
 SELECT
   -- On ne renseigne pas run_ts, on laisse le default faire son travail
@@ -176,7 +181,7 @@ FROM (
   UNION ALL SELECT 'category_translation', COUNT(*) FROM raw.product_category_name_translation
 ) t;</code></pre>
 
-<pre><code>-- outliers review_score dans order_reviews
+<pre><code class="language-sql">-- outliers review_score dans order_reviews
 INSERT INTO dq.check_results (layer, table_name, check_name, row_count, status)
 SELECT
   'raw',
@@ -202,7 +207,7 @@ WHERE review_score !~ '^[1-5]$';</code></pre>
 						</ul>
 						Exemple de m&eacute;trique cr&eacute;&eacute;e (table stg.orders) : 
 						<br><br>
-<pre><code>	-- lead_time_days : Commande -> Livraison
+<pre><code class="language-sql">	-- lead_time_days : Commande -> Livraison
 	CASE
 	  WHEN NULLIF(order_delivered_customer_date, '') IS NULL
 	    OR NULLIF(order_purchase_timestamp, '') IS NULL
@@ -224,10 +229,10 @@ WHERE review_score !~ '^[1-5]$';</code></pre>
 
 						Les cha&icirc;nes vides sont transform&eacute;es en <i>NULL</i> avant conversion :
 						<br><br>
-						<pre><code>NULLIF(TRIM(review_score), '')::int</code></pre>
+						<pre><code class="language-sql">NULLIF(TRIM(review_score), '')::int</code></pre>
 						Exemple de v&eacute;rification qualit&eacute; sur la table <i>stg.order_reviews</i> : 
 						<br><br>
-<pre><code>-- R&eacute;f&eacute;rence manquante vers orders
+<pre><code class="language-sql">-- R&eacute;f&eacute;rence manquante vers orders
 ----------------------------------
 INSERT INTO dq.check_results (layer, table_name, check_name, row_count, status)
 SELECT
@@ -256,14 +261,14 @@ WHERE o.order_id IS NULL;</code></pre>
 						</ul>
 						Chaque dimension utilise une surrogate key (cl&eacute; substitutive) g&eacute;n&eacute;r&eacute;e automatiquement avec PostgreSQL, exemple :
 						<br><br>
-<pre><code>product_key INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY</code></pre>
+<pre><code class="language-sql">product_key INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY</code></pre>
 PostgreSQL g&eacute;n&egrave;rera toujours (ALWAYS) automatiquement les valeurs de cette cl&eacute; technique. 						
 Ce choix permet de d&eacute;coupler le mod&egrave;le analytique des cl&eacute;s m&eacute;tier sources tout en simplifiant les jointures c&ocirc;t&eacute; Power BI.
 						<br><br>
 						Une dimension calendrier (<i>dim_dates</i>) a &eacute;galement &eacute;t&eacute; construite afin de pouvoir g&eacute;rer les analyses temporelles et les mesures de time intelligence dans Power BI.
 						La table est g&eacute;n&eacute;r&eacute;e dynamiquement &agrave; partir des dates pr&eacute;sentes dans les tables m&eacute;tier :
 						<br><br>
-<pre><code>-- &ccedil;a permettra de relier les faits &agrave; une dimension date
+<pre><code class="language-sql">-- &ccedil;a permettra de relier les faits &agrave; une dimension date
 -- plut&ocirc;t que manipuler les timestamps bruts partout dans Power BI.
 -- Grain : 1 ligne = 1 jour.
 -- Cl&eacute; : YYYYMMDD
@@ -335,7 +340,7 @@ generate_series(bounds.min_date, bounds.max_date, interval '1 day') d;</code></p
 						<br><br>
 						Exemple de petit traitement au niveau de Power Query :
 						<br><br>
-<pre><code>let
+<pre><code class="language-powerquery">let
     Source = PostgreSQL.Database("localhost", "olist_dwh"),
 
     dwh_dim_products = Source{[
@@ -419,7 +424,7 @@ in
 						</ul>
 						Une relation directe bidirectionnelle entre les tables aurait cr&eacute;&eacute; un mod&egrave;le plus ambigu et potentiellement instable. J'ai donc utilis&eacute; <i>TREATAS</i> afin de propager manuellement le contexte de filtre entre les deux tables.
 						<br><br>
-<pre><code>Avg Review Score (via orders) = 
+<pre><code class="language-dax">Avg Review Score (via orders) = 
 // Relie dynamiquement fact_orders et fact_order_reviews via order_id
 // pour calculer la note moyenne dans le contexte des d&eacute;lais de livraison
 CALCULATE(
@@ -443,7 +448,7 @@ CALCULATE(
 						
 						<br><br>
 
-<pre><code>Revenue YTD = 
+<pre><code class="language-dax">Revenue YTD = 
 VAR LastMonthWithRevenue =
     // Calcule le dernier mois (YearMonthSort) o&ugrave; il y a du Revenue
     // ALL(dim_dates) enl&egrave;ve les filtres (ann&eacute;e, mois, slicers)

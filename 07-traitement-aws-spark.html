@@ -10,6 +10,11 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+
+		<!-- Coloration syntaxique -->
+		<link rel="stylesheet" href="assets/css/prism.css">
+		<script src="assets/js/prism.js" defer></script>
+
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<link rel="icon" href="images/ai-icon.ico" type="image/x-icon">
 	</head>
@@ -176,8 +181,7 @@
 							<br><br>
 							Dans &laquo; Strat&eacute;gie de compartiment &raquo; il est possible de <b>param&eacute;trer l'acc&egrave;s &agrave; certains fichiers/dossiers</b>, au format JSON. Par exemple pour partager le notebook et le fichier de sortie de notre programme :
 						</p>
-						<pre><code>
-{
+						<pre><code class="language-json">{
 	"Version": "2012-10-17",
 	"Statement": [
 		{
@@ -193,8 +197,7 @@
 			"Resource": "arn:aws:s3:::Nom_Du_Bucket/Results/pcaFeatures.csv"
 		}
 	]
-}
-						</code></pre>
+}</code></pre>
 						<p>
 							&laquo; "Principal": "*" &raquo; signifie que n'importe qui disposant du lien pourra acc&eacute;der aux fichiers. <b>Prudence donc avec ce type de configuration tr&egrave;s ouverte</b>.
 							Il est aussi possible de restreindre cet acc&egrave;s par exemple &agrave; des utilisateurs, groupes d'utilisateurs ou r&ocirc;les <a href="https://aws.amazon.com/fr/iam/" target="_blank">IAM</a> (Identity and Access Management),

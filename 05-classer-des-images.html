@@ -10,6 +10,11 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+
+		<!-- Coloration syntaxique -->
+		<link rel="stylesheet" href="assets/css/prism.css">
+		<script src="assets/js/prism.js" defer></script>
+
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<link rel="icon" href="images/ai-icon.ico" type="image/x-icon">
 	</head>
@@ -105,8 +110,7 @@
 							Les images de notre dataset sont r&eacute;parties dans des dossiers pour chaque classe, nous allons les parcourir
 							et charger les images avec la biblioth&egrave;que <a href="https://pypi.org/project/pillow/" target="_blank"><i>Pillow</i></a>.
 						</p>
-						<pre><code>
-import os  # Manipulations de fichiers
+						<pre><code class="language-python">import os  # Manipulations de fichiers
 import copy  # Utilis&eacute; pour importer un grand nombre de fichiers
 from PIL import Image  # Importation des images
 
@@ -121,8 +125,7 @@ file_names = [os.path.basename(dossier) for dossier in data_path]
 # Ouverture des images avec PIL.image
 # L'utilisation de copy.deepcopy() permet d'&eacute;viter les erreurs
 # lors de l'ouverture d'un grand nombre de fichiers avec Image.open()
-img_pil = [copy.deepcopy(Image.open(ligne)) for ligne in data_path]
-						</pre></code>
+img_pil = [copy.deepcopy(Image.open(ligne)) for ligne in data_path]</pre></code>
 
 							<p>
 								<br>Pour commencer, nous devons v&eacute;rifier si les classes de notre dataset ne sont pas trop d&eacute;s&eacute;quilibr&eacute;es.
@@ -147,8 +150,7 @@ img_pil = [copy.deepcopy(Image.open(ligne)) for ligne in data_path]
 								<b>Suppression des doublons</b>
 							</p>
 
-							<pre><code>
-avec_doublon = len(img_pil)
+							<pre><code class="language-python">avec_doublon = len(img_pil)
 
 # Cr&eacute;er un dictionnaire pour stocker les indices uniques par taille de fichier
 unique_indices_dict = {}
@@ -178,8 +180,7 @@ img_pil = data_without_duplicates
 list_labels = list_labels_without_duplicates
 file_names = file_names_without_duplicates
 
-print(f"{avec_doublon - len(img_pil)} doublons ont &eacute;t&eacute; supprim&eacute;s.")
-							</pre></code>
+print(f"{avec_doublon - len(img_pil)} doublons ont &eacute;t&eacute; supprim&eacute;s.")</pre></code>
 
 							<p align="center">
 								<b>Dimensions des images</b><br><br>
@@ -240,62 +241,60 @@ print(f"{avec_doublon - len(img_pil)} doublons ont &eacute;t&eacute; supprim&eac
 								<br><br>
 								Nous allons limiter nos exp&eacute;rimentations sur 10 classes. Voici une fonction nous permettant de cr&eacute;er un tel mod&egrave;le avec TensorFlow : 
 							</p>
-							<pre><code>
-def create_model_base() :
+							<pre><code class="language-python">def create_model_base() :
 
-# Taille des images en entr&eacute;e
-# On reprend bien la taille qu'on avait sp&eacute;cifi&eacute;e
-# lors de la cr&eacute;ation de nos datasets
-input_shape = (224, 224, 3)
+	# Taille des images en entr&eacute;e
+	# On reprend bien la taille qu'on avait sp&eacute;cifi&eacute;e
+	# lors de la cr&eacute;ation de nos datasets
+	input_shape = (224, 224, 3)
 
-# Structure du mod&egrave;le
-model = Sequential([
+	# Structure du mod&egrave;le
+	model = Sequential([
 
-# BLOC 1
-Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu', input_shape=input_shape, name='block1_conv1'),
-Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu', name='block1_conv2'),
-MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block1_pool'),
+	# BLOC 1
+	Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu', input_shape=input_shape, name='block1_conv1'),
+	Conv2D(64, kernel_size=(3, 3), padding='same', activation='relu', name='block1_conv2'),
+	MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block1_pool'),
 
-# BLOC 2
-Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu', name='block2_conv1'),
-Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu', name='block2_conv2'),
-MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block2_pool'),
+	# BLOC 2
+	Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu', name='block2_conv1'),
+	Conv2D(128, kernel_size=(3, 3), padding='same', activation='relu', name='block2_conv2'),
+	MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block2_pool'),
 
-# BLOC 3    
-Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu', name='block3_conv1'),
-Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu', name='block3_conv2'),
-Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu', name='block3_conv3'),
-MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block3_pool'),
+	# BLOC 3    
+	Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu', name='block3_conv1'),
+	Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu', name='block3_conv2'),
+	Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu', name='block3_conv3'),
+	MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block3_pool'),
 
-# BLOC 4    
-Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block4_conv1'),
-Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block4_conv2'),
-Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block4_conv3'),
-MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block4_pool'),
+	# BLOC 4    
+	Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block4_conv1'),
+	Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block4_conv2'),
+	Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block4_conv3'),
+	MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block4_pool'),
 
-# BLOC 5
-Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block5_conv1'),
-Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block5_conv2'),
-Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block5_conv3'),
-MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block5_pool'),
+	# BLOC 5
+	Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block5_conv1'),
+	Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block5_conv2'),
+	Conv2D(512, kernel_size=(3, 3), padding='same', activation='relu', name='block5_conv3'),
+	MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='block5_pool'),
 
-# Bloc de classification
-Flatten(name='flatten'),
-Dense(4096, activation='relu', name='fc1'),
-Dense(4096, activation='relu', name='fc2'),
-Dense(nb_classes, activation='softmax', name='predictions')  
-# nb_classes : nombre de classes, nous nous limiterons ici &agrave; 10
+	# Bloc de classification
+	Flatten(name='flatten'),
+	Dense(4096, activation='relu', name='fc1'),
+	Dense(4096, activation='relu', name='fc2'),
+	Dense(nb_classes, activation='softmax', name='predictions')  
+	# nb_classes : nombre de classes, nous nous limiterons ici &agrave; 10
 
-], name='Base')
+	], name='Base')
 
-# Compilation du mod&egrave;le 
-model.compile(loss="categorical_crossentropy", optimizer='adam', metrics=["accuracy"])
+	# Compilation du mod&egrave;le 
+	model.compile(loss="categorical_crossentropy", optimizer='adam', metrics=["accuracy"])
 
-# Affichage de la structure du mod&egrave;le
-print(model.summary())
+	# Affichage de la structure du mod&egrave;le
+	print(model.summary())
 
-return model
-							</pre></code>
+	return model</pre></code>
 
 							<p align="center">
 								<b>Structure de notre premier mod&egrave;le</b><br><br>
@@ -453,8 +452,7 @@ return model
 									<br><br>
 									Quelques lignes de code nous suffiront pour cr&eacute;er notre application : 
 								</p>
-								<pre><code>
-# On commence par importer streamlit
+								<pre><code class="language-python"># On commence par importer streamlit
 import streamlit as st
 
 # Titre de la page (onglet)
@@ -610,9 +608,7 @@ def main():
 # Si le script est lanc&eacute; en propre, pas import&eacute;
 # dans un autre script, alors lancer main()
 if __name__ == "__main__":
-	main()
-
-								</pre></code>
+	main()</pre></code>
 								<br>
 								<p align="center">
 									<b>L'application en action</b><br><br>

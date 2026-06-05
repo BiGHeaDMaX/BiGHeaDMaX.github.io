@@ -10,6 +10,11 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+
+		<!-- Coloration syntaxique -->
+		<link rel="stylesheet" href="assets/css/prism.css">
+		<script src="assets/js/prism.js" defer></script>
+
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<link rel="icon" href="images/ai-icon.ico" type="image/x-icon">
 	</head>
@@ -132,8 +137,7 @@
 								Aucune donn&eacute;e personnelle concernant les auteurs des messages n'est r&eacute;cup&eacute;r&eacute;e, afin d'&eacute;viter toute probl&eacute;matique li&eacute;e au RGPD.
 							<br><br>
 							La requ&ecirc;te SQL suivante a &eacute;t&eacute; utilis&eacute;e afin de r&eacute;cup&eacute;rer les 50 000 messages (et leur tags associ&eacute;s) de notre dataset : <br>
-							<pre><code>
-SELECT TOP(50000) posts.id,
+							<pre><code class="language-sql">SELECT TOP(50000) posts.id,
 posts.creationdate,
 title,
 body,
@@ -151,8 +155,7 @@ WHERE  posts.creationdate BETWEEN CONVERT(DATETIME, '2022-01-01') AND
 		AND posts.score > 0 -- Questions avec un score positif
 		AND posts.answercount > 0 -- Au moins une r&eacute;ponse
 		AND posts.commentcount > 0 -- Au moins un commentaire
-		AND users.reputation >= 91 -- Soit la r&eacute;putation moyenne sur cette p&eacute;riode avec ces crit&egrave;res
-							</code></pre>
+		AND users.reputation >= 91 -- Soit la r&eacute;putation moyenne sur cette p&eacute;riode avec ces crit&egrave;res</code></pre>
 
 							Une fois les donn&eacute;es brutes r&eacute;cup&eacute;r&eacute;es, nous allons les pr&eacute;parer.
 
@@ -372,8 +375,7 @@ WHERE  posts.creationdate BETWEEN CONVERT(DATETIME, '2022-01-01') AND
 							<br><br>
 							Voici le code du workflow utilis&eacute; sur GitHub Actions :
 							</p>
-							<pre><code>
-# Workflow pour dockeriser l'application
+							<pre><code class="language-yaml"># Workflow pour dockeriser l'application
 # et l'envoyer dans un registre de conteneur Azure
 # puis red&eacute;marrer l'instance de conteneur
 
@@ -447,8 +449,7 @@ jobs:
 		# pour prendre en compte la version nouvellement cr&eacute;e
 		- name: Red&eacute;marrage de l'instance de conteneur Azure
 		run: |
-			az container restart --resource-group stack-tags-predictor_group --name instance-auto-maj
-							</pre></code>
+			az container restart --resource-group stack-tags-predictor_group --name instance-auto-maj</pre></code>
 
 							<p>
 								<b>Remarque : </b><br>

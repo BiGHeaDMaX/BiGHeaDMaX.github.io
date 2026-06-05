@@ -10,6 +10,11 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+
+		<!-- Coloration syntaxique -->
+		<link rel="stylesheet" href="assets/css/prism.css">
+		<script src="assets/js/prism.js" defer></script>
+
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<link rel="icon" href="images/ai-icon.ico" type="image/x-icon">
 	</head>
@@ -102,8 +107,7 @@
 
 							<p>La requ&ecirc;te SQL suivante a &eacute;t&eacute; utilis&eacute;e afin de r&eacute;cup&eacute;rer les 50 000 messages (et leur tags associ&eacute;s) de notre dataset : <br></p>
 
-							<pre><code>
-SELECT TOP(50000) posts.id,
+							<pre><code class="language-sql">SELECT TOP(50000) posts.id,
 posts.creationdate,
 title,
 body,
@@ -121,8 +125,7 @@ WHERE  posts.creationdate BETWEEN CONVERT(DATETIME, '2022-01-01') AND
 		AND posts.score > 0 -- Questions avec un score positif
 		AND posts.answercount > 0 -- Au moins une r&eacute;ponse
 		AND posts.commentcount > 0 -- Au moins un commentaire
-		AND users.reputation >= 91 -- Soit la r&eacute;putation moyenne sur cette p&eacute;riode avec ces crit&egrave;res
-							</code></pre>
+		AND users.reputation >= 91 -- Soit la r&eacute;putation moyenne sur cette p&eacute;riode avec ces crit&egrave;res</code></pre>
 
 
 							<p>
@@ -274,8 +277,7 @@ WHERE  posts.creationdate BETWEEN CONVERT(DATETIME, '2022-01-01') AND
 							<p>
 								Pour des r&eacute;sultats plus pr&eacute;cis, il est utile d'<b>optimiser le prompt</b>, notamment en fournissant au mod&egrave;le un <b>exemple pr&eacute;alable</b>. Voici pour exemple le prompt utilis&eacute; pour ce projet :
 							</p>
-							<pre><code>
-prompt = f"""
+							<pre><code class="language-python">prompt = f"""
 &lt;s&gt;[INST]
 Please provide {nb_tags} and only {nb_tags} relevant keywords, separated by a coma, for this text:
 "how can i convert an array into a dataframe"
@@ -291,8 +293,7 @@ Please provide {nb_tags} and only {nb_tags} relevant keywords, separated by a co
 Please give me {nb_tags} most relevant keywords in this document and separate them with commas. Your reponse should be only: keyword 1, keyword 2, keyword 3, keyword 4, keyword 5
 Make sure you to only return the {nb_tags} keywords and say nothing else. Not two, not four, just {nb_tags} keywords, no less, no more.
 [/INST]
-"""
-							</code></pre>
+"""</code></pre>
 							<br><br>
 							<h1>R&eacute;sultats de l'approche LLM</h1>
 							<p>
